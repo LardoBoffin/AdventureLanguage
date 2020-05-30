@@ -58,7 +58,6 @@ namespace AdventureLanguage.Output
                 Console.WriteLine("Creating Source folder");
                 di = Directory.CreateDirectory(path + folderDivider + "Source");
 
-
                 //adventureData.xml
                 try
                 {

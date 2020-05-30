@@ -38,34 +38,7 @@ namespace AdventureLanguage
                     //load the framework BBC Basic
                     if (!ReadBBCBasicFile.ReadBasicFile(gameData)) { return false; }
 
-                    //produce program based on XML and framework program
-
-                    //export to files
-
-
-                    ////remove data from memory
-                    //gameData.messageList.Clear();
-                    //gameData.verbList.Clear();
-                    //gameData.locationList.Clear();
-                    //gameData.adverbList.Clear();
-                    //gameData.nounList.Clear();
-                    //gameData.objectList.Clear();
-
-                    ////remove all local variables but leave behind global variables
-                    ////this may need attention!!!
-
-                    //int varIndex = gameData.varList.Count();
-                    //for (int i = varIndex - 1; i >= 0; i--)
-                    //{
-                    //    if (!gameData.varList[i].IsGlobal())
-                    //    {
-                    //        gameData.varList.Remove(gameData.varList[i]);
-                    //    }
-                    //    varIndex++;
-                    //}
-
                 }
-
 
             }
             gameData.eventList.Add(new EventLog());
@@ -92,13 +65,6 @@ namespace AdventureLanguage
                             return false;
                         }
                         break;
-
-                    //case "OUTPUTFILEPATH":
-                    //    gameData.eventList.Add(new EventLog(xe));
-                    //    gameData.outputFilePath = xe.Value;
-                    //    try { File.Delete(gameData.outputFilePath + @"\EventLog.txt"); }
-                    //    catch { }
-                    //    break;
 
                     case "OUTPUTFILE":
                         gameData.eventList.Add(new EventLog(xe));
@@ -361,11 +327,6 @@ namespace AdventureLanguage
 
                 switch (xc.Name.ToString().ToUpper())
                 {
-                    //case "OBJECT":
-                    //    gameData.eventList.Add(new EventLog(xc);
-                    //    if (!GenerateObject(xc, gameData, locationID))
-                    //    { return false; }
-                    //    break;
 
                     case "MESSAGE":
                         gameData.eventList.Add(new EventLog(xc));
@@ -508,13 +469,6 @@ namespace AdventureLanguage
                     messageNumber = gameData.messageList.Count;
                 }
 
-                //XElement xc = xe.Descendants().ElementAt(0);
-
-                //messageNumber = GenerateMessage(xc, gameData.messageList);
-                //if (messageNumber < 0)
-                //{
-                //    return false;
-                //}
             }
             catch
             {
