@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AdventureLanguage": {
+      "commandName": "Project",
+      "commandLineArgs": "-b \"E:\\Data\\Dropbox\\Trempol5\""
+    }
+  }
+}

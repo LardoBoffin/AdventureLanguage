@@ -1,0 +1,32 @@
+to create a project
+
+cd to application distribution folder, e.g. 
+
+cd /Users/philjones/Documents/z 
+
+
+dotnet al.dll -new /users/philjones/documents Ransom
+
+
+to build a project
+
+cd to application distribution folder, e.g. 
+
+cd /Users/philjones/Documents/z 
+
+dotnet al.dll -b /Users/philjones/Documents/Opus2 
+
+
+Implemented IT, TAKE LAMP, LIGHT IT
+Debug mode, prefix stuff with '-' and only included in program if <BuildType>Debug</BuildType>
+
+*C 		show counters once
+*CON 	always show counters
+*COFF	switch off counters
+*WON	switch on parsed word numbers
+*WOFF	switch off parsed word numbers
+
+chmod u+x  /Users/philjones/Documents/Opus2/build.command
+
+
+#
