@@ -46,11 +46,7 @@ namespace AdventureLanguage.Output
                 {
                     //mac
                     buildBoot.WriteLine("*KEY 0 *EXEC " + projectName.Left(7) + "|MSAVE \"" + projectName.Left(7) + "\"|MRUN|M");
-                    //buildBoot.WriteLine("*KEY 1 SAVE \"" + projectName.Left(7) + "\"|MRUN|M");
-
-                    //add in *KEY 0, 1 and 2 calls to *EXEC rawtext
                 }
-
 
                 buildBoot.Flush();
 

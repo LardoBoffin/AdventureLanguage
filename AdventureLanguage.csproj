@@ -9,16 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="MkImg.exe">
+    <None Update="IncludedEXEs\MkImg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="tokenise.exe">
+    <None Update="IncludedEXEs\tokenise.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="IncludedEXEs\" />
+    <Folder Include="IncludedFiles\" />
   </ItemGroup>
 
 </Project>

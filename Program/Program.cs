@@ -34,41 +34,22 @@ namespace AdventureLanguage
             {
                 if (args.Length == 0)
                 {
-                    Console.WriteLine("Usage options:");
-                    Console.WriteLine("To create a new project...");
-                    Console.WriteLine(@"-new <path> <projectname>, e.g.adventurelanguage.exe -new ""C:\Beeb\Adventures"" Ransom ");
-                    Console.WriteLine("To build a project...");
-                    Console.WriteLine(@"-b <path> , e.g.adventurelanguage.exe -b ""C:\Beeb\Adventures\Ransom""");
+                    UsageOptions();
                     return;
                 }
-
-
             }
             catch
             {
-                Console.WriteLine("Usage options:");
-                Console.WriteLine("To create a new project...");
-                Console.WriteLine(@"-new <path> <projectname>, e.g.adventurelanguage.exe -new ""C:\Beeb\Adventures"" Ransom ");
-                Console.WriteLine("To build a project...");
-                Console.WriteLine(@"-b <path> , e.g.adventurelanguage.exe -b ""C:\Beeb\Adventures\Ransom""");
+                UsageOptions();
                 return;
             }
 
-
-
-
-            //for (int i = 0; i < args.Length; i++)
-            //{
             int i = 0;
             string argument = args[i];
 
             if (argument == "-?")
             {
-                Console.WriteLine("Usage options:");
-                Console.WriteLine("To create a new project...");
-                Console.WriteLine(@"-new <path> <projectname>, e.g.adventurelanguage.exe -new ""C:\Beeb\Adventures"" Ransom ");
-                Console.WriteLine("To build a project...");
-                Console.WriteLine(@"-b <path> , e.g.adventurelanguage.exe -b ""C:\Beeb\Adventures\Ransom""");
+                UsageOptions();
                 return;
             }
 
@@ -89,11 +70,7 @@ namespace AdventureLanguage
 
                 Console.WriteLine("Invalid command line arguments.");
                 Console.WriteLine();
-                Console.WriteLine("Usage options:");
-                Console.WriteLine("To create a new project...");
-                Console.WriteLine(@"-new <path> <projectname>, e.g.adventurelanguage.exe -new ""C:\Beeb\Adventures"" Ransom ");
-                Console.WriteLine("To build a project...");
-                Console.WriteLine(@"-b <path> , e.g.adventurelanguage.exe -b ""C:\Beeb\Adventures\Ransom""");
+                UsageOptions();
                 return;
 
             }
@@ -102,7 +79,16 @@ namespace AdventureLanguage
                 Console.WriteLine("Error processing command line call. " + e.Message);
                 return;
             }
-            //}
+
+        }
+
+        private static void UsageOptions()
+        {
+            Console.WriteLine("Usage options:");
+            Console.WriteLine("To create a new project...");
+            Console.WriteLine(@"-new <path> <projectname>, e.g.adventurelanguage.exe -new ""C:\Beeb\Adventures"" Ransom ");
+            Console.WriteLine("To build a project...");
+            Console.WriteLine(@"-b <path> , e.g.adventurelanguage.exe -b ""C:\Beeb\Adventures\Ransom""");
         }
 
         public static void CreateNewProject(string folderLocation, string projectName, string folderDivider)
@@ -130,7 +116,6 @@ namespace AdventureLanguage
 
             DataItems gameData = new DataItems();
 
-
             string path = Directory.GetCurrentDirectory();
 
             gameData.eventList.Add(new EventLog("Calling AL.dll at at : " + path));
@@ -139,7 +124,6 @@ namespace AdventureLanguage
 
             gameData.eventList.Add(new EventLog("Processing AdventureData.xml at : " + folderLocation + folderDivider + "Source" + folderDivider + "AdventureData.xml"));
             gameData.eventList.Add(new EventLog(""));
-
 
             gameData.eventList.Add(new EventLog("Compile XML data to adventure data:"));
             gameData.eventList.Add(new EventLog());
