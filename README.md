@@ -65,3 +65,6 @@ Loading more stuff into RAM will mean less space for game logic. By making the g
 This will need to include things like global variables (that are retained between sections), global objects and probably a single menu program that controls which section is called when.
 The save games will get a lot more complex...
 
+
+
+Starting item 3 and seeing how Github works with VS for Mac...
