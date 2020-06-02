@@ -228,16 +228,17 @@ namespace AdventureLanguage.Output
         {
 
             //location file contents
-            //messages
-            //  number of message records (single byte)
-            //  MSB of message number
-            //  LSB of message number
-            //location links
-            //  number of links (single byte)
-            //  repeat:
-            //      verb number
-            //      MSB of location link
-            //      LSB of location link
+            // flags 0 to 7
+            // messages
+            //   number of message records (single byte)
+            //   MSB of message number
+            //   LSB of message number
+            // location links
+            //   number of links (single byte)
+            //   repeat:
+            //       verb number
+            //       MSB of location link
+            //       LSB of location link
 
             //index file contains:
             //64 start of record marker (int)
@@ -268,6 +269,9 @@ namespace AdventureLanguage.Output
                         //write out message data
                         long iLen = locationWriter.BaseStream.Length;
                         int LocationTo;
+
+                        //write out flags
+                        locationWriter.Write((byte)gameData.locationList[i].Flags());   //number of message records
 
                         //write out message information     
                         int numberOfItems = gameData.locationList[i].Messages().Count;

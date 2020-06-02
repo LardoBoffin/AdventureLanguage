@@ -40,6 +40,20 @@ namespace AdventureLanguage
             return temp;
         }
 
+        public static byte SetBit(this byte aByte, int pos, bool value)
+        {
+            if (value)
+            {
+                //left-shift 1, then bitwise OR
+                return (byte)(aByte | (1 << pos));
+            }
+            else
+            {
+                //left-shift 1, then take complement, then bitwise AND
+                return (byte)(aByte & ~(1 << pos));
+            }
+        }
+
 
     }
 }
