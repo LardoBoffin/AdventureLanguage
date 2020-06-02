@@ -1,0 +1,294 @@
+'in notepad++ set the language to Visual Basic
+'any lines starting with ' will be ignored
+'any line starting with - will only be included if adventureData has <BuildType>Debug</BuildType> set
+
+VDU23;8202;0;0;0;:DIM W% 40:DIM CI% 5
+T%=0:Q%=0
+   
+-SW%=0   
+-SC%=0
+   
+'start of main loop
+REPEAT
+	PRINT "Loading data.";:PROCldOb("DATA-O")
+	IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4):PROCldSM
+		   
+	'@ScreenMode@ is set in Adventure.xml   
+	MODE @ScreenMode@:PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@"  
+	   
+	'@NumVar@ is set in Adventure.xml
+	PROCvars:DIM CTR% @NumVar@:FOR X%=1 TO @NumVar@:PROCset(X%,0):NEXT
+	R%=1:OLR%=0:T%=0:PL%=10000:EX%=0:ENC%=0:CW%=0:L%=0:PROCinit
+	PRINT TAB(0,5)"Press";CHR$(131);"1";CHR$(135);"to start a new game":PRINT TAB(0,7)"Press"CHR$(131);"2";CHR$(135);"to continue an existing game":PRINT:PRINT">";:REPEAT:C$=INKEY$(0):UNTIL C$="1" OR C$="2":CLS
+	IF C$="2" THEN PRINTTAB(10,0)CHR$(131);"Getting catalogue...":PRINT:*CAT
+	IF C$="2" THEN PRINT:PRINT"Type the file name and press Enter":PRINT"Or press Enter for the default save":INPUT">" CMD$:IF LEFT$(CMD$,2)="S." THEN CMD$=RIGHT$(CMD$,LEN(CMD$)-2)
+	IF C$="2" THEN CMD$="LOAD "+CMD$:CLS:PROCload
+	
+	REPEAT:D%=RND(100):PROCpreRoom:IF R%<>OLR% THEN OLR%=R%:PROCcl:PROCgtRm(R%):PROCt
+		D%=FNhighPty:IF EX%=0 AND NOT D% THEN PROCpsTxt
+		IF V%=0 AND EX%=0 AND NOT D% THEN PROCmsg(4):D%=TRUE
+		IF EX%=0 AND NOT D% THEN D%=FNckMv:IF NOT D% THEN D%=FNlowPty:IF V%>0 AND NOT D% THEN PROCmsg(3)
+-IF SC%=1 PROCshowC
+CL%=0:D%=0:UNTIL EX%=1:UNTIL FNagain=FALSE
+PRINT "Thanks for playing...":END
+
+'debug stuff
+-DEFPROCshowC:LOCAL X%
+-PRINT:FOR X%=1 TO @NumVar@:PRINT X%,FNget(X%):NEXT:
+-ENDPROC
+
+-DEFPROCshowParse
+-PRINT:PRINT "Verb",V%
+-PRINT "Adverb",AVRB%
+-PRINT "Noun",N%
+-PRINT "Last Noun",L%
+-PRINT "Noun2",NO2%:PRINT
+-ENDPROC
+
+'if CLS is set then clear the screen
+DEFPROCcl:IF Q%=1 THEN CLS
+ENDPROC
+  
+'loading and saving functions
+DEFFNagain:LOCAL A$:PRINT "":INPUT "Another game? (Y/N)";A$:IF A$="Y" OR A$="y" THEN =TRUE ELSE =FALSE
+
+'save the game
+DEFPROCsave:LOCAL F%,X%,N$:N$=LEFT$(MID$(CMD$,6),7):IF N$="" THEN N$="SAVE-M"
+PRINT"Saving...":F%=OPENOUT(N$):PRINT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:BPUT#F%,?(CTR%+X%):NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:BPUT#F%,?(OB%+X%):NEXT
+CLOSE#F%:PROCe:PRINT"Done.":ENDPROC
+
+'load the game
+DEFPROCload:LOCAL F%,X%,N$:N$=LEFT$(MID$(CMD$,6),7):IF N$="" THEN N$="SAVE-M"
+PRINT"Loading...":F%=OPENIN(N$):INPUT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:?(CTR%+X%)=BGET#F%:NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:?(OB%+X%)=BGET#F%:NEXT
+CLOSE#F%:PROCe:PRINT"Done.":ENDPROC
+  
+'load messages
+'@NumMssages@ is automatically calculated
+DEFPROCldSM:LOCAL N%,R%,F%:F%=OPENIN("DATA-M"):DIM MS$(@NumMssages@):FOR X%=1 TO @NumMssages@:PRINT".";:PTR#F%=FNrdIx(X%,"IDX-M"):INPUT#F%,MS$(X%):NEXT:CLOSE#F%:ENDPROC
+  
+'load objects
+DEFPROCldOb(F$):LOCAL N%,R%,T%:F%=OPENIN(F$):R%=0:REPEAT:FOR X%=1TO8:N%=BGET#F%:NEXT:R%=R%+1:PRINT".";:UNTIL EOF#F%:PTR#F%=0:OBJN%=R%:R%=R%*8
+IF FNturn=0 THEN DIM OB% R%
+R%=1:REPEAT:?(OB%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
+  
+'store object at location
+DEFPROCstOb(O%,R%):LOCAL P%,L%:O%=O%-1:P%=(O%*8)+4:?(OB%+P%)=R% DIV 256:?(OB%+P%+1)=R% MOD 256:ENDPROC
+
+'list objects at location
+DEFPROClsOb(R%,MS%):LOCAL X%,O%:O%=0:IF OBJN%=0 THEN ENDPROC
+	FOR X%=1TOOBJN%:M%=FNobHr(X%,R%):IF M%>0 THEN O%=O%+1:NEXT ELSE NEXT
+	IF O%=0 AND MS%>1 THEN PRINT:ENDPROC
+	IF O%=0 AND MS%=1 THEN PROCmsg(1):PROCmsg(18):ENDPROC
+	PRINT:IF MS%>0 THEN PROCmsg(MS%):PRINT
+	FOR X%=1TOOBJN%:M%=FNobHr(X%,R%):IF M%>0 THEN PRINTCHR$(131);:PROCmsg(M%):PRINT:NEXT ELSE NEXT
+ENDPROC
+  
+'is object here?
+DEFFNobHr(O%,R%):LOCAL P%,L%:O%=O%-1:L%=FNobLn(O%+1):IF L%=R% THEN =FNobMn(O%+1) ELSE =0
+  
+'return object location
+DEFFNobLn(O%):O%=O%-1:U%=(O%*8)+4+OB%:=?(U%)*256+?(U%+1)
+  
+'return object message number
+DEFFNobMn(O%):O%=O%-1:U%=(O%*8)+2+OB%:=?(U%)*256+?(U%+1)
+  
+'return object weight
+DEFFNobWt(O%):O%=O%-1:U%=(O%*8)+6+OB%:=?(U%)
+  
+'check to see if the move is valid
+DEFFNckMv:LOCAL LB%,HB%,N%:D%=FALSE:N%=?W%:IF N%=0 THEN =FALSE
+FOR C%=1 TO (N%*3) STEP 3:IF ?(W%+C%)=V% THEN LB%=?(W%+C%+2):HB%=?(W%+C%+1):R%=HB%*256+LB%:D%=TRUE:NEXT ELSE NEXT
+=D%
+ENDPROC
+  
+'get room details
+DEFPROCgtRm(R%):LOCAL F%,N%,LB%,HB%,M%,D%:D%=0
+	CL%=0:F%=OPENIN("DATA-R"):PTR#F%=FNrdIx(R%,"IDX-R"):G%=BGET#F%:IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(13)
+	N%=BGET#F%:FOR C%=1TON%:HB%=BGET#F%:LB%=BGET#F%:M%=FNcint(LB%,HB%):IF D%=0 THEN PROCmsg(!M%):NEXT ELSE NEXT
+	N%=BGET#F%:?W%=N%:FOR C%=1 TO 36:?(W%+C%)=0:NEXT:IF N%>0 THEN FOR C%=1 TO N%*3:?(W%+C%)=BGET#F%:NEXT
+	CLOSE#F%:IF D%=0 THEN PROClsOb(R%,15)
+PROCrmMsg:ENDPROC
+  
+'convert to a 4 byte int
+DEFFNcint(LB%,HB%):?CI%=LB%:?(CI%+1)=HB%:?(CI%+2)=0:?(CI%+3)=0:=CI%
+  
+'load words (nouns, verbs and adverbs) from disc
+DEFPROCgW(T%):LOCAL N%,R%,D$,RN%:R%=1
+	IF T%=1 THEN N%=OPENIN("DATA-N") ELSE IF T%=2 THEN N%=OPENIN("DATA-V") ELSE IF T%=4 THEN N%=OPENIN("DATA-A")
+	REPEAT:RN%=BGET#N%:INPUT#N%,D$:R%=R%+1:UNTIL EOF#N%:PTR#N%=0
+	IF T%=1 THEN NM%=R%:DIM N$(R%):DIM NN% R% ELSE IF T%=2 THEN VM%=R%:DIM V$(R%):DIM VN% R% ELSE IF T%=4 THEN AM%=R%:DIM A$(R%):DIM AN% R%
+	R%=1:REPEAT:RN%=BGET#N%:INPUT#N%,D$
+	IF T%=1 THEN N$(R%)=FNtU(D$):NN%?R%=RN% ELSE IF T%=2 THEN V$(R%)=FNtU(D$):VN%?R%=RN% ELSE IF T%=4 THEN A$(R%)=FNtU(D$):AN%?R%=RN%
+R%=R%+1:PRINT".";:UNTIL EOF#N%:CLOSE#N%:ENDPROC
+  
+'print a message to the screen
+DEFPROCmsg(M%):LOCAL S%,P%,H%,M$,A%:M$=MS$(M%)
+	IF M%=0 THEN PRINT
+	S%=1:P%=1:H%=POS:REPEAT:P%=INSTR(M$," ",S%):IF P%=0 THEN H%=H%+(LEN(M$)-S%)+1 ELSE H%=H%+(P%-S%)+1
+	'@ScreenWidth@ is set in Adventure.xml
+	IF H%>@ScreenWidth@ THEN PRINT
+	PRINT MID$(M$,S%,P%-S%);" ";:H%=POS:S%=P%+1:
+	UNTIL P%=0
+	IF POS=1 THEN VDU31,POS-1,VPOS:A%=135:C=USR(&FFF4):C=C AND &FFFF:C=C DIV &100:IF C>32 THEN VDU31,POS+1,VPOS
+ENDPROC
+   
+'read an index (index file name passed in)
+DEFFNrdIx(Re%,file$):I%=(Re%-1)*5:IND=OPENIN(file$):PTR#IND=I%:INPUT#IND,I%:CLOSE#IND:=I%
+  
+'parse the text
+DEFPROCpsTxt:LOCAL WRDLEN%,C$,C%,S%,U%:PROCvars:REPEAT:PRINT:PROCmsg(2):U%=VPOS:INPUT TAB(LEN(MS$(2)),U%), CMD$:UNTIL CMD$>"":TIME=0:CMD$=FNtU(CMD$):S%=1:IF CMD$="*." THEN D%=TRUE:*CAT
+
+'show counters etc.
+-IF CMD$="*C" THEN PROCshowC:D%=TRUE
+-IF LEFT$(CMD$,4)="*WON" THEN SW%=1:D%=TRUE
+-IF LEFT$(CMD$,5)="*WOFF" THEN SW%=0:D%=TRUE
+-IF LEFT$(CMD$,4)="*CON" THEN SC%=1:D%=TRUE
+-IF LEFT$(CMD$,5)="*COFF" THEN SC%=0:D%=TRUE
+
+	REPEAT:WRD$=FNgW(MID$(CMD$,S%,LEN(CMD$)-S%+1)):S%=S%+LEN(WRD$)+1:IF WRD$="IT" THEN N%=L%:C%=1
+		IF V%=0 THEN V%=FNpW(WRD$,1):IF V%>0 THEN C%=1
+		IF C%=0 THEN IF N%=0 THEN N%=FNpW(WRD$,2):IF N%>0 THEN C%=1:L%=N%
+		IF C%=0 THEN IF AVRB%=0 THEN AVRB%=FNpW(WRD$,3):IF AVRB%>0 THEN C%=1
+		IF C%=0 THEN IF NO2%=0 THEN NO2%=FNpW(WRD$,2):IF NO2%=N% THEN NO2%=0
+C%=0:UNTIL S%>=LEN(CMD$)
+
+-IF SW%=1 PROCshowParse
+
+ENDPROC
+  
+'parse a word
+DEFFNpW(T$,T%):LOCAL W%,N%,E%,F%,R%,W$,M%:W%=0:R%=1:E%=LEN(T$)
+	REPEAT:IF T%=1 THEN W$=V$(R%):M%=VM% ELSE IF T%=2 THEN W$=N$(R%):M%=NM% ELSE IF T%=3 THEN W$=A$(R%):M%=AM%
+		F%=LEN(W$):IF E%>=F% THEN IF T$=W$ AND F%>0 THEN W%=R%
+		R%=R%+1:UNTIL R%=M% OR W%>0 OR F%=0
+	IF T%=1 AND W%>0 THEN =VN%?W% ELSE IF T%=2 AND W%>0 THEN =NN%?W% ELSE IF T%=3 AND W%>0 THEN =AN%?W% ELSE =0
+
+'to upper case
+DEFFNtU(T$):LOCAL C%,P%,L%,U$:U$="":L%=LEN(T$):FOR P%=1 TO L%:C%=ASC(MID$(T$,P%,1)):IF C%>90 THEN C%=C%-32
+U$=U$+CHR$(C%):NEXT:=U$
+  
+'get a word (ending in a space)
+DEFFNgW(T$):LOCAL C%,C$,WRD$:C%=1
+	REPEAT:C$=MID$(T$,C%,1):WRD$=WRD$+C$:C%=C%+1:UNTIL C$=" " OR C%>LEN(T$)
+	IF RIGHT$(WRD$,1)<>" " THEN WRD$=WRD$+" " 
+=LEFT$(WRD$,LEN(WRD$)-1)
+  
+'set the variables
+DEFPROCvars:CMD$="":N%=0:NO2%=0:V%=0:AVRB%=0:OBJ%=0:WRD$="":N%=0:D%=0:ENDPROC
+  
+'take an object
+DEFPROCtake(O%):IF FNobHr(O%,R%)=0 THEN PROCmsg(14):ENDPROC
+	IF CW%+FNobWt(O%)>ENC% THEN PROCmsg(10):ENDPROC
+PROCstOb(O%,PL%):PROCmsg(16):PROCt:CW%=CW%+FNobWt(O%):ENDPROC
+
+'swap object 1 with 2. 1 goes to location 0, 2 goes to player inv  
+DEFPROCswap(O1%,O2%):PROCstOb(O1%,0):PROCstOb(O2%,PL%):ENDPROC
+
+'move the object O% to R% (room)
+DEFPROCmove(O%,R%):PROCstOb(O%,R%):ENDPROC
+
+'drop the object (if present) 
+DEFPROCdrop(O%):IF FNobHr(O%,PL%)=0:PROCmsg(8):ENDPROC
+	PROCstOb(O%,R%):PROCmsg(16):PROCt:CW%=CW%-FNobWt(O%):ENDPROC
+	
+'list player objects
+DEFPROCinv:PROClsOb(PL%,1):ENDPROC
+
+'return the message number for the object
+DEFPROCobj(O%):PROCmsg(FNobMn(O%)):ENDPROC
+
+'list objects in the R% (room)
+DEFPROClist(R%):PROClsOb(R%,0):ENDPROC
+
+'go to the room RM%
+DEFPROCgoto(RM%):R%=RM%:ENDPROC
+
+'move to the room where object O% is
+DEFPROCfind(O%):LOCAL T%:T%=FNobLn(O%):PROCgoto(T%):ENDPROC
+
+'increase the turn counter
+DEFPROCt:T%=T%+1:ENDPROC
+
+'set the encumbrance value to D%
+DEFPROCenc(D%):ENC%=D%:ENDPROC
+
+'return true or false for flag 0 to 7
+
+DEFFNflag(FL%):IF G% AND 2^FL% THEN =TRUE ELSE =FALSE
+'DEFFNflag(FL%)=G% AND 2^FL%
+
+'return true if counter F% is on (>0)
+DEFFNon(F%):IF ?(CTR%+F%)>0 THEN =TRUE ELSE =FALSE
+
+'increase counter (C%) by 1 unless 255
+DEFPROCinc(C%):LOCAL T%:T%=FNget(C%):IF T%<256 THEN T%=T%+1:PROCset(C%,T%)
+ENDPROC
+
+'decrease counter (C%) by 1 unless 0
+DEFPROCdec(C%):LOCAL T%:T%=FNget(C%):IF T%>0 THEN T%=T%-1:PROCset(C%,T%)
+ENDPROC
+
+'hold for the specified time
+DEFPROChold(T%):LOCAL FT%:FT%=TIME+T%:REPEAT:UNTIL TIME>=FT%:ENDPROC
+
+'set counter (C%) to the value T%
+DEFPROCset(C%,T%):?(CTR%+C%)=T%:ENDPROC
+
+'set counter (C%) to 1
+DEFPROCon(C%):?(CTR%+C%)=1:ENDPROC
+
+'set counter (C%) to 0
+DEFPROCoff(C%):?(CTR%+C%)=0:ENDPROC
+
+'return value of counter *C%)
+DEFFNget(C%):=?(CTR%+C%)
+
+'set value of Q% (cls setting) and say OK.
+DEFPROCcls(S%):Q%=S%:PROCe:PROCmsg(16):ENDPROC
+
+'return if object (O%) is in the current room
+DEFFNhere(O%):IF FNobHr(O%,R%)=0 THEN =FALSE ELSE =TRUE
+
+'return if object (O%) is in inventory (PL%)
+DEFFNinInv(O%):IF FNobHr(O%,PL%)=0 THEN =FALSE ELSE =TRUE
+
+'return if object is either in the room or in inventory
+DEFFNavail(O%)=FNhere(O%) OR FNinInv(O%)
+
+'get a random number
+'DEFFNrn(N%):LOCAL R%:R%=RND(N%):=R%
+DEFFNrn(N%)=RND(N%)
+
+'end the turn
+DEFPROCe:D%=1:ENDPROC
+
+'exit the current game (e.g. if dead)
+DEFPROCexit:EX%=1:ENDPROC
+
+'return the current turn number
+DEFFNturn:=T%
+
+'wait for a key press
+DEFPROCwait:PRINT:PRINT"Please press a key.";:REPEAT UNTIL INKEY(0)<>-1:ENDPROC
+ 
+'game logic goes into these sections
+
+'runs once at start of game
+DEFPROCinit
+ENDPROC
+
+'runs before the room is set 
+DEFPROCpreRoom
+ENDPROC
+
+'called before high priority - designed to display custom messages for a specific room
+DEFPROCrmMsg
+ENDPROC
+
+'high priority events before the player types anything
+DEFFNhighPty
+=FALSE
+
+'parsed after the player types something
+DEFFNlowPty
+=FALSE
