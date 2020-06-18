@@ -14,7 +14,9 @@ REPEAT
 	IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4):PROCldSM
 		   
 	'@ScreenMode@ is set in Adventure.xml   
-	MODE @ScreenMode@:PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@"  
+	MODE @ScreenMode@:
+
+	PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@"  
 	   
 	'@NumVar@ is set in Adventure.xml
 	PROCvars:DIM CTR% @NumVar@:FOR X%=1 TO @NumVar@:PROCset(X%,0):NEXT

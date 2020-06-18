@@ -253,14 +253,17 @@ namespace AdventureLanguage
             string text = xm.Value;
             text = text.Replace("&lt;", "<");
             text = text.Replace("&gt;", ">");
+            string lineText = "";
             //breaks the variou user code chunks into separate lines and saves as BBC Basic lines
             //string[] lines = xm.Value.Trim().Split(new[] { "\n" }, StringSplitOptions.None);
             string[] lines = text.Trim().Split(new[] { "\n" }, StringSplitOptions.None);
             foreach (string line in lines)
             {
-                if (line != "")
+                lineText = line.Trim();
+
+                if (lineText != null && lineText.Length >= 2 && lineText.Substring(0, 1) != "'")
                 {
-                    gameData.UserBBCBasicProgram.Add(new BBCBasicLine(0, line.Trim(), lt));
+                    gameData.UserBBCBasicProgram.Add(new BBCBasicLine(0, lineText.Trim(), lt));
                     if (!BBCBasicFunctions.ParseLine(gameData.UserBBCBasicProgram[gameData.UserBBCBasicProgram.Count - 1], gameData))
                     {
                         return false;
