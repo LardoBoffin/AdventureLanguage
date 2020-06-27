@@ -70,6 +70,7 @@
                 <Verb>Fill</Verb>
                 <Verb>Connect;Attach</Verb>
                 <Verb>Check</Verb>
+                <Verb>Dig</Verb>
             </GameVerbs>
             <Adverbs>
                 <Adverb>WITH;USING</Adverb>
