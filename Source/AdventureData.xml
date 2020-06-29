@@ -535,7 +535,7 @@
                 IF V%=@Off AND N%=@Torch THEN IF FNinInv(@_FLASHLIGHT) THEN PROCswap(@_FLASHLIGHTON,@_FLASHLIGHT):PROCoff(@HaveLight):PROCmsg("The flashlight is off."):=TRUE
                 
                 'load and save
-                IF V%=@Save THEN PROCsave:=TRUEToolbox
+                IF V%=@Save THEN PROCsave:=TRUE
                 IF V%=@Load THEN PROCload:=TRUE
                 
                 'examine
