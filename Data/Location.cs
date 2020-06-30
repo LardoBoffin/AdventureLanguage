@@ -13,7 +13,9 @@ namespace AdventureLanguage.Data
 
         private readonly string messageText;
 
-        private List<int> messages = new List<int>();
+        private byte _flags;
+
+        private readonly List<int> messages = new List<int>();
 
         public Collection<ExitTo> exitList = new Collection<ExitTo>();
 
@@ -22,11 +24,12 @@ namespace AdventureLanguage.Data
             exitList.Add(new ExitTo(verb, location));
         }
 
-        public Location(string idString, int idNumber, string text)
+        public Location(string idString, int idNumber, string text, byte flags)
         {
             iDString = idString;
             iDNumber = idNumber;
             messageText = text;
+            _flags = flags;
         }
 
         public void AddMessage(int messageID)
@@ -36,7 +39,7 @@ namespace AdventureLanguage.Data
 
         public int Message(int number)
         {
-            return messages[number-1];       
+            return messages[number - 1];
         }
 
         public ExitTo ExitItem(int number)
@@ -67,6 +70,16 @@ namespace AdventureLanguage.Data
         public string MessageText()
         {
             return messageText;
+        }
+
+        public byte Flags()
+        {
+            return _flags;
+        }
+
+        public void SetFlags(byte flags)
+        {
+            _flags = flags;
         }
     }
 }

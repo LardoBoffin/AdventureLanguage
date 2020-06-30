@@ -253,14 +253,17 @@ namespace AdventureLanguage
             string text = xm.Value;
             text = text.Replace("&lt;", "<");
             text = text.Replace("&gt;", ">");
+            string lineText = "";
             //breaks the variou user code chunks into separate lines and saves as BBC Basic lines
             //string[] lines = xm.Value.Trim().Split(new[] { "\n" }, StringSplitOptions.None);
             string[] lines = text.Trim().Split(new[] { "\n" }, StringSplitOptions.None);
             foreach (string line in lines)
             {
-                if (line != "")
+                lineText = line.Trim();
+
+                if (lineText != null && lineText.Length >= 2 && lineText.Substring(0, 1) != "'")
                 {
-                    gameData.UserBBCBasicProgram.Add(new BBCBasicLine(0, line.Trim(), lt));
+                    gameData.UserBBCBasicProgram.Add(new BBCBasicLine(0, lineText.Trim(), lt));
                     if (!BBCBasicFunctions.ParseLine(gameData.UserBBCBasicProgram[gameData.UserBBCBasicProgram.Count - 1], gameData))
                     {
                         return false;
@@ -310,14 +313,22 @@ namespace AdventureLanguage
                 Console.Write("The Location must has an ID attribute.");
                 return false;
             }
+
+            byte locationFlags;
+
+            locationFlags = 0;
+
             locationID = Int32.Parse(IDString);
-            gameData.locationList.Add(new Location(IDString, locationID, ""));
+            gameData.locationList.Add(new Location(IDString, locationID, "", locationFlags));
             gameData.eventList.Add(new EventLog("<Location Id = " + IDString + ">"));
             //there can be message, object and action present in the location
 
             int len;
             int childLen;
             int messageNumber;
+            int flagID;
+            //int flagValue;
+
             len = xe.Descendants().Count();
 
             for (int i = 0; i < len; i++)
@@ -345,6 +356,36 @@ namespace AdventureLanguage
                             return false;
                         }
                         break;
+
+                    case "FLAG":
+                        gameData.eventList.Add(new EventLog(xc));
+                        if (xc.HasAttributes)
+                        {
+                            //check for an ID value
+                            IEnumerable<XAttribute> attList = from at in xc.Attributes() select at;
+                            foreach (XAttribute att in attList)
+                            {
+                                if (att.Name.ToString().ToUpper() == "ID")
+                                {
+                                    flagID = Int32.Parse(att.Value);
+                                    //flagValue = Int32.Parse(xc.Value);
+                                    if (flagID>7)
+                                    {
+                                        gameData.eventList.Add(new EventLog("Flag ID cannot exceed 7 in a byte field."));
+                                        return false;
+                                    }
+                                    locationFlags = GetFlagsByte(locationFlags, flagID, Int32.Parse(xc.Value));
+                                    gameData.locationList[gameData.locationList.Count() - 1].SetFlags(locationFlags);
+                                }
+                                else
+                                {
+                                    gameData.eventList.Add(new EventLog("Incorrectly formed location information flag."));
+                                    return false;
+                                }
+                            }
+                        }
+
+                        break;
                 }
 
                 i += childLen;
@@ -352,6 +393,22 @@ namespace AdventureLanguage
 
             gameData.eventList.Add(new EventLog("</Location>"));
             return true;
+        }
+
+        private static byte GetFlagsByte(byte currentFlag, int bitToSet, int flagValue)
+        {
+            //update flags with current value
+
+            if (flagValue == 1)
+            {
+                currentFlag = currentFlag.SetBit(bitToSet, true);
+            }
+            else
+            {
+                currentFlag = currentFlag.SetBit(bitToSet, false);
+            }
+
+            return currentFlag;
         }
 
         private static bool GenerateExit(XElement xe, Collection<Verb> verbList, Collection<Location> locationList, int locationID, DataItems gameData)

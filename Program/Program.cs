@@ -4,6 +4,9 @@
 #define MAC
 //comment out for Windows
 
+#define BuildFromVS
+
+
 using System;
 using System.Xml.Linq;
 using System.IO;
@@ -64,7 +67,7 @@ namespace AdventureLanguage
 
                 if (argument == "-new")
                 {
-                    CreateNewProject(args[i +1 ], args[i + 2], folderDivider);
+                    CreateNewProject(args[i + 1], args[i + 2], folderDivider);
                     return;
                 }
 
@@ -74,7 +77,7 @@ namespace AdventureLanguage
                 return;
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("Error processing command line call. " + e.Message);
                 return;
@@ -116,6 +119,12 @@ namespace AdventureLanguage
 
             DataItems gameData = new DataItems();
 
+#if BuildFromVS
+            //switch from the passed in folder to the Visual Studio file
+            string oldLocation = folderLocation;
+            folderLocation = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+#endif
+
             string path = Directory.GetCurrentDirectory();
 
             gameData.eventList.Add(new EventLog("Calling AL.dll at at : " + path));
@@ -133,11 +142,16 @@ namespace AdventureLanguage
             gameData.folderDivider = folderDivider;
 
             //get the XML input document
-            XElement adventureCode = XElement.Load(folderLocation + folderDivider + "Source" + folderDivider + "AdventureData.xml");
+            XElement adventureCode = XElement.Load(gameData.folderLocation + folderDivider + "Source" + folderDivider + "AdventureData.xml");
 
             //parse the XML
             if (!XMLParser.ParseXML(adventureCode, gameData))
             { return; };
+
+
+#if BuildFromVS
+            gameData.folderLocation = oldLocation;
+#endif
 
             try
             {

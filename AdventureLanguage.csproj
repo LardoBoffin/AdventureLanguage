@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <Folder Include="IncludedEXEs\" />
-    <Folder Include="IncludedFiles\" />
+    <Folder Include="Source\" />
   </ItemGroup>
 
 </Project>
