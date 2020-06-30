@@ -3,9 +3,10 @@
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="AdventureLanguage" expanded="True" selected="True">
+          <Node name="AdventureLanguage" expanded="True">
             <Node name="AdventureLanguage" expanded="True">
-              <Node name="Source" expanded="True" />
+              <Node name="Program" expanded="True" />
+              <Node name="README.md" selected="True" />
             </Node>
           </Node>
         </State>
