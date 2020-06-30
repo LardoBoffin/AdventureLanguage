@@ -1,3 +1,4 @@
+<<<<<<< HEAD:bin/Debug/netcoreapp3.1/AdventureData.xml
 <?xml version="1.0" standalone="yes"?>
 <AdventureData>
   <GlobalVariables>
@@ -143,6 +144,153 @@
           </Exit>
         </Location>
       </Locations>
+=======
+<?xml version="1.0" standalone="yes"?>
+<AdventureData>
+  <GlobalVariables>
+    <Var id="IsDark" value="0">1 = Dark</Var>
+  </GlobalVariables>
+  <Sections>
+    <Section>
+      <GameTitle>Ransom2</GameTitle>
+      <ScreenWidth>40</ScreenWidth>
+      <ScreenMode>7</ScreenMode>
+      <SourceFile>source.txt</SourceFile>
+      <OutputFile>Ransom2.txt</OutputFile>
+      <BuildType>Debug</BuildType>
+      <Tokeniser>
+      </Tokeniser>
+      <TokenisedFileName>Ransom2</TokenisedFileName>
+      <SSDBuilder>/Users/lardo/Documents/Beeb SWEH</SSDBuilder>
+      <SSDName>Ransom2.SSD</SSDName>
+      <BeebEmPath>/Applications/BeebEm Mac/BeebEm4.app</BeebEmPath>
+      <SystemMessages>
+        <Message id="Carrying">You are carrying</Message>
+        <Message id="WhatNow">What now</Message>
+        <Message id="CannotDoIt">You can't.</Message>
+        <Message id="What">Pardon?</Message>
+        <Message id="AnotherGame?">Press a key for another game...</Message>
+        <Message id="Sure">Are you sure? (Y/N)...</Message>
+        <Message id="GotThat">You've already got that.</Message>
+        <Message id="HaveNotGotThat">You haven't got that.</Message>
+        <Message id="CannotSeeIt">You can't see that.</Message>
+        <Message id="TooHeavy">You're carrying too much to pick that up.</Message>
+        <Message id="Score">Your score was </Message>
+        <Message id="NoOfTurns">and you took </Message>
+        <Message id="ItsDark">It is dark. You cannot see.</Message>
+        <Message id="CannotFindIt">I can't find that anywhere.</Message>
+        <Message id="AlsoSee">You can also see</Message>
+        <Message id="OK">Okay </Message>
+        <Message id="Turns">turns.</Message>
+        <Message id="Nothing">nothing</Message>
+      </SystemMessages>
+      <GameVerbs>
+        <Verb>North;N</Verb>
+        <Verb>South;S</Verb>
+        <Verb>East;E</Verb>
+        <Verb>West;W</Verb>
+        <Verb>Up;U</Verb>
+        <Verb>Down;D</Verb>
+        <Verb>Take;Get</Verb>
+        <Verb>Drop</Verb>
+        <Verb>Look</Verb>
+        <Verb>Inventory;Inv</Verb>
+        <Verb>Quit</Verb>
+        <Verb>Words</Verb>
+        <Verb>Pictures</Verb>
+        <Verb>Save</Verb>
+        <Verb>Restore</Verb>
+        <Verb>Examine;Search</Verb>
+        <Verb>Light;On</Verb>
+        <Verb>Extinguish;Off</Verb>
+        <Verb>Unlock;Open</Verb>
+        <Verb>Score</Verb>
+        <Verb>Eat</Verb>
+        <Verb>Load</Verb>
+      </GameVerbs>
+      <Adverbs>
+        <Adverb>WITH;USING</Adverb>
+      </Adverbs>
+      <Nouns>
+        <Noun>Torch;Lamp</Noun>
+        <Noun>Rat</Noun>
+        <Noun>Key</Noun>
+        <Noun>Gold;Bar</Noun>
+        <Noun>Snake;Serpent</Noun>
+        <Noun>Door</Noun>
+        <Noun>Tree</Noun>
+        <Noun>CLS</Noun>
+      </Nouns>
+      <Variables>
+        <Var id="HaveLight" value="0">0 = Has light source</Var>
+        <Var id="TurnsInDark" value="0">Number of turns in the dark so far. 2 = death.</Var>
+        <Var id="RatFed" value="0">1 = The snake has had a rat</Var>
+        <Var id="IsFirstTurn" value="1">1 = first turn so maybe show an extended message</Var>
+        <Var id="FoundKey" value="0">1 = have the key</Var>
+        <Var id="DoorLocked" value="0">1 = the door is locked</Var>
+      </Variables>
+      <Objects>
+        <Object id="_LAMP" number="1" weight="10" value="1" location="1" message="A lamp">
+        </Object>
+        <Object id="_RAT" number="2" weight="20" value="0" location="5" message="A dead rat">
+        </Object>
+        <Object id="_Key" number="3" weight="1" value="0" location="0" message="A key">
+        </Object>
+        <Object id="_GOLD" number="4" weight="100" value="150" location="6" message="A large, heavy gold bar">
+        </Object>
+        <Object id="_LIT_LAMP" number="5" weight="10" value="1" location="0" message="A lit lamp">
+        </Object>
+      </Objects>
+      <Locations>
+        <Location id="0">
+        </Location>
+        <Location id="1">
+          <Message>You find yourself on the bank of a mountain stream, which is crossed by a stone bridge leading East to a dark cave.</Message>
+          <Exit to="2">
+            <Verb>EAST</Verb>
+          </Exit>
+        </Location>
+        <Location id="2">
+          <Message>This is a very gloomy cavern, with pale sunlight to the West, and dim tunnels leading South and East.</Message>
+          <Exit to="3">
+            <Verb>EAST</Verb>
+          </Exit>
+          <Exit to="1">
+            <Verb>WEST</Verb>
+          </Exit>
+          <Exit to="5">
+            <Verb>SOUTH</Verb>
+          </Exit>
+        </Location>
+        <Location id="3">
+          <Message>Traveling this East-West passage, you see another tunnel South, across a great crevasse. A small snake is asleep in its favourite cranny.</Message>
+          <Exit to="4">
+            <Verb>EAST</Verb>
+          </Exit>
+          <Exit to="2">
+            <Verb>WEST</Verb>
+          </Exit>
+        </Location>
+        <Location id="4">
+          <Message>You have emerged onto the bank of a huge mountain lake. To the west is the tunnel, and a solitary tree graces the waters edge.</Message>
+          <Exit to="3">
+            <Verb>WEST</Verb>
+          </Exit>
+        </Location>
+        <Location id="5">
+          <Message>A moat to the East surrounds a titanic fortress. The cave is North, and a door lies beyond the lowered drawbridge.</Message>
+          <Exit to="2">
+            <Verb>NORTH</Verb>
+          </Exit>
+        </Location>
+        <Location id="6">
+          <Message>Inside the castle is a bit grim, especially for any unlucky soul locked here in its dungeon. The door to the West ensures few escape.</Message>
+          <Exit to="5">
+            <Verb>WEST</Verb>
+          </Exit>
+        </Location>
+      </Locations>
+>>>>>>> f47fe907ff635397c12c04d6d5ba4293f5028657:IncludedFiles/AdventureData.xml
       <PreRoom>
 			PROCset(@IsDark,0)
 			IF R%=2 OR R%=3 OR R%=6 THEN PROCset(@IsDark,1)
