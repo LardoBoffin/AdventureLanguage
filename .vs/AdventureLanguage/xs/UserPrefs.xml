@@ -1,12 +1,15 @@
 ﻿<Properties StartupConfiguration="{E858325A-1780-406F-9559-A5141D552808}|Build">
   <MonoDevelop.Ide.Workbench>
+    <Files>
+      <File FileName=".gitignore" Line="1" Column="1" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="AdventureLanguage" expanded="True">
             <Node name="AdventureLanguage" expanded="True">
               <Node name="Program" expanded="True" />
-              <Node name="README.md" selected="True" />
+              <Node name=".gitignore" selected="True" />
             </Node>
           </Node>
         </State>
