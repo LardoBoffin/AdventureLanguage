@@ -241,6 +241,119 @@ namespace AdventureLanguage.Output
             //       LSB of location link
 
             //index file contains:
+            //second byte of number (256s)
+            //first byte of number (1s)
+            //this equates to the position (BBC Basic INT) of the location in the data list
+
+            try
+            {
+                string fd = gameData.folderDivider;
+                string fileOutput = gameData.folderLocation + fd + "fileOutput";
+
+                BinaryWriter locationWriter = new BinaryWriter(File.Open(fileOutput + fd + "DATA-R", FileMode.Create));
+                BinaryWriter indexWriter = new BinaryWriter(File.Open(fileOutput + fd + "IDX-R", FileMode.Create));
+
+                try
+                {
+                    gameData.eventList.Add(new EventLog());
+                    gameData.eventList.Add(new EventLog("Writing Locations"));
+                    for (int i = 1; i < gameData.locationList.Count; i++)
+                    {
+
+                        gameData.eventList.Add(new EventLog("Location : " + gameData.locationList[i].IDString()));
+
+                        //write out message data
+                        long iLen = locationWriter.BaseStream.Length;
+                        int LocationTo;
+
+                        //write out flags
+                        locationWriter.Write((byte)gameData.locationList[i].Flags());   //number of message records
+
+                        //write out message information     
+                        int numberOfItems = gameData.locationList[i].Messages().Count;
+
+                        if (numberOfItems == 0)
+                        {
+                            gameData.eventList.Add(new EventLog("Processing Locations"));
+                            gameData.eventList.Add(new EventLog("Each location must have at least one message string."));
+                            return false;
+                        }
+
+                        locationWriter.Write((byte)numberOfItems);   //number of message records
+
+                        for (int NumMessages = 1; NumMessages <= numberOfItems; NumMessages++)
+                        {
+                            int messageNumber = gameData.locationList[i].Message(NumMessages);
+                            locationWriter.Write((byte)(messageNumber / 256));
+                            locationWriter.Write((byte)(messageNumber - ((messageNumber / 256) * 256)));
+                            gameData.eventList.Add(new EventLog(" " + gameData.messageList[gameData.locationList[i].Message(NumMessages) - 1].MessageText()));
+                        }
+
+                        //write out location links
+                        numberOfItems = gameData.locationList[i].Exits().Count;
+                        locationWriter.Write((byte)numberOfItems);   //number of location link records
+
+                        if (numberOfItems > 0)
+                        {
+                            gameData.eventList.Add(new EventLog());
+                            for (int NumLocations = 0; NumLocations < numberOfItems; NumLocations++)
+                            {
+                                ExitTo item = gameData.locationList[i].exitList[NumLocations];
+
+                                locationWriter.Write((byte)(item.Verb()));
+                                LocationTo = item.LocationID();
+                                locationWriter.Write((byte)(LocationTo / 256));
+                                locationWriter.Write((byte)(LocationTo - ((LocationTo / 256) * 256)));
+                                gameData.eventList.Add(new EventLog("  Exit " + DataHelpers.VerbText(gameData.verbList, item.Verb()) + " to " + item.LocationID()));
+                            }
+                        }
+
+                        //write out index data
+                        indexWriter.Write((byte)(iLen / 256));
+                        indexWriter.Write((byte)(iLen - ((iLen / 256) * 256)));
+                        gameData.eventList.Add(new EventLog());
+                    }
+                }
+                catch (Exception c)
+                {
+                    gameData.eventList.Add(new EventLog("Processing Locations"));
+                    gameData.eventList.Add(new EventLog(c.Message));
+                    locationWriter.Dispose();
+                    indexWriter.Dispose();
+                    return false;
+                }
+
+                locationWriter.Dispose();
+                indexWriter.Dispose();
+
+            }
+            catch (Exception c)
+            {
+                gameData.eventList.Add(new EventLog("Processing Locations"));
+                gameData.eventList.Add(new EventLog(c.Message));
+                return false;
+            }
+
+            return true;   //change to true
+        }
+
+        public static bool WriteLocationsToFile_Old(DataItems gameData)
+        {
+
+            //location file contents
+            // flags 0 to 7
+            // messages
+            //   number of message records (single byte)
+            //   MSB of message number
+            //   LSB of message number
+            // location links
+            //   number of links (single byte)
+            //   repeat:
+            //       verb number
+            //       MSB of location link
+            //       LSB of location link
+
+            //index file contains:
             //64 start of record marker (int)
             //0
             //0

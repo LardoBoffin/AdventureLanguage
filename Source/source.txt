@@ -2,7 +2,8 @@
 'any lines starting with ' will be ignored
 'any line starting with - will only be included if adventureData has <BuildType>Debug</BuildType> set
 
-VDU23;8202;0;0;0;:DIM W% 40:DIM CI% 5
+VDU23;8202;0;0;0;:DIM W% 40
+':DIM CI% 5
 T%=0:Q%=0
    
 -SW%=0   
@@ -11,7 +12,10 @@ T%=0:Q%=0
 'start of main loop
 REPEAT
 	PRINT "Loading data.";:PROCldOb("DATA-O")
-	IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4):PROCldSM
+
+	DIM IX% 70:DIM RM% 310
+
+	IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4):PROCldSM:PROCldRIX:PROCldRM
 		   
 	'@ScreenMode@ is set in Adventure.xml   
 	MODE @ScreenMode@:
@@ -20,6 +24,7 @@ REPEAT
 	   
 	'@NumVar@ is set in Adventure.xml
 	PROCvars:DIM CTR% @NumVar@:FOR X%=1 TO @NumVar@:PROCset(X%,0):NEXT
+
 	R%=1:OLR%=0:T%=0:PL%=10000:EX%=0:ENC%=0:CW%=0:L%=0:PROCinit
 	PRINT TAB(0,5)"Press";CHR$(131);"1";CHR$(135);"to start a new game":PRINT TAB(0,7)"Press"CHR$(131);"2";CHR$(135);"to continue an existing game":PRINT:PRINT">";:REPEAT:C$=INKEY$(0):UNTIL C$="1" OR C$="2":CLS
 	IF C$="2" THEN PRINTTAB(10,0)CHR$(131);"Getting catalogue...":PRINT:*CAT
@@ -63,11 +68,17 @@ CLOSE#F%:PROCe:PRINT"Done.":ENDPROC
 DEFPROCload:LOCAL F%,X%,N$:N$=LEFT$(MID$(CMD$,6),7):IF N$="" THEN N$="SAVE-M"
 PRINT"Loading...":F%=OPENIN(N$):INPUT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:?(CTR%+X%)=BGET#F%:NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:?(OB%+X%)=BGET#F%:NEXT
 CLOSE#F%:PROCe:PRINT"Done.":ENDPROC
-  
+
+'load rooms index
+DEFPROCldRIX:LOCAL F%,R%:F%=OPENIN("IDX-R"):R%=0:REPEAT:?(IX%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
+
+'load room data
+DEFPROCldRM:LOCAL F%,R%:F%=OPENIN("DATA-R"):R%=0:REPEAT:?(RM%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
+
 'load messages
 '@NumMssages@ is automatically calculated
-DEFPROCldSM:LOCAL N%,R%,F%:F%=OPENIN("DATA-M"):DIM MS$(@NumMssages@):FOR X%=1 TO @NumMssages@:PRINT".";:PTR#F%=FNrdIx(X%,"IDX-M"):INPUT#F%,MS$(X%):NEXT:CLOSE#F%:ENDPROC
-  
+DEFPROCldSM:LOCAL N%,R%,F%:F%=OPENIN("DATA-M"):DIM MS$(@NumMssages@):FOR X%=1 TO @NumMssages@:PRINT".";:I%=(X%-1)*5:IND=OPENIN("IDX-M"):PTR#IND=I%:INPUT#IND,I%:CLOSE#IND:PTR#F%=I%:INPUT#F%,MS$(X%):NEXT:CLOSE#F%:ENDPROC
+
 'load objects
 DEFPROCldOb(F$):LOCAL N%,R%,T%:F%=OPENIN(F$):R%=0:REPEAT:FOR X%=1TO8:N%=BGET#F%:NEXT:R%=R%+1:PRINT".";:UNTIL EOF#F%:PTR#F%=0:OBJN%=R%:R%=R%*8
 IF FNturn=0 THEN DIM OB% R%
@@ -104,15 +115,19 @@ FOR C%=1 TO (N%*3) STEP 3:IF ?(W%+C%)=V% THEN LB%=?(W%+C%+2):HB%=?(W%+C%+1):R%=H
 ENDPROC
   
 'get room details
-DEFPROCgtRm(R%):LOCAL F%,N%,LB%,HB%,M%,D%:D%=0
-	CL%=0:F%=OPENIN("DATA-R"):PTR#F%=FNrdIx(R%,"IDX-R"):G%=BGET#F%:IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(13)
-	N%=BGET#F%:FOR C%=1TON%:HB%=BGET#F%:LB%=BGET#F%:M%=FNcint(LB%,HB%):IF D%=0 THEN PROCmsg(!M%):NEXT ELSE NEXT
-	N%=BGET#F%:?W%=N%:FOR C%=1 TO 36:?(W%+C%)=0:NEXT:IF N%>0 THEN FOR C%=1 TO N%*3:?(W%+C%)=BGET#F%:NEXT
-	CLOSE#F%:IF D%=0 THEN PROClsOb(R%,15)
+DEFPROCgtRm(R%):LOCAL F%,N%,M%,D%:D%=0
+
+	'get the position in the index data and get the value of the pointer
+	N%=(R%-1)*2:F%=(?(IX%+N%)*256)+?(IX%+N%+1):G%=?(RM%+F%):IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(13)
+
+	'print all room messages if not dark
+	F%=F%+1:N%=?(RM%+F%):F%=F%+1:FOR C%=1TON%:M%=?(RM%+F%)*256:F%=F%+1:M%=M%+?(RM%+F%):IF D%=0 THEN PROCmsg(M%):NEXT ELSE NEXT
+
+	'load the directions
+	F%=F%+1:N%=?(RM%+F%):?W%=N%:FOR C%=1 TO 36:?(W%+C%)=0:NEXT:IF N%>0 THEN FOR C%=1 TO N%*3:F%=F%+1:?(W%+C%)=?(RM%+F%):NEXT
+	IF D%=0 THEN PROClsOb(R%,15)
 PROCrmMsg:ENDPROC
-  
-'convert to a 4 byte int
-DEFFNcint(LB%,HB%):?CI%=LB%:?(CI%+1)=HB%:?(CI%+2)=0:?(CI%+3)=0:=CI%
+ 
   
 'load words (nouns, verbs and adverbs) from disc
 DEFPROCgW(T%):LOCAL N%,R%,D$,RN%:R%=1
@@ -134,8 +149,7 @@ DEFPROCmsg(M%):LOCAL S%,P%,H%,M$,A%:M$=MS$(M%)
 	IF POS=1 THEN VDU31,POS-1,VPOS:A%=135:C=USR(&FFF4):C=C AND &FFFF:C=C DIV &100:IF C>32 THEN VDU31,POS+1,VPOS
 ENDPROC
    
-'read an index (index file name passed in)
-DEFFNrdIx(Re%,file$):I%=(Re%-1)*5:IND=OPENIN(file$):PTR#IND=I%:INPUT#IND,I%:CLOSE#IND:=I%
+
   
 'parse the text
 DEFPROCpsTxt:LOCAL WRDLEN%,C$,C%,S%,U%:PROCvars:REPEAT:PRINT:PROCmsg(2):U%=VPOS:INPUT TAB(LEN(MS$(2)),U%), CMD$:UNTIL CMD$>"":TIME=0:CMD$=FNtU(CMD$):S%=1:IF CMD$="*." THEN D%=TRUE:*CAT
@@ -203,7 +217,7 @@ DEFPROCobj(O%):PROCmsg(FNobMn(O%)):ENDPROC
 DEFPROClist(R%):PROClsOb(R%,0):ENDPROC
 
 'go to the room RM%
-DEFPROCgoto(RM%):R%=RM%:ENDPROC
+DEFPROCgoto(RO%):R%=RO%:ENDPROC
 
 'move to the room where object O% is
 DEFPROCfind(O%):LOCAL T%:T%=FNobLn(O%):PROCgoto(T%):ENDPROC
