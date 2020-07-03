@@ -162,14 +162,6 @@ namespace AdventureLanguage
                 Console.WriteLine(e.Message);
             }
 
-            //merge the user code into the source file
-            if (!CreateBBCBasicFile.CreateOutputProgram(gameData))
-            { return; };
-
-            //write out to text only file
-            if (!CreateBBCBasicFile.WriteProgramToFile(gameData))
-            { return; };
-
             gameData.eventList.Add(new EventLog());
             gameData.eventList.Add(new EventLog("Writing base data to files"));
             //write verbs, adverbs and nouns
@@ -189,6 +181,14 @@ namespace AdventureLanguage
             //write locations to file
             if (!WriteDataToFiles.WriteLocationsToFile(gameData))
             { return; }
+
+            //merge the user code into the source file
+            if (!CreateBBCBasicFile.CreateOutputProgram(gameData))
+            { return; };
+
+            //write out to text only file
+            if (!CreateBBCBasicFile.WriteProgramToFile(gameData))
+            { return; };
 
             gameData.eventList.Add(new EventLog());
             gameData.eventList.Add(new EventLog("Data compiled to: " + gameData.outputFile));

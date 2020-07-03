@@ -305,7 +305,10 @@ namespace AdventureLanguage
             {
                 //check for an ID value
                 IEnumerable<XAttribute> attList = from at in xe.Attributes() select at;
-                foreach (XAttribute att in attList) { if (att.Name.ToString().ToUpper() == "ID") { IDString = att.Value; found = true; break; } }
+                foreach (XAttribute att in attList)
+                {
+                    if (att.Name.ToString().ToUpper() == "ID") { IDString = att.Value; found = true; break; }
+                }
             }
 
             if (!found)
@@ -369,7 +372,7 @@ namespace AdventureLanguage
                                 {
                                     flagID = Int32.Parse(att.Value);
                                     //flagValue = Int32.Parse(xc.Value);
-                                    if (flagID>7)
+                                    if (flagID > 7)
                                     {
                                         gameData.eventList.Add(new EventLog("Flag ID cannot exceed 7 in a byte field."));
                                         return false;
@@ -419,6 +422,7 @@ namespace AdventureLanguage
             int verbNumber = -1;
             int exitTo = -1;
             string verb;
+            bool locked = false;
 
             if (xe.HasAttributes)
             {
@@ -427,6 +431,10 @@ namespace AdventureLanguage
                 foreach (XAttribute att in attList)
                 {
                     if (att.Name.ToString().ToUpper() == "TO") { exitTo = Int32.Parse(att.Value); }
+                    if (att.Name.ToString().ToUpper() == "LOCKED")
+                    {
+                        if (att.Value == "1") { locked = true; }
+                    }
                 }
             }
 
@@ -454,7 +462,7 @@ namespace AdventureLanguage
                 return false;
             }
 
-            locationList[locationID].AddExit(verbNumber, exitTo);
+            locationList[locationID].AddExit(verbNumber, exitTo, locked);
 
             //exitList.Add(new ExitTo(verbNumber, exitTo));
 

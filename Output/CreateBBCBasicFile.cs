@@ -21,6 +21,21 @@ namespace AdventureLanguage.Output
 
                 for (int i = 0; i < iNumLines; i++)
                 {
+
+                    if (gameData.SourceBBCBasicProgram[i].LineText().IndexOf("@RMIndex@") > -1)
+                    {
+                        //replace the room index size with the actual number used
+                        string tmp = gameData.SourceBBCBasicProgram[i].LineText();
+                        gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@RMIndex@", gameData.roomIndexLength.ToString()));
+                    }
+
+                    if (gameData.SourceBBCBasicProgram[i].LineText().IndexOf("@Room@") > -1)
+                    {
+                        //replace the room index size with the actual number used
+                        string tmp = gameData.SourceBBCBasicProgram[i].LineText();
+                        gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@Room@", gameData.roomDataLength.ToString()));
+                    }
+
                     if (gameData.SourceBBCBasicProgram[i].LineText().IndexOf("@NumVar@") > -1)
                     {
                         //replace the 256 with the actual number used
@@ -135,9 +150,9 @@ namespace AdventureLanguage.Output
                 int iNumLines = gameData.TargetBBCBasicProgram.Count;
 
                 {
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(gameData.folderLocation + gameData.folderDivider + gameData.outputFile,false,System.Text.Encoding.ASCII))
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(gameData.folderLocation + gameData.folderDivider + gameData.outputFile, false, System.Text.Encoding.ASCII))
                     {
-                        if (gameData.folderDivider=="/")
+                        if (gameData.folderDivider == "/")
                         {
                             file.NewLine = "\r";
                         }
@@ -145,7 +160,7 @@ namespace AdventureLanguage.Output
                         {
                             file.NewLine = "\r\n";
                         }
-                        
+
                         for (int i = 0; i < iNumLines; i++)
                         {
                             file.WriteLine(gameData.TargetBBCBasicProgram[i].NewLineNumber().ToString() + gameData.TargetBBCBasicProgram[i].LineText());

@@ -170,7 +170,7 @@
                     <Exit to="3">
                         <Verb>WEST</Verb>
                     </Exit>
-                    <Exit to="2">
+                    <Exit to="2" locked="1">
                         <Verb>DOWN</Verb>
                     </Exit>
                 </Location>

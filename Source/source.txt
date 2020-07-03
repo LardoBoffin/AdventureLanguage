@@ -2,30 +2,22 @@
 'any lines starting with ' will be ignored
 'any line starting with - will only be included if adventureData has <BuildType>Debug</BuildType> set
 
-VDU23;8202;0;0;0;:DIM W% 40
+VDU23;8202;0;0;0;:DIM W% 40:T%=0:Q%=0
 ':DIM CI% 5
-T%=0:Q%=0
+
    
 -SW%=0   
 -SC%=0
    
 'start of main loop
 REPEAT
-	PRINT "Loading data.";:PROCldOb("DATA-O")
-
-	DIM IX% 70:DIM RM% 310
-
-	IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4):PROCldSM:PROCldRIX:PROCldRM
+	PRINT "Loading data.";:PROCldOb("DATA-O"):DIM IX% @RMIndex@:DIM RM% @Room@:IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4):PROCldSM:PROCldRIX:PROCldRM
 		   
 	'@ScreenMode@ is set in Adventure.xml   
-	MODE @ScreenMode@:
-
-	PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@"  
+	MODE @ScreenMode@:PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@"  
 	   
 	'@NumVar@ is set in Adventure.xml
-	PROCvars:DIM CTR% @NumVar@:FOR X%=1 TO @NumVar@:PROCset(X%,0):NEXT
-
-	R%=1:OLR%=0:T%=0:PL%=10000:EX%=0:ENC%=0:CW%=0:L%=0:PROCinit
+	PROCvars:DIM CTR% @NumVar@:FOR X%=1 TO @NumVar@:PROCset(X%,0):NEXT:R%=1:OLR%=0:T%=0:PL%=10000:EX%=0:ENC%=0:CW%=0:L%=0:PROCinit
 	PRINT TAB(0,5)"Press";CHR$(131);"1";CHR$(135);"to start a new game":PRINT TAB(0,7)"Press"CHR$(131);"2";CHR$(135);"to continue an existing game":PRINT:PRINT">";:REPEAT:C$=INKEY$(0):UNTIL C$="1" OR C$="2":CLS
 	IF C$="2" THEN PRINTTAB(10,0)CHR$(131);"Getting catalogue...":PRINT:*CAT
 	IF C$="2" THEN PRINT:PRINT"Type the file name and press Enter":PRINT"Or press Enter for the default save":INPUT">" CMD$:IF LEFT$(CMD$,2)="S." THEN CMD$=RIGHT$(CMD$,LEN(CMD$)-2)
@@ -70,10 +62,17 @@ PRINT"Loading...":F%=OPENIN(N$):INPUT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:
 CLOSE#F%:PROCe:PRINT"Done.":ENDPROC
 
 'load rooms index
-DEFPROCldRIX:LOCAL F%,R%:F%=OPENIN("IDX-R"):R%=0:REPEAT:?(IX%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
+DEFPROCldRIX:
+'LOCAL F%,R%:F%=OPENIN("IDX-R"):R%=0:REPEAT:?(IX%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:
+OSCLI("LOAD IDX-R "+STR$~IX%)
+'FOR X%=0 TO 79:PRINT ?(IX%+X%);:NEXT
+ENDPROC
 
 'load room data
-DEFPROCldRM:LOCAL F%,R%:F%=OPENIN("DATA-R"):R%=0:REPEAT:?(RM%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
+DEFPROCldRM
+OSCLI("LOAD DATA-R "+STR$~RM%)
+':LOCAL F%,R%:F%=OPENIN("DATA-R"):R%=0:REPEAT:?(RM%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:
+ENDPROC
 
 'load messages
 '@NumMssages@ is automatically calculated

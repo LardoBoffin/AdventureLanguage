@@ -31,5 +31,7 @@ namespace AdventureLanguage.Data
         public int screenMode;
         public bool debugMode;
         public string folderDivider;
+        public long roomIndexLength;
+        public long roomDataLength;
     }
 }

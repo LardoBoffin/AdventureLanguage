@@ -11,10 +11,13 @@ namespace AdventureLanguage.Data
 
         private readonly int _locationID;
 
-        public ExitTo(int verb, int location)
+        private readonly bool _locked; 
+
+        public ExitTo(int verb, int location, bool locked)
         {
             _directionVerb = verb;
             _locationID = location;
+            _locked = locked;
         }
 
         public int Verb()
@@ -25,6 +28,11 @@ namespace AdventureLanguage.Data
         public int LocationID()
         {
             return _locationID;
+        }
+
+        public bool Locked()
+        {
+            return _locked;
         }
 
     }

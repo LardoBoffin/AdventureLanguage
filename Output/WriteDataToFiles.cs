@@ -323,6 +323,9 @@ namespace AdventureLanguage.Output
                     return false;
                 }
 
+                gameData.roomIndexLength = indexWriter.BaseStream.Length;
+                gameData.roomDataLength = locationWriter.BaseStream.Length;
+
                 locationWriter.Dispose();
                 indexWriter.Dispose();
 

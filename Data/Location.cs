@@ -19,9 +19,9 @@ namespace AdventureLanguage.Data
 
         public Collection<ExitTo> exitList = new Collection<ExitTo>();
 
-        public void AddExit(int verb, int location)
+        public void AddExit(int verb, int location, bool locked)
         {
-            exitList.Add(new ExitTo(verb, location));
+            exitList.Add(new ExitTo(verb, location, locked));
         }
 
         public Location(string idString, int idNumber, string text, byte flags)

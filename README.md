@@ -40,31 +40,25 @@ Improvements made so far:
 
 6) The compiler produces a verbose listing of what is compiled (called EventLog.txt) which also shows the numbers assigned to variables and messages etc.
 
+7) Locations are now held in RAM (faster) and loaded using *LOAD rather than being read in a byte at a time
 
-I have a number of immediate plans for the game engine and compiler (in no specific order):
-
-1) Hold all location data in RAM rather than load from file each time a room is entered.
-This will take up more memory but speed things up a lot.
-
-2) Have flags to show whether an entry in the location link table is enabled (i.e. door is locked / unlocked) rather than handle this in custom code using variables.
-This will also mean saving the state of these flags in the save game.
-Doing this will enable wandering monsters to be included (i.e. they would be able to only go through doors that were unlocked) more easily.
-
-3) Have flags in the location data to determine whether a location is dark or has some other environmental factor of note (underwater, hot or cold etc.)
+8) Locations have flags to determine whether a location is dark or has some other environmental factor of note (underwater, hot or cold etc.)
 It is dark, you cannot see. Ah those wonderful words...
 You are in space, you cannot breath. You are in the desert, it is hot and you are getting thirsty.
 All wonderfully irritating uses of such flags.
 
-4) Include wandering monsters / NPCs.
+I have a number of immediate plans for the game engine and compiler (in no specific order):
+
+1) Have flags to show whether an entry in the location link table is enabled (i.e. door is locked / unlocked) rather than handle this in custom code using variables.
+This will also mean saving the state of these flags in the save game.
+Doing this will enable wandering monsters to be included (i.e. they would be able to only go through doors that were unlocked) more easily.
+
+2) Include wandering monsters / NPCs.
 They will have a basic hostility rating towards the player (1 = worst enemy, attack on sight while 100 = best buddies). The initial value will vary by NPC.
 The monsters will of course be able to carry stuff and attack.
 Unlike some other games if they run away it will tell you which direction they went in. :)
 
-5) Make the games multi-part.
+3) Make the games multi-part.
 Loading more stuff into RAM will mean less space for game logic. By making the game split over several separate programs large games can still be created which run quickly (once loaded).
 This will need to include things like global variables (that are retained between sections), global objects and probably a single menu program that controls which section is called when.
 The save games will get a lot more complex...
-
-
-
-Items 1 and 3 are now pretty much done. Item 2 next. 
