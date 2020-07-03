@@ -450,7 +450,15 @@ namespace AdventureLanguage
                 {
                     if (v.VerbText().ToUpper() == verb)
                     {
-                        verbNumber = v.IDNumber(); break;
+
+                        if (verbNumber > 127) { gameData.eventList.Add(new EventLog("Exit verbs can only be in the first 127 verbs of the list.")); return false; }
+
+                        verbNumber = v.IDNumber();
+                        if (locked)
+                        {
+                            verbNumber += 128;
+                        }//add 128 to verb number - this marks the direction as locked
+                        break;
                     }
                 }
 

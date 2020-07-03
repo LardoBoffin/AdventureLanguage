@@ -111,13 +111,16 @@ DEFFNobWt(O%):O%=O%-1:U%=(O%*8)+6+OB%:=?(U%)
 DEFFNckMv:LOCAL LB%,HB%,N%:D%=FALSE:N%=?W%:IF N%=0 THEN =FALSE
 FOR C%=1 TO (N%*3) STEP 3:IF ?(W%+C%)=V% THEN LB%=?(W%+C%+2):HB%=?(W%+C%+1):R%=HB%*256+LB%:D%=TRUE:NEXT ELSE NEXT
 =D%
-ENDPROC
+
+DEFFNrmPtr(R%):N%=(R%-1)*2:=(?(IX%+N%)*256)+?(IX%+N%+1)
   
 'get room details
 DEFPROCgtRm(R%):LOCAL F%,N%,M%,D%:D%=0
 
 	'get the position in the index data and get the value of the pointer
-	N%=(R%-1)*2:F%=(?(IX%+N%)*256)+?(IX%+N%+1):G%=?(RM%+F%):IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(13)
+	'N%=(R%-1)*2:F%=(?(IX%+N%)*256)+?(IX%+N%+1):
+	F%=FNrmPtr(R%)
+	G%=?(RM%+F%):IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(13)
 
 	'print all room messages if not dark
 	F%=F%+1:N%=?(RM%+F%):F%=F%+1:FOR C%=1TON%:M%=?(RM%+F%)*256:F%=F%+1:M%=M%+?(RM%+F%):IF D%=0 THEN PROCmsg(M%):NEXT ELSE NEXT
