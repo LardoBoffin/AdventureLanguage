@@ -51,14 +51,12 @@ DEFFNagain:LOCAL A$:PRINT "":INPUT "Another game? (Y/N)";A$:IF A$="Y" OR A$="y" 
 
 'save the game
 DEFPROCsave:LOCAL F%,X%,N$:N$=LEFT$(MID$(CMD$,6),7):IF N$="" THEN N$="SAVE-M"
-	PRINT"Saving...":F%=OPENOUT(N$):PRINT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:BPUT#F%,?(CTR%+X%):NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:BPUT#F%,?(OB%+X%):NEXT
-FOR X%=1 TO @Room@:BPUT#F%,?(RM%+X%):NEXT
+	PRINT"Saving...":F%=OPENOUT(N$):PRINT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:BPUT#F%,?(CTR%+X%):NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:BPUT#F%,?(OB%+X%):NEXT:FOR X%=1 TO @Room@:BPUT#F%,?(RM%+X%):NEXT
 CLOSE#F%:PROCe:PRINT"Done.":ENDPROC
 
 'load the game
 DEFPROCload:LOCAL F%,X%,N$:N$=LEFT$(MID$(CMD$,6),7):IF N$="" THEN N$="SAVE-M"
-	PRINT"Loading...":F%=OPENIN(N$):INPUT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:?(CTR%+X%)=BGET#F%:NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:?(OB%+X%)=BGET#F%:NEXT
-FOR X%=1 TO @Room@:?(RM%+X%)=BGET#F%:NEXT
+	PRINT"Loading...":F%=OPENIN(N$):INPUT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:?(CTR%+X%)=BGET#F%:NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:?(OB%+X%)=BGET#F%:NEXT:FOR X%=1 TO @Room@:?(RM%+X%)=BGET#F%:NEXT
 CLOSE#F%:PROCe:PRINT"Done.":ENDPROC
 
 'load rooms index and room

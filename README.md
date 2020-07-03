@@ -49,19 +49,16 @@ All wonderfully irritating uses of such flags.
 
 9) Exits from locations can now be enabled and disabled (enabled by default) to better handle locked doors in anticipation of wandering monsters. The state of the exits is saved with game save file.
 Locking is done by adding 128 to the verb number for the direction and checking for the value being < 128 at point of moving. If it is >127 it is locked / disabled. Otherwise it is not. To enable an exit reduce the verb number by 128.
+This process also means that if the door east is locked and you type EAST the system automatically tells you 'You can't' without further code as the verb does not match.
 
 I have a number of immediate plans for the game engine and compiler (in no specific order):
 
-1) Have flags to show whether an entry in the location link table is enabled (i.e. door is locked / unlocked) rather than handle this in custom code using variables.
-This will also mean saving the state of these flags in the save game.
-Doing this will enable wandering monsters to be included (i.e. they would be able to only go through doors that were unlocked) more easily.
-
-2) Include wandering monsters / NPCs.
+1) Include wandering monsters / NPCs.
 They will have a basic hostility rating towards the player (1 = worst enemy, attack on sight while 100 = best buddies). The initial value will vary by NPC.
 The monsters will of course be able to carry stuff and attack.
 Unlike some other games if they run away it will tell you which direction they went in. :)
 
-3) Make the games multi-part.
+2) Make the games multi-part.
 Loading more stuff into RAM will mean less space for game logic. By making the game split over several separate programs large games can still be created which run quickly (once loaded).
 This will need to include things like global variables (that are retained between sections), global objects and probably a single menu program that controls which section is called when.
 The save games will get a lot more complex...
