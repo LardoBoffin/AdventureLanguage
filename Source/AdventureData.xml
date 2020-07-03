@@ -439,6 +439,8 @@
             </HighPriority>
             <LowPriority>
                 
+                IF V%=@Unlock THEN PROCeE(2):=TRUE
+                
                 'room 1 
                 'move the table
                 IF R%=1 AND V%=@Move AND N%=@Table AND NOT FNon(@TableMoved) THEN PROCmsg("The table moves."):PROCon(@TableMoved):=TRUE

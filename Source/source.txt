@@ -2,16 +2,14 @@
 'any lines starting with ' will be ignored
 'any line starting with - will only be included if adventureData has <BuildType>Debug</BuildType> set
 
-VDU23;8202;0;0;0;:DIM W% 40:T%=0:Q%=0
-':DIM CI% 5
+VDU23;8202;0;0;0;:T%=0:Q%=0:DIM IX% @RMIndex@:DIM RM% @Room@
 
-   
 -SW%=0   
 -SC%=0
    
 'start of main loop
 REPEAT
-	PRINT "Loading data.";:PROCldOb("DATA-O"):DIM IX% @RMIndex@:DIM RM% @Room@:IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4):PROCldSM:PROCldRIX:PROCldRM
+	PRINT "Loading data.";:PROCldOb("DATA-O"):PROCldRm:IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4):PROCldSM
 		   
 	'@ScreenMode@ is set in Adventure.xml   
 	MODE @ScreenMode@:PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@"  
@@ -53,26 +51,18 @@ DEFFNagain:LOCAL A$:PRINT "":INPUT "Another game? (Y/N)";A$:IF A$="Y" OR A$="y" 
 
 'save the game
 DEFPROCsave:LOCAL F%,X%,N$:N$=LEFT$(MID$(CMD$,6),7):IF N$="" THEN N$="SAVE-M"
-PRINT"Saving...":F%=OPENOUT(N$):PRINT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:BPUT#F%,?(CTR%+X%):NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:BPUT#F%,?(OB%+X%):NEXT
+	PRINT"Saving...":F%=OPENOUT(N$):PRINT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:BPUT#F%,?(CTR%+X%):NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:BPUT#F%,?(OB%+X%):NEXT
+FOR X%=1 TO @Room@:BPUT#F%,?(RM%+X%):NEXT
 CLOSE#F%:PROCe:PRINT"Done.":ENDPROC
 
 'load the game
 DEFPROCload:LOCAL F%,X%,N$:N$=LEFT$(MID$(CMD$,6),7):IF N$="" THEN N$="SAVE-M"
-PRINT"Loading...":F%=OPENIN(N$):INPUT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:?(CTR%+X%)=BGET#F%:NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:?(OB%+X%)=BGET#F%:NEXT
+	PRINT"Loading...":F%=OPENIN(N$):INPUT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:?(CTR%+X%)=BGET#F%:NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:?(OB%+X%)=BGET#F%:NEXT
+FOR X%=1 TO @Room@:?(RM%+X%)=BGET#F%:NEXT
 CLOSE#F%:PROCe:PRINT"Done.":ENDPROC
 
-'load rooms index
-DEFPROCldRIX:
-'LOCAL F%,R%:F%=OPENIN("IDX-R"):R%=0:REPEAT:?(IX%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:
-OSCLI("LOAD IDX-R "+STR$~IX%)
-'FOR X%=0 TO 79:PRINT ?(IX%+X%);:NEXT
-ENDPROC
-
-'load room data
-DEFPROCldRM
-OSCLI("LOAD DATA-R "+STR$~RM%)
-':LOCAL F%,R%:F%=OPENIN("DATA-R"):R%=0:REPEAT:?(RM%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:
-ENDPROC
+'load rooms index and room
+DEFPROCldRm:OSCLI("LOAD IDX-R "+STR$~IX%):OSCLI("LOAD DATA-R "+STR$~RM%):ENDPROC
 
 'load messages
 '@NumMssages@ is automatically calculated
@@ -80,7 +70,7 @@ DEFPROCldSM:LOCAL N%,R%,F%:F%=OPENIN("DATA-M"):DIM MS$(@NumMssages@):FOR X%=1 TO
 
 'load objects
 DEFPROCldOb(F$):LOCAL N%,R%,T%:F%=OPENIN(F$):R%=0:REPEAT:FOR X%=1TO8:N%=BGET#F%:NEXT:R%=R%+1:PRINT".";:UNTIL EOF#F%:PTR#F%=0:OBJN%=R%:R%=R%*8
-IF FNturn=0 THEN DIM OB% R%
+	IF FNturn=0 THEN DIM OB% R%
 R%=1:REPEAT:?(OB%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
   
 'store object at location
@@ -108,8 +98,10 @@ DEFFNobMn(O%):O%=O%-1:U%=(O%*8)+2+OB%:=?(U%)*256+?(U%+1)
 DEFFNobWt(O%):O%=O%-1:U%=(O%*8)+6+OB%:=?(U%)
   
 'check to see if the move is valid
-DEFFNckMv:LOCAL LB%,HB%,N%:D%=FALSE:N%=?W%:IF N%=0 THEN =FALSE
-FOR C%=1 TO (N%*3) STEP 3:IF ?(W%+C%)=V% THEN LB%=?(W%+C%+2):HB%=?(W%+C%+1):R%=HB%*256+LB%:D%=TRUE:NEXT ELSE NEXT
+DEFFNckMv:LOCAL LB%,HB%,N%:D%=FALSE
+	'get move data directly from the room data section of RM%. The position is stored in K%
+	N%=?(RM%+K%):IF N%=0 THEN =FALSE
+	FOR C%=1 TO (N%*3) STEP 3:IF ?(RM%+K%+C%)=V% THEN LB%=?(RM%+K%+C%+2):HB%=?(RM%+K%+C%+1):R%=HB%*256+LB%:D%=TRUE:NEXT ELSE NEXT
 =D%
 
 DEFFNrmPtr(R%):N%=(R%-1)*2:=(?(IX%+N%)*256)+?(IX%+N%+1)
@@ -118,19 +110,27 @@ DEFFNrmPtr(R%):N%=(R%-1)*2:=(?(IX%+N%)*256)+?(IX%+N%+1)
 DEFPROCgtRm(R%):LOCAL F%,N%,M%,D%:D%=0
 
 	'get the position in the index data and get the value of the pointer
-	'N%=(R%-1)*2:F%=(?(IX%+N%)*256)+?(IX%+N%+1):
-	F%=FNrmPtr(R%)
-	G%=?(RM%+F%):IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(13)
+	F%=FNrmPtr(R%):G%=?(RM%+F%):IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(13)
 
 	'print all room messages if not dark
 	F%=F%+1:N%=?(RM%+F%):F%=F%+1:FOR C%=1TON%:M%=?(RM%+F%)*256:F%=F%+1:M%=M%+?(RM%+F%):IF D%=0 THEN PROCmsg(M%):NEXT ELSE NEXT
 
-	'load the directions
-	F%=F%+1:N%=?(RM%+F%):?W%=N%:FOR C%=1 TO 36:?(W%+C%)=0:NEXT:IF N%>0 THEN FOR C%=1 TO N%*3:F%=F%+1:?(W%+C%)=?(RM%+F%):NEXT
-	IF D%=0 THEN PROClsOb(R%,15)
+	'load the directions, K% is the start point of the exits data
+	F%=F%+1:N%=?(RM%+F%):K%=F%:IF D%=0 THEN PROClsOb(R%,15)
 PROCrmMsg:ENDPROC
- 
-  
+
+
+'enable or disable exit
+DEFPROCeE(N%)
+'verb number
+'MSB of location link
+'LSB of location link
+'K% holds the start of the exit data, number of directions
+'U%=position of verb for exit
+LOCAL U%,V%:U%=K%+1+((N%-1)*3):V%=?(RM%+U%)
+IF V%>127 THEN ?(RM%+U%)=V%-128 ELSE ?(RM%+U%)=V%+128
+ENDPROC
+
 'load words (nouns, verbs and adverbs) from disc
 DEFPROCgW(T%):LOCAL N%,R%,D$,RN%:R%=1
 	IF T%=1 THEN N%=OPENIN("DATA-N") ELSE IF T%=2 THEN N%=OPENIN("DATA-V") ELSE IF T%=4 THEN N%=OPENIN("DATA-A")
@@ -146,13 +146,9 @@ DEFPROCmsg(M%):LOCAL S%,P%,H%,M$,A%:M$=MS$(M%)
 	S%=1:P%=1:H%=POS:REPEAT:P%=INSTR(M$," ",S%):IF P%=0 THEN H%=H%+(LEN(M$)-S%)+1 ELSE H%=H%+(P%-S%)+1
 	'@ScreenWidth@ is set in Adventure.xml
 	IF H%>@ScreenWidth@ THEN PRINT
-	PRINT MID$(M$,S%,P%-S%);" ";:H%=POS:S%=P%+1:
-	UNTIL P%=0
-	IF POS=1 THEN VDU31,POS-1,VPOS:A%=135:C=USR(&FFF4):C=C AND &FFFF:C=C DIV &100:IF C>32 THEN VDU31,POS+1,VPOS
+	PRINT MID$(M$,S%,P%-S%);" ";:H%=POS:S%=P%+1:UNTIL P%=0:IF POS=1 THEN VDU31,POS-1,VPOS:A%=135:C=USR(&FFF4):C=C AND &FFFF:C=C DIV &100:IF C>32 THEN VDU31,POS+1,VPOS
 ENDPROC
    
-
-  
 'parse the text
 DEFPROCpsTxt:LOCAL WRDLEN%,C$,C%,S%,U%:PROCvars:REPEAT:PRINT:PROCmsg(2):U%=VPOS:INPUT TAB(LEN(MS$(2)),U%), CMD$:UNTIL CMD$>"":TIME=0:CMD$=FNtU(CMD$):S%=1:IF CMD$="*." THEN D%=TRUE:*CAT
 
@@ -223,6 +219,10 @@ DEFPROCgoto(RO%):R%=RO%:ENDPROC
 
 'move to the room where object O% is
 DEFPROCfind(O%):LOCAL T%:T%=FNobLn(O%):PROCgoto(T%):ENDPROC
+
+
+
+
 
 'increase the turn counter
 DEFPROCt:T%=T%+1:ENDPROC

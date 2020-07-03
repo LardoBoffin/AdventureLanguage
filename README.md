@@ -47,6 +47,9 @@ It is dark, you cannot see. Ah those wonderful words...
 You are in space, you cannot breath. You are in the desert, it is hot and you are getting thirsty.
 All wonderfully irritating uses of such flags.
 
+9) Exits from locations can now be enabled and disabled (enabled by default) to better handle locked doors in anticipation of wandering monsters. The state of the exits is saved with game save file.
+Locking is done by adding 128 to the verb number for the direction and checking for the value being < 128 at point of moving. If it is >127 it is locked / disabled. Otherwise it is not. To enable an exit reduce the verb number by 128.
+
 I have a number of immediate plans for the game engine and compiler (in no specific order):
 
 1) Have flags to show whether an entry in the location link table is enabled (i.e. door is locked / unlocked) rather than handle this in custom code using variables.
