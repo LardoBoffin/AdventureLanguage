@@ -67,8 +67,7 @@ DEFPROCldRm:OSCLI("LOAD IDX-R "+STR$~IX%):OSCLI("LOAD DATA-R "+STR$~RM%):ENDPROC
 DEFPROCldSM:LOCAL N%,R%,F%:F%=OPENIN("DATA-M"):DIM MS$(@NumMssages@):FOR X%=1 TO @NumMssages@:PRINT".";:I%=(X%-1)*5:IND=OPENIN("IDX-M"):PTR#IND=I%:INPUT#IND,I%:CLOSE#IND:PTR#F%=I%:INPUT#F%,MS$(X%):NEXT:CLOSE#F%:ENDPROC
 
 'load objects
-DEFPROCldOb(F$):LOCAL N%,R%,T%:F%=OPENIN(F$):R%=0:REPEAT:FOR X%=1TO8:N%=BGET#F%:NEXT:R%=R%+1:PRINT".";:UNTIL EOF#F%:PTR#F%=0:OBJN%=R%:R%=R%*8
-	IF FNturn=0 THEN DIM OB% R%
+DEFPROCldOb(F$):LOCAL N%,R%,T%:F%=OPENIN(F$):R%=0:REPEAT:FOR X%=1TO8:N%=BGET#F%:NEXT:R%=R%+1:PRINT".";:UNTIL EOF#F%:PTR#F%=0:OBJN%=R%:R%=R%*8:IF FNturn=0 THEN DIM OB% R%
 R%=1:REPEAT:?(OB%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
   
 'store object at location
@@ -96,10 +95,9 @@ DEFFNobMn(O%):O%=O%-1:U%=(O%*8)+2+OB%:=?(U%)*256+?(U%+1)
 DEFFNobWt(O%):O%=O%-1:U%=(O%*8)+6+OB%:=?(U%)
   
 'check to see if the move is valid
-DEFFNckMv:LOCAL LB%,HB%,N%:D%=FALSE
+DEFFNckMv:LOCAL LB%,HB%,N%,Z%:D%=FALSE:N%=?(RM%+K%):IF N%=0 THEN =FALSE ELSE 
 	'get move data directly from the room data section of RM%. The position is stored in K%
-	N%=?(RM%+K%):IF N%=0 THEN =FALSE
-	FOR C%=1 TO (N%*3) STEP 3:IF ?(RM%+K%+C%)=V% THEN LB%=?(RM%+K%+C%+2):HB%=?(RM%+K%+C%+1):R%=HB%*256+LB%:D%=TRUE:NEXT ELSE NEXT
+	FOR C%=1 TO (N%*3) STEP 3:Z%=RM%+K%+C%:IF ?(Z%)=V% THEN LB%=?(Z%+2):HB%=?(Z%+1):R%=HB%*256+LB%:D%=TRUE:NEXT ELSE NEXT
 =D%
 
 DEFFNrmPtr(R%):N%=(R%-1)*2:=(?(IX%+N%)*256)+?(IX%+N%+1)
@@ -119,23 +117,18 @@ PROCrmMsg:ENDPROC
 
 
 'enable or disable exit
-DEFPROCeE(N%)
+DEFPROCeE(N%):LOCAL U%,V%:U%=RM%+K%+1+((N%-1)*3):V%=?(U%):IF V%>127 THEN ?(U%)=V%-128 ELSE ?(U%)=V%+128
 'verb number
 'MSB of location link
 'LSB of location link
 'K% holds the start of the exit data, number of directions
 'U%=position of verb for exit
-LOCAL U%,V%:U%=K%+1+((N%-1)*3):V%=?(RM%+U%)
-IF V%>127 THEN ?(RM%+U%)=V%-128 ELSE ?(RM%+U%)=V%+128
 ENDPROC
 
 'load words (nouns, verbs and adverbs) from disc
-DEFPROCgW(T%):LOCAL N%,R%,D$,RN%:R%=1
-	IF T%=1 THEN N%=OPENIN("DATA-N") ELSE IF T%=2 THEN N%=OPENIN("DATA-V") ELSE IF T%=4 THEN N%=OPENIN("DATA-A")
-	REPEAT:RN%=BGET#N%:INPUT#N%,D$:R%=R%+1:UNTIL EOF#N%:PTR#N%=0
-	IF T%=1 THEN NM%=R%:DIM N$(R%):DIM NN% R% ELSE IF T%=2 THEN VM%=R%:DIM V$(R%):DIM VN% R% ELSE IF T%=4 THEN AM%=R%:DIM A$(R%):DIM AN% R%
-	R%=1:REPEAT:RN%=BGET#N%:INPUT#N%,D$
-	IF T%=1 THEN N$(R%)=FNtU(D$):NN%?R%=RN% ELSE IF T%=2 THEN V$(R%)=FNtU(D$):VN%?R%=RN% ELSE IF T%=4 THEN A$(R%)=FNtU(D$):AN%?R%=RN%
+DEFPROCgW(T%):LOCAL N%,R%,D$,RN%:R%=1:IF T%=1 THEN N%=OPENIN("DATA-N") ELSE IF T%=2 THEN N%=OPENIN("DATA-V") ELSE IF T%=4 THEN N%=OPENIN("DATA-A")
+	REPEAT:RN%=BGET#N%:INPUT#N%,D$:R%=R%+1:UNTIL EOF#N%:PTR#N%=0:IF T%=1 THEN NM%=R%:DIM N$(R%):DIM NN% R% ELSE IF T%=2 THEN VM%=R%:DIM V$(R%):DIM VN% R% ELSE IF T%=4 THEN AM%=R%:DIM A$(R%):DIM AN% R%
+	R%=1:REPEAT:RN%=BGET#N%:INPUT#N%,D$:IF T%=1 THEN N$(R%)=FNtU(D$):NN%?R%=RN% ELSE IF T%=2 THEN V$(R%)=FNtU(D$):VN%?R%=RN% ELSE IF T%=4 THEN A$(R%)=FNtU(D$):AN%?R%=RN%
 R%=R%+1:PRINT".";:UNTIL EOF#N%:CLOSE#N%:ENDPROC
   
 'print a message to the screen
@@ -172,8 +165,7 @@ ENDPROC
 DEFFNpW(T$,T%):LOCAL W%,N%,E%,F%,R%,W$,M%:W%=0:R%=1:E%=LEN(T$)
 	REPEAT:IF T%=1 THEN W$=V$(R%):M%=VM% ELSE IF T%=2 THEN W$=N$(R%):M%=NM% ELSE IF T%=3 THEN W$=A$(R%):M%=AM%
 		F%=LEN(W$):IF E%>=F% THEN IF T$=W$ AND F%>0 THEN W%=R%
-		R%=R%+1:UNTIL R%=M% OR W%>0 OR F%=0
-	IF T%=1 AND W%>0 THEN =VN%?W% ELSE IF T%=2 AND W%>0 THEN =NN%?W% ELSE IF T%=3 AND W%>0 THEN =AN%?W% ELSE =0
+		R%=R%+1:UNTIL R%=M% OR W%>0 OR F%=0:IF T%=1 AND W%>0 THEN =VN%?W% ELSE IF T%=2 AND W%>0 THEN =NN%?W% ELSE IF T%=3 AND W%>0 THEN =AN%?W% ELSE =0
 
 'to upper case
 DEFFNtU(T$):LOCAL C%,P%,L%,U$:U$="":L%=LEN(T$):FOR P%=1 TO L%:C%=ASC(MID$(T$,P%,1)):IF C%>90 THEN C%=C%-32
@@ -181,8 +173,7 @@ U$=U$+CHR$(C%):NEXT:=U$
   
 'get a word (ending in a space)
 DEFFNgW(T$):LOCAL C%,C$,WRD$:C%=1
-	REPEAT:C$=MID$(T$,C%,1):WRD$=WRD$+C$:C%=C%+1:UNTIL C$=" " OR C%>LEN(T$)
-	IF RIGHT$(WRD$,1)<>" " THEN WRD$=WRD$+" " 
+	REPEAT:C$=MID$(T$,C%,1):WRD$=WRD$+C$:C%=C%+1:UNTIL C$=" " OR C%>LEN(T$):IF RIGHT$(WRD$,1)<>" " THEN WRD$=WRD$+" " 
 =LEFT$(WRD$,LEN(WRD$)-1)
   
 'set the variables
@@ -218,10 +209,6 @@ DEFPROCgoto(RO%):R%=RO%:ENDPROC
 'move to the room where object O% is
 DEFPROCfind(O%):LOCAL T%:T%=FNobLn(O%):PROCgoto(T%):ENDPROC
 
-
-
-
-
 'increase the turn counter
 DEFPROCt:T%=T%+1:ENDPROC
 
@@ -229,7 +216,6 @@ DEFPROCt:T%=T%+1:ENDPROC
 DEFPROCenc(D%):ENC%=D%:ENDPROC
 
 'return true or false for flag 0 to 7
-
 DEFFNflag(FL%):IF G% AND 2^FL% THEN =TRUE ELSE =FALSE
 
 'return true if counter F% is on (>0)
@@ -271,7 +257,6 @@ DEFFNinInv(O%):IF FNobHr(O%,PL%)=0 THEN =FALSE ELSE =TRUE
 DEFFNavail(O%)=FNhere(O%) OR FNinInv(O%)
 
 'get a random number
-'DEFFNrn(N%):LOCAL R%:R%=RND(N%):=R%
 DEFFNrn(N%)=RND(N%)
 
 'end the turn
