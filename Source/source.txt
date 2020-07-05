@@ -26,8 +26,7 @@ REPEAT
 		IF V%=0 AND EX%=0 AND NOT D% THEN PROCmsg(4):D%=TRUE
 		IF EX%=0 AND NOT D% THEN D%=FNckMv:IF NOT D% THEN D%=FNlowPty:IF V%>0 AND NOT D% THEN PROCmsg(3)
 -IF SC%=1 PROCshowC
-CL%=0:D%=0:UNTIL EX%=1:UNTIL FNagain=FALSE
-PRINT "Thanks for playing...":END
+CL%=0:D%=0:UNTIL EX%=1:UNTIL FNagain=FALSE:PRINT "Thanks for playing...":END
 
 'debug stuff
 -DEFPROCshowC:LOCAL X%
@@ -67,7 +66,9 @@ DEFPROCldRm:OSCLI("LOAD IDX-R "+STR$~IX%):OSCLI("LOAD DATA-R "+STR$~RM%):ENDPROC
 DEFPROCldSM:LOCAL N%,R%,F%:F%=OPENIN("DATA-M"):DIM MS$(@NumMssages@):FOR X%=1 TO @NumMssages@:PRINT".";:I%=(X%-1)*5:IND=OPENIN("IDX-M"):PTR#IND=I%:INPUT#IND,I%:CLOSE#IND:PTR#F%=I%:INPUT#F%,MS$(X%):NEXT:CLOSE#F%:ENDPROC
 
 'load objects
-DEFPROCldOb(F$):LOCAL N%,R%,T%:F%=OPENIN(F$):R%=0:REPEAT:FOR X%=1TO8:N%=BGET#F%:NEXT:R%=R%+1:PRINT".";:UNTIL EOF#F%:PTR#F%=0:OBJN%=R%:R%=R%*8:IF FNturn=0 THEN DIM OB% R%
+DEFPROCldOb(F$):LOCAL N%,R%,T%:F%=OPENIN(F$):IF FNturn=0 THEN OBJN%=@NumObjects@:DIM OB% @ObjectData@
+
+'OSCLI("LOAD "+F$+" "+STR$~OB%):ENDPROC
 R%=1:REPEAT:?(OB%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
   
 'store object at location

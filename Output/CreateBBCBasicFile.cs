@@ -22,6 +22,20 @@ namespace AdventureLanguage.Output
                 for (int i = 0; i < iNumLines; i++)
                 {
 
+                    if (gameData.SourceBBCBasicProgram[i].LineText().IndexOf("@NumObjects@") > -1)
+                    {
+                        //replace the room index size with the actual number used
+                        string tmp = gameData.SourceBBCBasicProgram[i].LineText();
+                        gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@NumObjects@", gameData.objectList.Count.ToString()));
+                    }
+
+                    if (gameData.SourceBBCBasicProgram[i].LineText().IndexOf("@ObjectData@") > -1)
+                    {
+                        //replace the room index size with the actual number used
+                        string tmp = gameData.SourceBBCBasicProgram[i].LineText();
+                        gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@ObjectData@", (gameData.objectList.Count*8).ToString()));
+                    }
+
                     if (gameData.SourceBBCBasicProgram[i].LineText().IndexOf("@RMIndex@") > -1)
                     {
                         //replace the room index size with the actual number used

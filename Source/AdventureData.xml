@@ -439,7 +439,7 @@
             </HighPriority>
             <LowPriority>
                 
-                IF V%=@Unlock THEN PROCeE(2):=TRUE
+                'IF V%=@Unlock THEN PROCeE(2):=TRUE
                 
                 'room 1 
                 'move the table
