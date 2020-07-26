@@ -11,12 +11,11 @@
             <SourceFile>source.txt</SourceFile>
             <OutputFile>Banzai.txt</OutputFile>
             <BuildType>Debug</BuildType>
-            <Tokeniser>
-            </Tokeniser>
+            <Tokeniser>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\tokenise.exe</Tokeniser>
             <TokenisedFileName>Banzai</TokenisedFileName>
-            <SSDBuilder>/Users/philjones/Documents/Beeb SWEH</SSDBuilder>
+            <SSDBuilder>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\MkImg.exe</SSDBuilder>
             <SSDName>Banzai.SSD</SSDName>
-            <BeebEmPath>/Applications/BeebEm Mac/BeebEm4.app</BeebEmPath>
+            <BeebEmPath>C:\Program Files (x86)\BeebEm\BeebEm.exe</BeebEmPath>
             <SystemMessages>
                 <Message id="Carrying">You are carrying</Message>
                 <Message id="WhatNow">What now</Message>

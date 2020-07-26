@@ -28,5 +28,34 @@ Debug mode, prefix stuff with '-' and only included in program if <BuildType>Deb
 
 chmod u+x  /Users/philjones/Documents/Opus2/build.command
 
+MAC build for Banzai:
+
+            <GameTitle>Banzai</GameTitle>
+            <ScreenWidth>40</ScreenWidth>
+            <ScreenMode>7</ScreenMode>
+            <SourceFile>source.txt</SourceFile>
+            <OutputFile>Banzai.txt</OutputFile>
+            <BuildType>Debug</BuildType>
+            <Tokeniser>
+            </Tokeniser>
+            <TokenisedFileName>Banzai</TokenisedFileName>
+            <SSDBuilder>/Users/philjones/Documents/Beeb SWEH</SSDBuilder>
+            <SSDName>Banzai.SSD</SSDName>
+            <BeebEmPath>/Applications/BeebEm Mac/BeebEm4.app</BeebEmPath>
+
+
+Windiows build for Banzai
+
+            <GameTitle>Banzai</GameTitle>
+            <ScreenWidth>40</ScreenWidth>
+            <ScreenMode>7</ScreenMode>
+            <SourceFile>source.txt</SourceFile>
+            <OutputFile>Banzai.txt</OutputFile>
+            <BuildType>Debug</BuildType>
+            <Tokeniser>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\tokenise.exe</Tokeniser>
+            <TokenisedFileName>Banzai</TokenisedFileName>
+            <SSDBuilder>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\MkImg.exe</SSDBuilder>
+            <SSDName>Banzai.SSD</SSDName>
+            <BeebEmPath>C:\Program Files (x86)\BeebEm\BeebEm.exe</BeebEmPath>
 
 #

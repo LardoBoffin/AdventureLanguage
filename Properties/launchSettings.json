@@ -2,7 +2,11 @@
   "profiles": {
     "AdventureLanguage": {
       "commandName": "Project",
-      "commandLineArgs": "-b \"E:\\Data\\Dropbox\\Trempol5\""
+      "commandLineArgs": "-b \"C:\\Users\\jonesp\\Documents\\Banzai\""
+    },
+    "NewProject": {
+      "commandName": "Project",
+      "commandLineArgs": "-new \"C:\\Users\\jonesp\\Documents\" Ransom"
     }
   }
 }

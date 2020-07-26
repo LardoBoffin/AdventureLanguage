@@ -2,6 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_LastSelectedProfileId>E:\Quarantine\Source\Repos\AL\AdventureLanguage\Properties\PublishProfiles\Windows.pubxml</_LastSelectedProfileId>
+    <ActiveDebugProfile>AdventureLanguage</ActiveDebugProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <StartAction>Project</StartAction>
@@ -17,5 +18,8 @@
     <StartAction>Project</StartAction>
     <StartArguments>-b /users/philjones/documents/Banzai</StartArguments>
     <ExternalConsole>true</ExternalConsole>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
