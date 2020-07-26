@@ -7,6 +7,10 @@
     "NewProject": {
       "commandName": "Project",
       "commandLineArgs": "-new \"C:\\Users\\jonesp\\Documents\" Ransom"
+    },
+    "BuildAdventure": {
+      "commandName": "Project",
+      "commandLineArgs": "-b \"C:\\Users\\jonesp\\Documents\\Banzai\""
     }
   }
 }

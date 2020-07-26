@@ -1,559 +1,556 @@
 <?xml version="1.0" standalone="yes"?>
 <AdventureData>
-    <GlobalVariables>
-        <Var id="HaveLight" value="0">1 = Has light source</Var>
-    </GlobalVariables>
-    <Sections>
-        <Section>
-            <GameTitle>Banzai</GameTitle>
-            <ScreenWidth>40</ScreenWidth>
-            <ScreenMode>7</ScreenMode>
-            <SourceFile>source.txt</SourceFile>
-            <OutputFile>Banzai.txt</OutputFile>
-            <BuildType>Debug</BuildType>
-            <Tokeniser>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\tokenise.exe</Tokeniser>
-            <TokenisedFileName>Banzai</TokenisedFileName>
-            <SSDBuilder>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\MkImg.exe</SSDBuilder>
-            <SSDName>Banzai.SSD</SSDName>
-            <BeebEmPath>C:\Program Files (x86)\BeebEm\BeebEm.exe</BeebEmPath>
-            <SystemMessages>
-                <Message id="Carrying">You are carrying</Message>
-                <Message id="WhatNow">What now</Message>
-                <Message id="CannotDoIt">You can't.</Message>
-                <Message id="What">Pardon?</Message>
-                <Message id="AnotherGame?">Press a key for another game...</Message>
-                <Message id="Sure">Are you sure? (Y/N)...</Message>
-                <Message id="GotThat">You've already got that.</Message>
-                <Message id="HaveNotGotThat">You haven't got that.</Message>
-                <Message id="CannotSeeIt">You can't see that.</Message>
-                <Message id="TooHeavy">You're carrying too much to pick that up.</Message>
-                <Message id="Score">Your score was </Message>
-                <Message id="NoOfTurns">and you took </Message>
-                <Message id="ItsDark">It is dark. You cannot see.</Message>
-                <Message id="CannotFindIt">I can't find that anywhere.</Message>
-                <Message id="AlsoSee">You can also see</Message>
-                <Message id="OK">Okay </Message>
-                <Message id="Turns">turns.</Message>
-                <Message id="Nothing">nothing</Message>
-            </SystemMessages>
-            <GameVerbs>
-                <Verb>North;N</Verb>
-                <Verb>South;S</Verb>
-                <Verb>East;E</Verb>
-                <Verb>West;W</Verb>
-                <Verb>Southwest;SW</Verb>
-                <Verb>Northeast;NE</Verb>
-                <Verb>Up;U</Verb>
-                <Verb>Down;D</Verb>
-                <Verb>Take;Get</Verb>
-                <Verb>Drop</Verb>
-                <Verb>Look</Verb>
-                <Verb>Inventory;Inv</Verb>
-                <Verb>Quit</Verb>
-                <Verb>Words</Verb>
-                <Verb>Pictures</Verb>
-                <Verb>Save</Verb>
-                <Verb>Restore</Verb>
-                <Verb>Examine;Search;Read</Verb>
-                <Verb>Light;On</Verb>
-                <Verb>Extinguish;Off</Verb>
-                <Verb>Unlock;Open</Verb>
-                <Verb>Score</Verb>
-                <Verb>Eat</Verb>
-                <Verb>Load</Verb>
-                <Verb>Use</Verb>
-                <Verb>Enter;Go</Verb>
-                <Verb>Move</Verb>
-                <Verb>Close</Verb>
-                <Verb>Press;Activate</Verb>
-                <Verb>Fill</Verb>
-                <Verb>Connect;Attach</Verb>
-                <Verb>Check</Verb>
-                <Verb>Dig</Verb>
-            </GameVerbs>
-            <Adverbs>
-                <Adverb>WITH;USING</Adverb>
-            </Adverbs>
-            <Nouns>
-                <Noun>Toolbox</Noun>
-                <Noun>OpenToolbox</Noun>
-                <Noun>Key</Noun>
-                <Noun>Tape;DuctTape</Noun>
-                <Noun>Flashlight;Torch</Noun>
-                <Noun>FlashlightOn</Noun>
-                <Noun>Battery</Noun>
-                <Noun>Formula</Noun>
-                <Noun>Jar;Fluid</Noun>
-                <Noun>Sand</Noun>
-                <Noun>Radio</Noun>
-                <Noun>Pick</Noun>
-                <Noun>Hydrometer</Noun>
-                <Noun>Pump;Pumps</Noun>
-                <Noun>Jumper;Cables</Noun>
-                <Noun>Door</Noun>
-                <Noun>Tree</Noun>
-                <Noun>CLS</Noun>
-                <Noun>Yoyodyne</Noun>
-                <Noun>Station</Noun>
-                <Noun>Booth</Noun>
-                <Noun>Table</Noun>
-                <Noun>Safe</Noun>
-                <Noun>House</Noun>
-                <Noun>Pipes;Pipe</Noun>
-                <Noun>Trash;Rubbish</Noun>
-                <Noun>Console</Noun>
-                <Noun>Switch</Noun>
-                <Noun>Store;Hardware</Noun>
-                <Noun>Car;Jet</Noun>
-                <Noun>Dashboard;Dash</Noun>
-                <Noun>Glovebox;Compartment</Noun>
-                <Noun>Shack</Noun>
-                <Noun>Water</Noun>
-                <Noun>Shed</Noun>
-                <Noun>Hole</Noun>
-            </Nouns>
-            <Variables>
-                <Var id="TurnsInDark" value="0">Number of turns in the dark so far. 2 = death.</Var>
-                <Var id="TurnOnFreeway" value="0">2 = Atomic explosion!!!</Var>
-                <Var id="TableMoved" value="0">1 = table has been moved </Var>
-                <Var id="ToolBoxOpen" value="0">1= toolbox open </Var>
-                <Var id="PipesPadlocked" value="0">1= unlocked </Var>
-                <Var id="SearchTrash" value="0">1= searched </Var>
-                <Var id="CockpitStatus" value="0">1 = open, 0 =closed</Var>
-                <Var id="FuelGuageStatus">0 = empty, 1 = full</Var>
-                <Var id="DashboardStatus">0 = not examined</Var>
-                <Var id="GloveboxStatus">0 = not examined</Var>
-                <Var id="RadioBatteryStatus">0 = no battery</Var>
-                <Var id="RadioAntennaStatus">0 = no antenna</Var>
-                <Var id="RadioWorkingStatus">0 = not working</Var>
-                <Var id="BatteryWater">0 = empty</Var>
-                <Var id="Hole1">0 = not dug</Var>
-            </Variables>
-            <Objects>
-                <Object id="_TOOLBOX" number="1" weight="20" value="0" location="6" message="Small toolbox">
-                </Object>
-                <Object id="_OPENTOOLBOX" number="2" weight="20" value="0" location="0" message="An open toolbox">
-                </Object>
-                <Object id="_KEY" number="3" weight="20" value="150" location="0" message="Key">
-                </Object>
-                <Object id="_TAPE" number="4" weight="20" value="0" location="0" message="Roll of duct tape">
-                </Object>
-                <Object id="_FLASHLIGHT" number="5" weight="20" value="1" location="0" message="Flashlight (off)">
-                </Object>
-                <Object id="_FLASHLIGHTON" number="6" weight="20" value="1" location="0" message="Flashlight (on)">
-                </Object>
-                <Object id="_BATTERY" number="7" weight="20" value="1" location="0" message="Old car battery">
-                </Object>
-                <Object id="_FORMULA" number="8" weight="20" value="1" location="0" message="Formula">
-                </Object>
-                <Object id="_FLUID" number="9" weight="20" value="1" location="0" message="Jar of glowind fluid">
-                </Object>
-                <Object id="_SAND" number="10" weight="20" value="1" location="23" message="Sand">
-                </Object>
-                <Object id="_RADIO" number="11" weight="20" value="1" location="24" message="Small Ham radio">
-                </Object>
-                <Object id="_PICK" number="12" weight="20" value="1" location="17" message="Climbers pick">
-                </Object>
-                <Object id="_HYDROMETER" number="13" weight="20" value="1" location="17" message="Hydrometer">
-                </Object>
-                <Object id="_PUMP" number="14" weight="20" value="1" location="17" message="Manual hand pump">
-                </Object>
-                <Object id="_CABLES" number="15" weight="20" value="1" location="17" message="Jumper cables">
-                </Object>
-            </Objects>
-            <Locations>
-                <Location id="0">
-                </Location>
-                <Location id="1">
-                    <Message>I am in a Yoyodyne office. There is a large table here. Exit to the west and a staircase going down. </Message>
-                    <Exit to="3">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                    <Exit to="2" locked="1">
-                        <Verb>DOWN</Verb>
-                    </Exit>
-                </Location>
-                <Location id="2">
-                    <Message>Basement laboratory. Stairs up.</Message>
-                    <Flag id="0">1</Flag>
-                    <Exit to="1">
-                        <Verb>UP</Verb>
-                    </Exit>
-                </Location>
-                <Location id="3">
-                    <Message>I'm at the corner of Main and Hickory. You can see the Yoyodyne building and a gas station. Exits are North, South, East and West.</Message>
-                    <Exit to="4">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                    <Exit to="7">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                    <Exit to="10">
-                        <Verb>SOUTH</Verb>
-                    </Exit>
-                    <Exit to="16">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                </Location>
-                <Location id="4">
-                    <Message>I'm on Hickory Avenue. Exits east and west.</Message>
-                    <Exit to="3">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                    <Exit to="5">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="5">
-                    <Message>I am at a cul-de-sac at East end of Hickory. I can see a large house and there is an exit to the east.</Message>
-                    <Exit to="4">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                    <Exit to="6">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                </Location>
-                <Location id="6">
-                    <Message>I am in the garage of a large house. There is a street to south.</Message>
-                    <Exit to="5">
-                        <Verb>SOUTH</Verb>
-                    </Exit>
-                </Location>
-                <Location id="7">
-                    <Message>I'm on Hickory Avenue. I can see a shed with an antenna. Exits to east and west.</Message>
-                    <Exit to="8">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                    <Exit to="3">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="8">
-                    <Message>Cul-de-sac at west end. House to west.</Message>
-                    <Exit to="7">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                    <Exit to="9">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="9">
-                    <Message>Living room.</Message>
-                    <Exit to="7">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="10">
-                    <Message>I'm at a highway access ramp.Exits North, East and South</Message>
-                    <Exit to="3">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                    <Exit to="13">
-                        <Verb>SOUTH</Verb>
-                    </Exit>
-                    <Exit to="12">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="11">
-                    <Message>Doh!</Message>
-                    <Exit to="10">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                </Location>
-                <Location id="12">
-                    <Message>I am in a field of tall grass. Exit west.</Message>
-                    <Exit to="10">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="13">
-                    <Message>Highway. Exists east and west.</Message>
-                    <Exit to="14">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                    <Exit to="14">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="14">
-                    <Message>Highway. Exists east and west.</Message>
-                    <Exit to="13">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                    <Exit to="13">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="15">
-                    <Message>I am in a shed full of radio equipment. I can see an antenna lead. Exit to the north.</Message>
-                    <Exit to="7">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                </Location>
-                <Location id="16">
-                    <Message>I'm at the corner of Main and Mountain View. I can see a hardware store. Exits are north, east, south and west.</Message>
-                    <Exit to="3">
-                        <Verb>SOUTH</Verb>
-                    </Exit>
-                    <Exit to="18">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                    <Exit to="18">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                    <Exit to="19">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                </Location>
-                <Location id="17">
-                    <Message>I am in a hardware store. Exit to the east.</Message>
-                    <Exit to="16">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="18">
-                    <Message>I'm behind the mountain on Mountain View. Exits are east and west.</Message>
-                    <Exit to="16">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                    <Exit to="16">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="19">
-                    <Message>I'm at the east end of parking lot. Exits are north, south and west.</Message>
-                    <Exit to="16">
-                        <Verb>SOUTH</Verb>
-                    </Exit>
-                    <Exit to="20">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                    <Exit to="25">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="20">
-                    <Message>Foot of mountain. West, south and up.</Message>
-                    <Exit to="19">
-                        <Verb>SOUTH</Verb>
-                    </Exit>
-                    <Exit to="22">
-                        <Verb>WEST</Verb>
-                    </Exit>
-                    <Exit to="21">
-                        <Verb>UP</Verb>
-                    </Exit>
-                </Location>
-                <Location id="21">
-                    <Message>Mountain ledge. Down. </Message>
-                    <Exit to="20">
-                        <Verb>DOWN</Verb>
-                    </Exit>
-                </Location>
-                <Location id="22">
-                    <Message>I am in a cold shallow lake. Exits are east and south.</Message>
-                    <Exit to="20">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                    <Exit to="23">
-                        <Verb>SOUTH</Verb>
-                    </Exit>
-                </Location>
-                <Location id="23">
-                    <Message>I'm on a beach. I can see a life guard shack. Exits are north and south.</Message>
-                    <Exit to="22">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                    <Exit to="25">
-                        <Verb>SOUTH</Verb>
-                    </Exit>
-                </Location>
-                <Location id="24">
-                    <Message>I'm in a Life guard shack. Exit to the East. </Message>
-                    <Exit to="23">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="25">
-                    <Message>I'm at the west end of parking lot. I can see the Jet Car. Exits are north and east.</Message>
-                    <Exit to="19">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                    <Exit to="23">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                </Location>
-                <Location id="26">
-                    <Message>I am in a cockpit of the jet car. I can see the dashboard. Exit east.</Message>
-                    <Exit to="25">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="27">
-                    <Message>In a cavern. North.</Message>
-                    <Exit to="28">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                </Location>
-                <Location id="28">
-                    <Message>Mineshaft. East.</Message>
-                    <Exit to="18">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="29">
-                    <Message>I am in a Gas Station. I can see fluel pumps, the cashier's booth and filler pipes to the underground gas tank. There is an exit to the East.</Message>
-                    <Exit to="3">
-                        <Verb>EAST</Verb>
-                    </Exit>
-                </Location>
-                <Location id="30">
-                    <Message>I am in a Cashier's booth. I can see a control console and a trash pile. Exit is North.</Message>
-                    <Exit to="29">
-                        <Verb>NORTH</Verb>
-                    </Exit>
-                </Location>
-            </Locations>
-            <PreRoom>
-                'check for atomic explosion
-                IF R%=13 OR R%=14 THEN PROCinc(@TurnOnFreeway)
-            </PreRoom>
-            <Init>           
-                PROCset(@TurnsInDark,2):PROCenc(111)
-		</Init>
-            <HighPriority>
-                IF FNflag(0) AND NOT FNon(@HaveLight) THEN PROCdec(@TurnsInDark)
-                'check for boom on the freeway!
-                IF FNget(@TurnOnFreeway)=3 THEN PROCmsg("An atomic explosion erupts. I'm fried Banzai. The adventure is over."):PROCexit:=TRUE 
-                
-                'check for moving around in the dark
-                IF FNflag(0) AND NOT FNon(@HaveLight) AND FNget(@TurnsInDark)=0 THEN PROCmsg("It's dangerous to move in the dark! I fell and broke my neck! I'm DEAD! I'm DEAD!!"):PROCexit:=TRUE 
-		        
-                'floor safe
-                IF R%=1 AND FNon(@TableMoved) THEN PROCmsg("You can see a floor safe.")
-                
-                'field, hole 1
-                IF R%=12 AND FNon(@Hole1) THEN PROCmsg("You can see a large hole")
-            </HighPriority>
-            <LowPriority>
-                
-                'IF V%=@Unlock THEN PROCeE(2):=TRUE
-                
-                'room 1 
-                'move the table
-                IF R%=1 AND V%=@Move AND N%=@Table AND NOT FNon(@TableMoved) THEN PROCmsg("The table moves."):PROCon(@TableMoved):=TRUE
-                
-                'stuff with the safe
-                IF R%=1 AND V%=@Examine AND N%=@Safe AND FNon(@TableMoved) THEN PROCmsg("I see it's a key safe."):=TRUE
-                IF R%=1 AND V%=@Open AND N%=@Safe AND NOT FNhere(@_KEY) THEN PROCmsg("I can't do that...yet!"):=TRUE
-                'to do - open the safe!
-                
-                
-                'crossroads by yoyodyne and gas station, enter the yoyo building and gas station
-                IF R%=3 THEN IF V%=@Enter AND N%=@Yoyodyne THEN PROCgoto(1):=TRUE
-                IF R%=3 THEN IF V%=@Enter AND N%=@Station THEN PROCgoto(29):=TRUE
-                
-                'east end of hickory
-                IF R%=5 AND V%=@Enter AND N%=@House THEN PROCgoto(6):=TRUE
-                
-                'hickory by shed
-                IF R%=7 AND V%=@Enter AND N%=@Shed THEN PROCgoto(15):=TRUE
-                
-                
-                'field
-                IF R%=12 AND V%=@Dig AND FNavail(@_PICK) AND NOT FNon(@Hole1) THEN PROCon(@Hole1):PROCmsg("OK"):=TRUE
-                IF R%=12 AND V%=@Examine AND N%=@Hole AND FNon(@Hole1) THEN PROCmsg("I see an underground phone line."):=TRUE
-                
-                'shed
-                IF R%=15 AND V%=@Connect AND N%=@Radio AND FNavail(@_RADIO) AND NOT FNon(@RadioAntennaStatus) THEN PROCon(@RadioAntennaStatus):PROCmsg("OK"):=TRUE
-                
-                'mountain view corner
-                IF R%=16 THEN IF V%=@Enter AND N%=@Store THEN PROCgoto(17):=TRUE
-                
-                'lake
-                IF R%=22 AND V%=@Fill AND N%=@Battery AND FNavail(@_BATTERY) AND NOT FNon(@BatteryWater) THEN PROCon(@BatteryWater):PROCmsg("OK"):=TRUE
-                
-                'beach
-                IF R%=23 AND V%=@Enter AND N%=@Shack THEN PROCgoto(24):=TRUE
-                
-                'west end by car
-                IF R%=25 THEN IF V%=@Enter AND N%=@Car THEN PROCgoto(26):=TRUE
-                
-                'in the car
-                IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN PROCmsg("I can see the starter button and glovebox."):PROCon(@DashboardStatus)
-                IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN IF NOT FNon(@CockpitStatus) THEN PROCmsg("The cockpit is open.") ELSE IF FNon(@CockpitStatus) THEN PROCmsg("The cockpit is closed.")
-                IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN IF NOT FNon(@FuelGuageStatus) THEN PROCmsg("The fuel guage is empty") ELSE IF FNon(@FuelGuageStatus) THEN PROCmsg("The fuel guage is full.")
-                IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN :=TRUE
-                
-                'search glovebox
-                IF R%=26 AND V%=@Examine AND N%=@Glovebox AND FNon(@DashboardStatus) AND NOT FNon(@GloveboxStatus) THEN PROCon(@GloveboxStatus):PROCmsg("I see something."):PROCmove(@_FORMULA,R%):PROCmove(@_FLUID,R%):=TRUE
-                
-                'room 29 gas station - enter booth, examine pipes and pumps
-                IF R%=29 THEN IF V%=@Enter AND N%=@Booth THEN PROCgoto(30):=TRUE
-                IF R%=29 THEN IF V%=@Examine AND N%=@Pumps THEN PROCmsg("They are turned off."):=TRUE
-                IF R%=29 THEN IF V%=@Examine AND N%=@Pipes AND NOT FNon(@PipesPadlocked) THEN PROCmsg("They are padlocked."):=TRUE
-                IF R%=29 THEN IF V%=@Examine AND N%=@Pipes THEN PROCmsg("They are unlocked."):=TRUE
-                
-                'room 30 cashier's booth
-                IF R%=30 THEN IF V%=@Examine AND N%=@Trash AND NOT FNon(@SearchTrash) THEN PROCon(@SearchTrash):PROCmsg("I see something."):PROCmove(@_BATTERY,R%):=TRUE
-                IF R%=30 THEN IF V%=@Examine AND N%=@Trash THEN PROCmsg("It is a pile of trash."):=TRUE
-                IF R%=30 THEN IF V%=@Examine AND N%=@Console THEN PROCmsg("I see a switch to the gas pumps."):=TRUE
-                IF R%=30 THEN IF V%=@Press AND N%=@Switch THEN PROCmsg("Nothing happens."):=TRUE
-                
-                
-                'open and close the toolbox
-                IF V%=@Open AND N%=@Toolbox AND FNavail(@_TOOLBOX) AND NOT FNon(@ToolBoxOpen) THEN PROCswap(@_TOOLBOX,@_OPENTOOLBOX):PROCon(@ToolBoxOpen):PROCmsg("I see something."):PROCmove(@_KEY,R%):PROCmove(@_TAPE,R%):PROCmove(@_FLASHLIGHT,R%):=TRUE
-                IF V%=@Open AND N%=@Toolbox AND FNavail(@_TOOLBOX) THEN PROCswap(@_TOOLBOX,@_OPENTOOLBOX):PROCset(@ToolBoxOpen,1):PROCmsg("The toolbox is open."):=TRUE
-                IF V%=@Close AND N%=@Toolbox AND FNavail(@_OPENTOOLBOX) THEN PROCswap(@_OPENTOOLBOX,@_TOOLBOX):PROCmsg(16):=TRUE
-                
-                'check the battery
-                IF V%=@Check AND N%=@Battery AND FNavail(@_BATTERY) AND FNavail(@_HYDROMETER) THEN PROCmsg("Battery tests: Dead"):=TRUE
-               
-                'examine radio
-                IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN PROCmsg("I see a transmit switch.")
-                IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioBatteryStatus) THEN PROCmsg("There's no battery.") ELSE IF FNon(@RadioBatteryStatus) THEN PROCmsg("There is a battery.")
-                IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioAntennaStatus) THEN PROCmsg("There's no antenna.")
-                IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioWorkingStatus) THEN PROCmsg("It is not working.") ELSE IF FNon(@RadioWorkingStatus) THEN PROCmsg("It is working.")
-                IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN :=TRUE
-                
-                 'examine objects
-                IF V%=@Examine AND N%=@Pump AND FNavail(@_PUMP) THEN PROCmsg("The hose is 6 ft long."):=TRUE
-                IF V%=@Examine AND N%=@Toolbox AND FNavail(@_TOOLBOX) THEN PROCmsg("Sticker says: Sam's Service Station."):=TRUE
-                
-                IF V%=@Examine AND N%=@Battery AND FNavail(@_BATTERY) AND NOT FNon(@BatteryWater) THEN PROCmsg("I see there is no water in the battery."):=TRUE
-                IF V%=@Examine AND N%=@Battery AND FNavail(@_BATTERY) AND FNon(@BatteryWater) THEN PROCmsg("I see water in the battery."):=TRUE
-                
-                IF V%=@Examine AND N%=@Jar AND FNavail(@_FLUID) THEN PROCmsg("Jar of glowind fluid"):=TRUE
-                IF V%=@Examine AND N%=@Formula AND FNavail(@_FORMULA) THEN PROCmsg("Fuel is made from gasoline, sand, quartz and catalyst."):=TRUE
-                
-                'basic code for object handling etc.
-                IF V%=@On THEN IF N%=@CLS THEN PROCcls(1):=TRUE
-                IF V%=@Off THEN IF N%=@CLS THEN PROCcls(0):=TRUE
-                
-                'light the Torch
-                IF V%=@On AND N%=@Torch THEN IF FNinInv(@_FLASHLIGHT) THEN PROCswap(@_FLASHLIGHT,@_FLASHLIGHTON):PROCon(@HaveLight):PROCmsg("The flashlifght is on."):=TRUE
-                IF V%=@Off AND N%=@Torch THEN IF FNinInv(@_FLASHLIGHT) THEN PROCswap(@_FLASHLIGHTON,@_FLASHLIGHT):PROCoff(@HaveLight):PROCmsg("The flashlight is off."):=TRUE
-                
-                'load and save
-                IF V%=@Save THEN PROCsave:=TRUE
-                IF V%=@Load THEN PROCload:=TRUE
-                
-                'examine
-                IF V%=@Examine THEN PROCmsg("You find nothing of interest."):=TRUE
-                
-                'look at room
-                IF V%=@Look THEN PROCgtRm(R%):=TRUE
-                
-                'deal with dropping the torch and losing the light source
-                IF V%=@Drop THEN IF N%=@Torch THEN IF FNinInv(@_FLASHLIGHTON) THEN PROCdrop(@_FLASHLIGHTON):PROCon(@HaveLight):=TRUE
-                IF V%=@Get THEN IF N%=@Torch THEN IF FNhere(@_FLASHLIGHTON) THEN PROCtake(@_FLASHLIGHTON):PROCoff(@HaveLight):=TRUE
-                
-                'get and drop
-                IF V%=@Get THEN IF N%&lt;@Door THEN PROCtake(N%):=TRUE
-                IF V%=@Drop THEN IF N%&lt;@Door THEN PROCdrop(N%):=TRUE
-                IF V%=@Inv THEN PROCinv:=TRUE	
-		</LowPriority>
-        </Section>
-    </Sections>
+	<GlobalVariables>
+		<Var id="HaveLight" value="0">1 = Has light source</Var>
+	</GlobalVariables>
+	<Sections>
+		<Section>
+			<GameTitle>Banzai</GameTitle>
+			<ScreenWidth>40</ScreenWidth>
+			<ScreenMode>7</ScreenMode>
+			<SourceFile>source.txt</SourceFile>
+			<OutputFile>Banzai.txt</OutputFile>
+			<BuildType>Debug</BuildType>
+			<Tokeniser>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\tokenise.exe</Tokeniser>
+			<TokenisedFileName>Banzai</TokenisedFileName>
+			<SSDBuilder>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\MkImg.exe</SSDBuilder>
+			<SSDName>Banzai.SSD</SSDName>
+			<BeebEmPath>C:\Program Files (x86)\BeebEm\BeebEm.exe</BeebEmPath>
+			<SystemMessages>
+				<Message id="Carrying">You are carrying</Message>
+				<Message id="WhatNow">What now</Message>
+				<Message id="CannotDoIt">You can't.</Message>
+				<Message id="What">Pardon?</Message>
+				<Message id="AnotherGame?">Press a key for another game...</Message>
+				<Message id="Sure">Are you sure? (Y/N)...</Message>
+				<Message id="GotThat">You've already got that.</Message>
+				<Message id="HaveNotGotThat">You haven't got that.</Message>
+				<Message id="CannotSeeIt">You can't see that.</Message>
+				<Message id="TooHeavy">You're carrying too much to pick that up.</Message>
+				<Message id="Score">Your score was </Message>
+				<Message id="NoOfTurns">and you took </Message>
+				<Message id="ItsDark">It is dark. You cannot see.</Message>
+				<Message id="CannotFindIt">I can't find that anywhere.</Message>
+				<Message id="AlsoSee">You can also see</Message>
+				<Message id="OK">Okay </Message>
+				<Message id="Turns">turns.</Message>
+				<Message id="Nothing">nothing</Message>
+			</SystemMessages>
+			<GameVerbs>
+				<Verb>North;N</Verb>
+				<Verb>South;S</Verb>
+				<Verb>East;E</Verb>
+				<Verb>West;W</Verb>
+				<Verb>Southwest;SW</Verb>
+				<Verb>Northeast;NE</Verb>
+				<Verb>Up;U</Verb>
+				<Verb>Down;D</Verb>
+				<Verb>Take;Get</Verb>
+				<Verb>Drop</Verb>
+				<Verb>Look</Verb>
+				<Verb>Inventory;Inv</Verb>
+				<Verb>Quit</Verb>
+				<Verb>Words</Verb>
+				<Verb>Pictures</Verb>
+				<Verb>Save</Verb>
+				<Verb>Restore</Verb>
+				<Verb>Examine;Search;Read</Verb>
+				<Verb>Light;On</Verb>
+				<Verb>Extinguish;Off</Verb>
+				<Verb>Unlock;Open</Verb>
+				<Verb>Score</Verb>
+				<Verb>Eat</Verb>
+				<Verb>Load</Verb>
+				<Verb>Use</Verb>
+				<Verb>Enter;Go</Verb>
+				<Verb>Move</Verb>
+				<Verb>Close</Verb>
+				<Verb>Press;Activate</Verb>
+				<Verb>Fill</Verb>
+				<Verb>Connect;Attach</Verb>
+				<Verb>Check</Verb>
+				<Verb>Dig</Verb>
+			</GameVerbs>
+			<Adverbs>
+				<Adverb>WITH;USING</Adverb>
+			</Adverbs>
+			<Nouns>
+				<Noun>Toolbox</Noun>
+				<Noun>OpenToolbox</Noun>
+				<Noun>Key</Noun>
+				<Noun>Tape;DuctTape</Noun>
+				<Noun>Flashlight;Torch</Noun>
+				<Noun>FlashlightOn</Noun>
+				<Noun>Battery</Noun>
+				<Noun>Formula</Noun>
+				<Noun>Jar;Fluid</Noun>
+				<Noun>Sand</Noun>
+				<Noun>Radio</Noun>
+				<Noun>Pick</Noun>
+				<Noun>Hydrometer</Noun>
+				<Noun>Pump;Pumps</Noun>
+				<Noun>Jumper;Cables</Noun>
+				<Noun>Door</Noun>
+				<Noun>Tree</Noun>
+				<Noun>CLS</Noun>
+				<Noun>Yoyodyne</Noun>
+				<Noun>Station</Noun>
+				<Noun>Booth</Noun>
+				<Noun>Table</Noun>
+				<Noun>Safe</Noun>
+				<Noun>House</Noun>
+				<Noun>Pipes;Pipe</Noun>
+				<Noun>Trash;Rubbish</Noun>
+				<Noun>Console</Noun>
+				<Noun>Switch</Noun>
+				<Noun>Store;Hardware</Noun>
+				<Noun>Car;Jet</Noun>
+				<Noun>Dashboard;Dash</Noun>
+				<Noun>Glovebox;Compartment</Noun>
+				<Noun>Shack</Noun>
+				<Noun>Water</Noun>
+				<Noun>Shed</Noun>
+				<Noun>Hole</Noun>
+			</Nouns>
+			<Variables>
+				<Var id="TurnsInDark" value="0">Number of turns in the dark so far. 2 = death.</Var>
+				<Var id="TurnOnFreeway" value="0">2 = Atomic explosion!!!</Var>
+				<Var id="TableMoved" value="0">1 = table has been moved </Var>
+				<Var id="ToolBoxOpen" value="0">1= toolbox open </Var>
+				<Var id="PipesPadlocked" value="0">1= unlocked </Var>
+				<Var id="SearchTrash" value="0">1= searched </Var>
+				<Var id="CockpitStatus" value="0">1 = open, 0 =closed</Var>
+				<Var id="FuelGuageStatus">0 = empty, 1 = full</Var>
+				<Var id="DashboardStatus">0 = not examined</Var>
+				<Var id="GloveboxStatus">0 = not examined</Var>
+				<Var id="RadioBatteryStatus">0 = no battery</Var>
+				<Var id="RadioAntennaStatus">0 = no antenna</Var>
+				<Var id="RadioWorkingStatus">0 = not working</Var>
+				<Var id="BatteryWater">0 = empty</Var>
+				<Var id="Hole1">0 = not dug</Var>
+			</Variables>
+			<Objects>
+				<Object id="_TOOLBOX" number="1" weight="20" value="0" location="6" message="Small toolbox">
+				</Object>
+				<Object id="_OPENTOOLBOX" number="2" weight="20" value="0" location="0" message="An open toolbox">
+				</Object>
+				<Object id="_KEY" number="3" weight="20" value="150" location="0" message="Key">
+				</Object>
+				<Object id="_TAPE" number="4" weight="20" value="0" location="0" message="Roll of duct tape">
+				</Object>
+				<Object id="_FLASHLIGHT" number="5" weight="20" value="1" location="0" message="Flashlight (off)">
+				</Object>
+				<Object id="_FLASHLIGHTON" number="6" weight="20" value="1" location="0" message="Flashlight (on)">
+				</Object>
+				<Object id="_BATTERY" number="7" weight="20" value="1" location="0" message="Old car battery">
+				</Object>
+				<Object id="_FORMULA" number="8" weight="20" value="1" location="0" message="Formula">
+				</Object>
+				<Object id="_FLUID" number="9" weight="20" value="1" location="0" message="Jar of glowind fluid">
+				</Object>
+				<Object id="_SAND" number="10" weight="20" value="1" location="23" message="Sand">
+				</Object>
+				<Object id="_RADIO" number="11" weight="20" value="1" location="24" message="Small Ham radio">
+				</Object>
+				<Object id="_PICK" number="12" weight="20" value="1" location="17" message="Climbers pick">
+				</Object>
+				<Object id="_HYDROMETER" number="13" weight="20" value="1" location="17" message="Hydrometer">
+				</Object>
+				<Object id="_PUMP" number="14" weight="20" value="1" location="17" message="Manual hand pump">
+				</Object>
+				<Object id="_CABLES" number="15" weight="20" value="1" location="17" message="Jumper cables">
+				</Object>
+			</Objects>
+			<Locations>
+				<Location id="0">
+				</Location>
+				<Location id="1">
+					<Message>I am in a Yoyodyne office. There is a large table here. Exit to the west and a staircase going down. </Message>
+					<Exit to="3">
+						<Verb>WEST</Verb>
+					</Exit>
+					<Exit to="2" locked="1">
+						<Verb>DOWN</Verb>
+					</Exit>
+				</Location>
+				<Location id="2">
+					<Message>Basement laboratory. Stairs up.</Message>
+					<Flag id="0">1</Flag>
+					<Exit to="1">
+						<Verb>UP</Verb>
+					</Exit>
+				</Location>
+				<Location id="3">
+					<Message>I'm at the corner of Main and Hickory. You can see the Yoyodyne building and a gas station.</Message>
+					<Exit to="16">
+						<Verb>NORTH</Verb>
+					</Exit>
+					<Exit to="10">
+						<Verb>SOUTH</Verb>
+					</Exit>
+					<Exit to="4">
+						<Verb>EAST</Verb>
+					</Exit>
+					<Exit to="7">
+						<Verb>WEST</Verb>
+					</Exit>
+				</Location>
+				<Location id="4">
+					<Message>I'm on Hickory Avenue. Exits east and west.</Message>
+					<Exit to="3">
+						<Verb>WEST</Verb>
+					</Exit>
+					<Exit to="5">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="5">
+					<Message>I am at a cul-de-sac at East end of Hickory. I can see a large house and there is an exit to the east.</Message>
+					<Exit to="4">
+						<Verb>WEST</Verb>
+					</Exit>
+					<Exit to="6">
+						<Verb>NORTH</Verb>
+					</Exit>
+				</Location>
+				<Location id="6">
+					<Message>I am in the garage of a large house. There is a street to south.</Message>
+					<Exit to="5">
+						<Verb>SOUTH</Verb>
+					</Exit>
+				</Location>
+				<Location id="7">
+					<Message>I'm on Hickory Avenue. I can see a shed with an antenna. Exits to east and west.</Message>
+					<Exit to="8">
+						<Verb>WEST</Verb>
+					</Exit>
+					<Exit to="3">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="8">
+					<Message>Cul-de-sac at west end. House to west.</Message>
+					<Exit to="7">
+						<Verb>EAST</Verb>
+					</Exit>
+					<Exit to="9">
+						<Verb>WEST</Verb>
+					</Exit>
+				</Location>
+				<Location id="9">
+					<Message>Living room.</Message>
+					<Exit to="7">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="10">
+					<Message>I'm at a highway access ramp.Exits North, East and South</Message>
+					<Exit to="3">
+						<Verb>NORTH</Verb>
+					</Exit>
+					<Exit to="13">
+						<Verb>SOUTH</Verb>
+					</Exit>
+					<Exit to="12">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="11">
+					<Message>Doh!</Message>
+				</Location>
+				<Location id="12">
+					<Message>I am in a field of tall grass. Exit west.</Message>
+					<Exit to="10">
+						<Verb>WEST</Verb>
+					</Exit>
+				</Location>
+				<Location id="13">
+					<Message>Highway. Exists east and west.</Message>
+					<Exit to="14">
+						<Verb>WEST</Verb>
+					</Exit>
+					<Exit to="14">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="14">
+					<Message>Highway. Exists east and west.</Message>
+					<Exit to="13">
+						<Verb>WEST</Verb>
+					</Exit>
+					<Exit to="13">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="15">
+					<Message>I am in a shed full of radio equipment. I can see an antenna lead. Exit to the north.</Message>
+					<Exit to="7">
+						<Verb>NORTH</Verb>
+					</Exit>
+				</Location>
+				<Location id="16">
+					<Message>I'm at the corner of Main and Mountain View. I can see a hardware store. Exits are north, east, south and west.</Message>
+					<Exit to="3">
+						<Verb>SOUTH</Verb>
+					</Exit>
+					<Exit to="18">
+						<Verb>EAST</Verb>
+					</Exit>
+					<Exit to="18">
+						<Verb>WEST</Verb>
+					</Exit>
+					<Exit to="19">
+						<Verb>NORTH</Verb>
+					</Exit>
+				</Location>
+				<Location id="17">
+					<Message>I am in a hardware store. Exit to the east.</Message>
+					<Exit to="16">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="18">
+					<Message>I'm behind the mountain on Mountain View. Exits are east and west.</Message>
+					<Exit to="16">
+						<Verb>EAST</Verb>
+					</Exit>
+					<Exit to="16">
+						<Verb>WEST</Verb>
+					</Exit>
+				</Location>
+				<Location id="19">
+					<Message>I'm at the east end of parking lot. Exits are north, south and west.</Message>
+					<Exit to="16">
+						<Verb>SOUTH</Verb>
+					</Exit>
+					<Exit to="20">
+						<Verb>NORTH</Verb>
+					</Exit>
+					<Exit to="25">
+						<Verb>WEST</Verb>
+					</Exit>
+				</Location>
+				<Location id="20">
+					<Message>Foot of mountain. West, south and up.</Message>
+					<Exit to="19">
+						<Verb>SOUTH</Verb>
+					</Exit>
+					<Exit to="22">
+						<Verb>WEST</Verb>
+					</Exit>
+					<Exit to="21">
+						<Verb>UP</Verb>
+					</Exit>
+				</Location>
+				<Location id="21">
+					<Message>Mountain ledge. Down. </Message>
+					<Exit to="20">
+						<Verb>DOWN</Verb>
+					</Exit>
+				</Location>
+				<Location id="22">
+					<Message>I am in a cold shallow lake. Exits are east and south.</Message>
+					<Exit to="20">
+						<Verb>EAST</Verb>
+					</Exit>
+					<Exit to="23">
+						<Verb>SOUTH</Verb>
+					</Exit>
+				</Location>
+				<Location id="23">
+					<Message>I'm on a beach. I can see a life guard shack. Exits are north and south.</Message>
+					<Exit to="22">
+						<Verb>NORTH</Verb>
+					</Exit>
+					<Exit to="25">
+						<Verb>SOUTH</Verb>
+					</Exit>
+				</Location>
+				<Location id="24">
+					<Message>I'm in a Life guard shack. Exit to the East. </Message>
+					<Exit to="23">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="25">
+					<Message>I'm at the west end of parking lot. I can see the Jet Car. Exits are north and east.</Message>
+					<Exit to="19">
+						<Verb>EAST</Verb>
+					</Exit>
+					<Exit to="23">
+						<Verb>NORTH</Verb>
+					</Exit>
+				</Location>
+				<Location id="26">
+					<Message>I am in a cockpit of the jet car. I can see the dashboard. Exit east.</Message>
+					<Exit to="25">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="27">
+					<Message>In a cavern. North.</Message>
+					<Exit to="28">
+						<Verb>NORTH</Verb>
+					</Exit>
+				</Location>
+				<Location id="28">
+					<Message>Mineshaft. East.</Message>
+					<Exit to="18">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="29">
+					<Message>I am in a Gas Station. I can see fluel pumps, the cashier's booth and filler pipes to the underground gas tank. There is an exit to the East.</Message>
+					<Exit to="3">
+						<Verb>EAST</Verb>
+					</Exit>
+				</Location>
+				<Location id="30">
+					<Message>I am in a Cashier's booth. I can see a control console and a trash pile. Exit is North.</Message>
+					<Exit to="29">
+						<Verb>NORTH</Verb>
+					</Exit>
+				</Location>
+			</Locations>
+			<PreRoom>
+				'check for atomic explosion
+				IF R%=13 OR R%=14 THEN PROCinc(@TurnOnFreeway)
+			</PreRoom>
+			<Init>
+				PROCset(@TurnsInDark,2):PROCenc(111)
+			</Init>
+			<HighPriority>
+				IF FNflag(0) AND NOT FNon(@HaveLight) THEN PROCdec(@TurnsInDark)
+				'check for boom on the freeway!
+				IF FNget(@TurnOnFreeway)=3 THEN PROCmsg("An atomic explosion erupts. I'm fried Banzai. The adventure is over."):PROCexit:=TRUE
+
+				'check for moving around in the dark
+				IF FNflag(0) AND NOT FNon(@HaveLight) AND FNget(@TurnsInDark)=0 THEN PROCmsg("It's dangerous to move in the dark! I fell and broke my neck! I'm DEAD! I'm DEAD!!"):PROCexit:=TRUE
+
+				'floor safe
+				IF R%=1 AND FNon(@TableMoved) THEN PROCmsg("You can see a floor safe.")
+
+				'field, hole 1
+				IF R%=12 AND FNon(@Hole1) THEN PROCmsg("You can see a large hole")
+			</HighPriority>
+			<LowPriority>
+
+				'IF V%=@Unlock THEN PROCeE(2):=TRUE
+
+				'room 1
+				'move the table
+				IF R%=1 AND V%=@Move AND N%=@Table AND NOT FNon(@TableMoved) THEN PROCmsg("The table moves."):PROCon(@TableMoved):=TRUE
+
+				'stuff with the safe
+				IF R%=1 AND V%=@Examine AND N%=@Safe AND FNon(@TableMoved) THEN PROCmsg("I see it's a key safe."):=TRUE
+				IF R%=1 AND V%=@Open AND N%=@Safe AND NOT FNhere(@_KEY) THEN PROCmsg("I can't do that...yet!"):=TRUE
+				'to do - open the safe!
+
+
+				'crossroads by yoyodyne and gas station, enter the yoyo building and gas station
+				IF R%=3 THEN IF V%=@Enter AND N%=@Yoyodyne THEN PROCgoto(1):=TRUE
+				IF R%=3 THEN IF V%=@Enter AND N%=@Station THEN PROCgoto(29):=TRUE
+
+				'east end of hickory
+				IF R%=5 AND V%=@Enter AND N%=@House THEN PROCgoto(6):=TRUE
+
+				'hickory by shed
+				IF R%=7 AND V%=@Enter AND N%=@Shed THEN PROCgoto(15):=TRUE
+
+
+				'field
+				IF R%=12 AND V%=@Dig AND FNavail(@_PICK) AND NOT FNon(@Hole1) THEN PROCon(@Hole1):PROCmsg("OK"):=TRUE
+				IF R%=12 AND V%=@Examine AND N%=@Hole AND FNon(@Hole1) THEN PROCmsg("I see an underground phone line."):=TRUE
+
+				'shed
+				IF R%=15 AND V%=@Connect AND N%=@Radio AND FNavail(@_RADIO) AND NOT FNon(@RadioAntennaStatus) THEN PROCon(@RadioAntennaStatus):PROCmsg("OK"):=TRUE
+
+				'mountain view corner
+				IF R%=16 THEN IF V%=@Enter AND N%=@Store THEN PROCgoto(17):=TRUE
+
+				'lake
+				IF R%=22 AND V%=@Fill AND N%=@Battery AND FNavail(@_BATTERY) AND NOT FNon(@BatteryWater) THEN PROCon(@BatteryWater):PROCmsg("OK"):=TRUE
+
+				'beach
+				IF R%=23 AND V%=@Enter AND N%=@Shack THEN PROCgoto(24):=TRUE
+
+				'west end by car
+				IF R%=25 THEN IF V%=@Enter AND N%=@Car THEN PROCgoto(26):=TRUE
+
+				'in the car
+				IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN PROCmsg("I can see the starter button and glovebox."):PROCon(@DashboardStatus)
+				IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN IF NOT FNon(@CockpitStatus) THEN PROCmsg("The cockpit is open.") ELSE IF FNon(@CockpitStatus) THEN PROCmsg("The cockpit is closed.")
+				IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN IF NOT FNon(@FuelGuageStatus) THEN PROCmsg("The fuel guage is empty") ELSE IF FNon(@FuelGuageStatus) THEN PROCmsg("The fuel guage is full.")
+				IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN :=TRUE
+
+				'search glovebox
+				IF R%=26 AND V%=@Examine AND N%=@Glovebox AND FNon(@DashboardStatus) AND NOT FNon(@GloveboxStatus) THEN PROCon(@GloveboxStatus):PROCmsg("I see something."):PROCmove(@_FORMULA,R%):PROCmove(@_FLUID,R%):=TRUE
+
+				'room 29 gas station - enter booth, examine pipes and pumps
+				IF R%=29 THEN IF V%=@Enter AND N%=@Booth THEN PROCgoto(30):=TRUE
+				IF R%=29 THEN IF V%=@Examine AND N%=@Pumps THEN PROCmsg("They are turned off."):=TRUE
+				IF R%=29 THEN IF V%=@Examine AND N%=@Pipes AND NOT FNon(@PipesPadlocked) THEN PROCmsg("They are padlocked."):=TRUE
+				IF R%=29 THEN IF V%=@Examine AND N%=@Pipes THEN PROCmsg("They are unlocked."):=TRUE
+
+				'room 30 cashier's booth
+				IF R%=30 THEN IF V%=@Examine AND N%=@Trash AND NOT FNon(@SearchTrash) THEN PROCon(@SearchTrash):PROCmsg("I see something."):PROCmove(@_BATTERY,R%):=TRUE
+				IF R%=30 THEN IF V%=@Examine AND N%=@Trash THEN PROCmsg("It is a pile of trash."):=TRUE
+				IF R%=30 THEN IF V%=@Examine AND N%=@Console THEN PROCmsg("I see a switch to the gas pumps."):=TRUE
+				IF R%=30 THEN IF V%=@Press AND N%=@Switch THEN PROCmsg("Nothing happens."):=TRUE
+
+
+				'open and close the toolbox
+				IF V%=@Open AND N%=@Toolbox AND FNavail(@_TOOLBOX) AND NOT FNon(@ToolBoxOpen) THEN PROCswap(@_TOOLBOX,@_OPENTOOLBOX):PROCon(@ToolBoxOpen):PROCmsg("I see something."):PROCmove(@_KEY,R%):PROCmove(@_TAPE,R%):PROCmove(@_FLASHLIGHT,R%):=TRUE
+				IF V%=@Open AND N%=@Toolbox AND FNavail(@_TOOLBOX) THEN PROCswap(@_TOOLBOX,@_OPENTOOLBOX):PROCset(@ToolBoxOpen,1):PROCmsg("The toolbox is open."):=TRUE
+				IF V%=@Close AND N%=@Toolbox AND FNavail(@_OPENTOOLBOX) THEN PROCswap(@_OPENTOOLBOX,@_TOOLBOX):PROCmsg(16):=TRUE
+
+				'check the battery
+				IF V%=@Check AND N%=@Battery AND FNavail(@_BATTERY) AND FNavail(@_HYDROMETER) THEN PROCmsg("Battery tests: Dead"):=TRUE
+
+				'examine radio
+				IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN PROCmsg("I see a transmit switch.")
+				IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioBatteryStatus) THEN PROCmsg("There's no battery.") ELSE IF FNon(@RadioBatteryStatus) THEN PROCmsg("There is a battery.")
+				IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioAntennaStatus) THEN PROCmsg("There's no antenna.")
+				IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioWorkingStatus) THEN PROCmsg("It is not working.") ELSE IF FNon(@RadioWorkingStatus) THEN PROCmsg("It is working.")
+				IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN :=TRUE
+
+				'examine objects
+				IF V%=@Examine AND N%=@Pump AND FNavail(@_PUMP) THEN PROCmsg("The hose is 6 ft long."):=TRUE
+				IF V%=@Examine AND N%=@Toolbox AND FNavail(@_TOOLBOX) THEN PROCmsg("Sticker says: Sam's Service Station."):=TRUE
+
+				IF V%=@Examine AND N%=@Battery AND FNavail(@_BATTERY) AND NOT FNon(@BatteryWater) THEN PROCmsg("I see there is no water in the battery."):=TRUE
+				IF V%=@Examine AND N%=@Battery AND FNavail(@_BATTERY) AND FNon(@BatteryWater) THEN PROCmsg("I see water in the battery."):=TRUE
+
+				IF V%=@Examine AND N%=@Jar AND FNavail(@_FLUID) THEN PROCmsg("Jar of glowind fluid"):=TRUE
+				IF V%=@Examine AND N%=@Formula AND FNavail(@_FORMULA) THEN PROCmsg("Fuel is made from gasoline, sand, quartz and catalyst."):=TRUE
+
+				'basic code for object handling etc.
+				IF V%=@On THEN IF N%=@CLS THEN PROCcls(1):=TRUE
+				IF V%=@Off THEN IF N%=@CLS THEN PROCcls(0):=TRUE
+
+				'light the Torch
+				IF V%=@On AND N%=@Torch THEN IF FNinInv(@_FLASHLIGHT) THEN PROCswap(@_FLASHLIGHT,@_FLASHLIGHTON):PROCon(@HaveLight):PROCmsg("The flashlifght is on."):=TRUE
+				IF V%=@Off AND N%=@Torch THEN IF FNinInv(@_FLASHLIGHT) THEN PROCswap(@_FLASHLIGHTON,@_FLASHLIGHT):PROCoff(@HaveLight):PROCmsg("The flashlight is off."):=TRUE
+
+				'load and save
+				IF V%=@Save THEN PROCsave:=TRUE
+				IF V%=@Load THEN PROCload:=TRUE
+
+				'examine
+				IF V%=@Examine THEN PROCmsg("You find nothing of interest."):=TRUE
+
+				'look at room
+				IF V%=@Look THEN PROCgtRm(R%):=TRUE
+
+				'deal with dropping the torch and losing the light source
+				IF V%=@Drop THEN IF N%=@Torch THEN IF FNinInv(@_FLASHLIGHTON) THEN PROCdrop(@_FLASHLIGHTON):PROCon(@HaveLight):=TRUE
+				IF V%=@Get THEN IF N%=@Torch THEN IF FNhere(@_FLASHLIGHTON) THEN PROCtake(@_FLASHLIGHTON):PROCoff(@HaveLight):=TRUE
+
+				'get and drop
+				IF V%=@Get THEN IF N%&lt;@Door THEN PROCtake(N%):=TRUE
+				IF V%=@Drop THEN IF N%&lt;@Door THEN PROCdrop(N%):=TRUE
+				IF V%=@Inv THEN PROCinv:=TRUE
+			</LowPriority>
+		</Section>
+	</Sections>
 </AdventureData>
