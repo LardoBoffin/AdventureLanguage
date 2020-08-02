@@ -15,7 +15,7 @@ REPEAT
 	MODE @ScreenMode@:PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@"  
 	   
 	'@NumVar@ is set in Adventure.xml
-	M$=STRING$(256," "):PROCvars:DIM CTR% @NumVar@:FOR X%=1 TO @NumVar@:PROCset(X%,0):NEXT:R%=1:OLR%=0:T%=0:PL%=10000:EX%=0:ENC%=0:CW%=0:L%=0:PROCinit
+	M$=STRING$(255," "):PROCvars:DIM CTR% @NumVar@:FOR X%=1 TO @NumVar@:PROCset(X%,0):NEXT:R%=1:OLR%=0:T%=0:PL%=10000:EX%=0:ENC%=0:CW%=0:L%=0:PROCinit
 	PRINT TAB(0,5)"Press";CHR$(131);"1";CHR$(135);"to start a new game":PRINT TAB(0,7)"Press"CHR$(131);"2";CHR$(135);"to continue an existing game":PRINT:PRINT">";:REPEAT:C$=INKEY$(0):UNTIL C$="1" OR C$="2":CLS
 	IF C$="2" THEN PRINTTAB(10,0)CHR$(131);"Getting catalogue...":PRINT:*CAT
 	IF C$="2" THEN PRINT:PRINT"Type the file name and press Enter":PRINT"Or press Enter for the default save":INPUT">" M$:IF LEFT$(M$,2)="S." THEN M$=RIGHT$(M$,LEN(M$)-2)
@@ -190,9 +190,8 @@ DEFFNpA(T$,E%):LOCAL W%,F%,R%:W%=0:R%=1:REPEAT:F%=LEN(A$(R%)):IF E%=F% THEN IF T
 '		R%=R%+1:UNTIL R%=M% OR W%>0 OR F%=0:IF T%=1 AND W%>0 THEN =VN%?W% ELSE IF T%=2 AND W%>0 THEN =NN%?W% ELSE IF T%=3 AND W%>0 THEN =AN%?W% ELSE =0
 
 'to upper case
-DEFFNtU(T$):LOCAL C%,P%,L%:M$="":L%=LEN(T$):FOR P%=1 TO L%:C%=ASC(MID$(T$,P%,1)):IF C%>90 THEN C%=C%-32
-M$=M$+CHR$(C%):NEXT:=M$
-  
+DEFFNtU(T$):LOCAL P%,L%:M$="":L%=LEN(T$):FOR P%=1TOL%:C%=ASC(MID$(T$,P%,1)):M$=M$+CHR$(C%+((C%>90)*32)):NEXT:=M$
+
 'get a word (ending in a space)
 DEFFNgW(T$):LOCAL C%,C$,WRD$:C%=1
 	REPEAT:C$=MID$(T$,C%,1):WRD$=WRD$+C$:C%=C%+1:UNTIL C$=" "OR C%>LEN(T$):IF RIGHT$(WRD$,1)<>" "THEN WRD$=WRD$+" " 

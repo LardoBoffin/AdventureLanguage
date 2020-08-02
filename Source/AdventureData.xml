@@ -165,7 +165,7 @@
 				<Location id="0">
 				</Location>
 				<Location id="1">
-					<Message>I am in a Yoyodyne office. There is a large table here. Exit to the west and a staircase going down. </Message>
+					<Message>I am in a Yoyodyne office. There is a large table here.</Message>
 					<Exit to="3">
 						<Verb>WEST</Verb>
 					</Exit>
@@ -196,7 +196,7 @@
 					</Exit>
 				</Location>
 				<Location id="4">
-					<Message>I'm on Hickory Avenue. Exits east and west.</Message>
+					<Message>I'm on Hickory Avenue.</Message>
 					<Exit to="3">
 						<Verb>WEST</Verb>
 					</Exit>
@@ -205,7 +205,7 @@
 					</Exit>
 				</Location>
 				<Location id="5">
-					<Message>I am at a cul-de-sac at East end of Hickory. I can see a large house and there is an exit to the east.</Message>
+					<Message>I am at a cul-de-sac at East end of Hickory. I can see a large house.</Message>
 					<Exit to="4">
 						<Verb>WEST</Verb>
 					</Exit>
@@ -214,13 +214,13 @@
 					</Exit>
 				</Location>
 				<Location id="6">
-					<Message>I am in the garage of a large house. There is a street to south.</Message>
+					<Message>I am in the garage of a large house.</Message>
 					<Exit to="5">
 						<Verb>SOUTH</Verb>
 					</Exit>
 				</Location>
 				<Location id="7">
-					<Message>I'm on Hickory Avenue. I can see a shed with an antenna. Exits to east and west.</Message>
+					<Message>I'm on Hickory Avenue. I can see a shed with an antenna.</Message>
 					<Exit to="8">
 						<Verb>WEST</Verb>
 					</Exit>
@@ -229,7 +229,7 @@
 					</Exit>
 				</Location>
 				<Location id="8">
-					<Message>Cul-de-sac at west end. House to west.</Message>
+					<Message>Cul-de-sac at west end.</Message>
 					<Exit to="7">
 						<Verb>EAST</Verb>
 					</Exit>
@@ -244,7 +244,7 @@
 					</Exit>
 				</Location>
 				<Location id="10">
-					<Message>I'm at a highway access ramp.Exits North, East and South</Message>
+					<Message>I'm at a highway access ramp.</Message>
 					<Exit to="3">
 						<Verb>NORTH</Verb>
 					</Exit>
@@ -259,13 +259,13 @@
 					<Message>Doh!</Message>
 				</Location>
 				<Location id="12">
-					<Message>I am in a field of tall grass. Exit west.</Message>
+					<Message>I am in a field of tall grass.</Message>
 					<Exit to="10">
 						<Verb>WEST</Verb>
 					</Exit>
 				</Location>
 				<Location id="13">
-					<Message>Highway. Exists east and west.</Message>
+					<Message>Highway.</Message>
 					<Exit to="14">
 						<Verb>WEST</Verb>
 					</Exit>
@@ -274,7 +274,7 @@
 					</Exit>
 				</Location>
 				<Location id="14">
-					<Message>Highway. Exists east and west.</Message>
+					<Message>Highway.</Message>
 					<Exit to="13">
 						<Verb>WEST</Verb>
 					</Exit>
@@ -283,13 +283,13 @@
 					</Exit>
 				</Location>
 				<Location id="15">
-					<Message>I am in a shed full of radio equipment. I can see an antenna lead. Exit to the north.</Message>
+					<Message>I am in a shed full of radio equipment. I can see an antenna lead.</Message>
 					<Exit to="7">
 						<Verb>NORTH</Verb>
 					</Exit>
 				</Location>
 				<Location id="16">
-					<Message>I'm at the corner of Main and Mountain View. I can see a hardware store. Exits are north, east, south and west.</Message>
+					<Message>I'm at the corner of Main and Mountain View. I can see a hardware store.</Message>
 					<Exit to="3">
 						<Verb>SOUTH</Verb>
 					</Exit>
@@ -304,13 +304,13 @@
 					</Exit>
 				</Location>
 				<Location id="17">
-					<Message>I am in a hardware store. Exit to the east.</Message>
+					<Message>I am in a hardware store.</Message>
 					<Exit to="16">
 						<Verb>EAST</Verb>
 					</Exit>
 				</Location>
 				<Location id="18">
-					<Message>I'm behind the mountain on Mountain View. Exits are east and west.</Message>
+					<Message>I'm behind the mountain on Mountain View.</Message>
 					<Exit to="16">
 						<Verb>EAST</Verb>
 					</Exit>
@@ -319,7 +319,7 @@
 					</Exit>
 				</Location>
 				<Location id="19">
-					<Message>I'm at the east end of parking lot. Exits are north, south and west.</Message>
+					<Message>I'm at the east end of parking lot.</Message>
 					<Exit to="16">
 						<Verb>SOUTH</Verb>
 					</Exit>
@@ -331,7 +331,7 @@
 					</Exit>
 				</Location>
 				<Location id="20">
-					<Message>Foot of mountain. West, south and up.</Message>
+					<Message>Foot of mountain.</Message>
 					<Exit to="19">
 						<Verb>SOUTH</Verb>
 					</Exit>
@@ -343,13 +343,13 @@
 					</Exit>
 				</Location>
 				<Location id="21">
-					<Message>Mountain ledge. Down. </Message>
+					<Message>Mountain ledge.</Message>
 					<Exit to="20">
 						<Verb>DOWN</Verb>
 					</Exit>
 				</Location>
 				<Location id="22">
-					<Message>I am in a cold shallow lake. Exits are east and south.</Message>
+					<Message>I am in a cold shallow lake.</Message>
 					<Exit to="20">
 						<Verb>EAST</Verb>
 					</Exit>
@@ -358,7 +358,7 @@
 					</Exit>
 				</Location>
 				<Location id="23">
-					<Message>I'm on a beach. I can see a life guard shack. Exits are north and south.</Message>
+					<Message>I'm on a beach. I can see a life guard shack.</Message>
 					<Exit to="22">
 						<Verb>NORTH</Verb>
 					</Exit>
@@ -367,13 +367,13 @@
 					</Exit>
 				</Location>
 				<Location id="24">
-					<Message>I'm in a Life guard shack. Exit to the East. </Message>
+					<Message>I'm in a Life guard shack.</Message>
 					<Exit to="23">
 						<Verb>EAST</Verb>
 					</Exit>
 				</Location>
 				<Location id="25">
-					<Message>I'm at the west end of parking lot. I can see the Jet Car. Exits are north and east.</Message>
+					<Message>I'm at the west end of parking lot. I can see the Jet Car.</Message>
 					<Exit to="19">
 						<Verb>EAST</Verb>
 					</Exit>
@@ -382,31 +382,31 @@
 					</Exit>
 				</Location>
 				<Location id="26">
-					<Message>I am in a cockpit of the jet car. I can see the dashboard. Exit east.</Message>
+					<Message>I am in a cockpit of the jet car. I can see the dashboard.</Message>
 					<Exit to="25">
 						<Verb>EAST</Verb>
 					</Exit>
 				</Location>
 				<Location id="27">
-					<Message>In a cavern. North.</Message>
+					<Message>In a cavern.</Message>
 					<Exit to="28">
 						<Verb>NORTH</Verb>
 					</Exit>
 				</Location>
 				<Location id="28">
-					<Message>Mineshaft. East.</Message>
+					<Message>Mineshaft.</Message>
 					<Exit to="18">
 						<Verb>EAST</Verb>
 					</Exit>
 				</Location>
 				<Location id="29">
-					<Message>I am in a Gas Station. I can see fluel pumps, the cashier's booth and filler pipes to the underground gas tank. There is an exit to the East.</Message>
+					<Message>I am in a Gas Station. I can see fluel pumps, the cashier's booth and filler pipes to the underground gas tank.</Message>
 					<Exit to="3">
 						<Verb>EAST</Verb>
 					</Exit>
 				</Location>
 				<Location id="30">
-					<Message>I am in a Cashier's booth. I can see a control console and a trash pile. Exit is North.</Message>
+					<Message>I am in a Cashier's booth. I can see a control console and a trash pile.</Message>
 					<Exit to="29">
 						<Verb>NORTH</Verb>
 					</Exit>
