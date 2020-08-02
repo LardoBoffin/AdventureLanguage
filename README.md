@@ -51,6 +51,8 @@ All wonderfully irritating uses of such flags.
 Locking is done by adding 128 to the verb number for the direction and checking for the value being < 128 at point of moving. If it is >127 it is locked / disabled. Otherwise it is not. To enable an exit reduce the verb number by 128.
 This process also means that if the door east is locked and you type EAST the system automatically tells you 'You can't' without further code as the verb does not match.
 
+10) The directions for a room are now automatically shown as part of the room code. This allows much reduced message file size. Some work still to do on making it look nice!
+
 I have a number of immediate plans for the game engine and compiler (in no specific order):
 
 1) Include wandering monsters / NPCs.
