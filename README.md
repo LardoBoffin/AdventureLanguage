@@ -53,6 +53,8 @@ This process also means that if the door east is locked and you type EAST the sy
 
 10) The directions for a room are now automatically shown as part of the room code. This allows much reduced message file size. Some work still to do on making it look nice!
 
+11) Implement a process to remove spaces from the tokenised BBC BASIC file (based on a switch). This currently removes about 900 bytes from the Banzai adventure.
+
 I have a number of immediate plans for the game engine and compiler (in no specific order):
 
 1) Include wandering monsters / NPCs.
