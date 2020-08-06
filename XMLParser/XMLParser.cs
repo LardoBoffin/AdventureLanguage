@@ -76,6 +76,18 @@ namespace AdventureLanguage
                         gameData.tokeniser = xe.Value;
                         break;
 
+                    case "CRUNCHTOKENISEDFILE":
+                        gameData.eventList.Add(new EventLog(xe));
+                        if (xe.Value.ToUpper() == "TRUE")
+                        {
+                            gameData.crunchTokenisedFile = true;
+                        }
+                        else
+                        {
+                            gameData.crunchTokenisedFile = false;
+                        }
+                        break;
+
                     case "TOKENISEDFILENAME":
                         gameData.eventList.Add(new EventLog(xe));
                         gameData.tokenisedFileName = xe.Value;

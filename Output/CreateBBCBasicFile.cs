@@ -9,10 +9,181 @@ namespace AdventureLanguage.Output
 {
     public static class CreateBBCBasicFile
     {
+        public static bool ProcessTokenisedFile(DataItems gameData)
+        {
+            //open a tokenised file and step through each line calling remove spaces
 
+            string fd = gameData.folderDivider;
+
+            gameData.eventList.Add(new EventLog(""));
+            gameData.eventList.Add(new EventLog("Crunching tokenised file."));
+
+            BinaryReader tokenisedFile = new BinaryReader(File.Open(gameData.folderLocation + fd + "FileOutput" + fd + gameData.tokenisedFileName, FileMode.Open));
+            long originalLength = tokenisedFile.BaseStream.Length;
+            BinaryWriter outputFile = new BinaryWriter(File.Open(gameData.folderLocation + fd + "FileOutput" + fd + "_tmp", FileMode.Create));
+
+            try
+            {
+
+                //load tokenised file and save without spaces
+                while (true)
+                {
+
+                    byte[] buffer = new byte[originalLength];
+
+                    //get length of file and read it into buf
+                    int sz = tokenisedFile.Read(buffer, 0, (int)originalLength);
+
+                    //empty file
+                    if (sz <= 0)
+                        break;
+
+                    //step through buffer and remove unwanted space characters
+                    buffer = StepThroughFile(buffer);
+
+                    //write data
+                    outputFile.Write(buffer, 0, buffer.Length);
+
+                    //last chunk of large file?
+                    if (sz < 100000)
+                        break; // eof reached
+                }
+
+                tokenisedFile.Close();
+                long nl = outputFile.BaseStream.Length;
+                outputFile.Close();
+
+
+                try
+                {
+                    //delete tokenised file
+                    File.Delete(gameData.folderLocation + fd + "FileOutput" + fd + gameData.tokenisedFileName);
+
+                    //Rename temp to tokenised file
+                    FileInfo file = new FileInfo(gameData.folderLocation + fd + "FileOutput" + fd + "_tmp");
+                    file.Rename(gameData.tokenisedFileName);
+
+                    gameData.eventList.Add(new EventLog("Crunched and reduced by " + (nl - originalLength) + " bytes"));
+                    gameData.eventList.Add(new EventLog(""));
+                }
+                catch (Exception e)
+                {
+                    Console.Write(e.Message);
+                }
+
+
+                return true;
+            }
+            catch (Exception exp)
+            {
+                Console.Write(exp.Message);
+            }
+
+            return false;
+        }
+
+        private static byte[] StepThroughFile(byte[] buffer)
+        {
+            byte[] returnBuffer = new byte[buffer.Length];
+            int returnBufferCount = 0;
+            bool isString = false;
+            bool startOfLine = true;
+            int lineCount = 1;
+            int lineLenPos = 0;
+            int lineLen = 0;
+
+            //the program starts with a CR and ends with &FF
+            returnBuffer[returnBufferCount] = 13; returnBufferCount++;
+
+            //MSB of line number
+            //LSB of line number
+            //Length of line (which needs to be adjusted when the line is shortened) 
+            //Text ......
+            //CR
+
+            try
+            {
+                for (int x = 1; x < buffer.Length; x++)
+                {
+
+                    byte b = buffer[x];
+
+                    if (b == 255)
+                    {
+                        startOfLine = false;
+                    }
+
+                    if (startOfLine)
+                    {
+                        for (int header = 0; header < 3; header++)
+                        {
+                            returnBuffer[returnBufferCount + header] = buffer[x];
+
+                            x++;
+                        }
+
+                        //store where the line length is for this line
+                        lineLen = returnBuffer[returnBufferCount + 2];
+                        lineLenPos = returnBufferCount + 2;
+                        returnBufferCount += 3;
+                        startOfLine = false;
+                    }
+
+                    b = buffer[x];
+
+                    if (b == '"')
+                    {
+                        //set string mode
+                        if (isString)
+                        {
+                            isString = false;
+                        }
+                        else { isString = true; }
+                    }
+
+                    if (b == ' ')
+                    {
+                        //space so only add it if we are in a string
+                        if (isString)
+                        {
+                            returnBuffer[returnBufferCount] = b;
+                            returnBufferCount++;
+                        }
+                        else
+                        {
+                            //the character is not added so adjust the length
+                            lineLen--;
+                        }
+                    }
+                    else
+                    {
+                        returnBuffer[returnBufferCount] = b;
+                        returnBufferCount++;
+                    }
+
+                    if (b == 13)
+                    {
+                        //deal with end of line
+                        returnBuffer[lineLenPos] = (byte)lineLen;
+                        startOfLine = true;
+                        lineCount++;
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            byte[] tmpreturnBuffer = new byte[returnBufferCount];
+            Buffer.BlockCopy(returnBuffer, 0, tmpreturnBuffer, 0, returnBufferCount);
+
+            return tmpreturnBuffer;
+
+        }
         public static bool CreateOutputProgram(DataItems gameData)
         {
-
 
             try
             {
@@ -33,7 +204,7 @@ namespace AdventureLanguage.Output
                     {
                         //replace the room index size with the actual number used
                         string tmp = gameData.SourceBBCBasicProgram[i].LineText();
-                        gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@ObjectData@", (gameData.objectList.Count*8).ToString()));
+                        gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@ObjectData@", (gameData.objectList.Count * 8).ToString()));
                     }
 
                     if (gameData.SourceBBCBasicProgram[i].LineText().IndexOf("@RMIndex@") > -1)

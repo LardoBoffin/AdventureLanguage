@@ -30,6 +30,7 @@ namespace AdventureLanguage.Data
         public int screenWidth;
         public int screenMode;
         public bool debugMode;
+        public bool crunchTokenisedFile;
         public string folderDivider;
         public long roomIndexLength;
         public long roomDataLength;

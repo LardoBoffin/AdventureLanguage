@@ -10,9 +10,10 @@
 			<ScreenMode>7</ScreenMode>
 			<SourceFile>source.txt</SourceFile>
 			<OutputFile>Banzai.txt</OutputFile>
-			<BuildType>Debug</BuildType>
+			<BuildType></BuildType>
 			<Tokeniser>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\tokenise.exe</Tokeniser>
 			<TokenisedFileName>Banzai</TokenisedFileName>
+			<CrunchTokenisedFile>True</CrunchTokenisedFile>
 			<SSDBuilder>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\MkImg.exe</SSDBuilder>
 			<SSDName>Banzai.SSD</SSDName>
 			<BeebEmPath>C:\Program Files (x86)\BeebEm\BeebEm.exe</BeebEmPath>

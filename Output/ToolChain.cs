@@ -6,6 +6,7 @@ using System.IO;
 using AdventureLanguage.Helpers;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using AdventureLanguage.Output;
 
 namespace AdventureLanguage.Output
 {
@@ -56,6 +57,14 @@ namespace AdventureLanguage.Output
                     FileInfo file = new FileInfo(fileOutput + @"\" + gameData.tokenisedFileName + ".BBC");
                     file.Rename(gameData.tokenisedFileName);
 
+                    if (gameData.crunchTokenisedFile)
+                    {
+                        if (!CreateBBCBasicFile.ProcessTokenisedFile(gameData))
+                        {
+                            return false;
+                        }
+                    }
+
                 }
             }
             catch (Exception e)
@@ -89,7 +98,7 @@ namespace AdventureLanguage.Output
                     File.Delete(targetFile);
                     File.Copy(Path.Combine(gameData.folderLocation, gameData.outputFile), targetFile, true);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     gameData.eventList.Add(new EventLog(e.Message));
                     return false;
