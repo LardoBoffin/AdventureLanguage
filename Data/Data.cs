@@ -18,6 +18,7 @@ namespace AdventureLanguage.Data
         public Collection<BBCBasicLine> UserBBCBasicProgram = new Collection<BBCBasicLine>();
         public Collection<BBCBasicLine> TargetBBCBasicProgram = new Collection<BBCBasicLine>();
         public Collection<EventLog> eventList = new Collection<EventLog>();
+        public Collection<ProceduresAndFunctions> procList = new Collection<ProceduresAndFunctions>();
         public string folderLocation;
         public String sourceFile;
         public String outputFile;

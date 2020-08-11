@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using AdventureLanguage.Helpers;
 using System.IO;
+using System.Linq;
 
 namespace AdventureLanguage.Output
 {
@@ -39,7 +40,7 @@ namespace AdventureLanguage.Output
                         break;
 
                     //step through buffer and remove unwanted space characters
-                    buffer = StepThroughFile(buffer);
+                    buffer = StepThroughFile(buffer, gameData);
 
                     //write data
                     outputFile.Write(buffer, 0, buffer.Length);
@@ -52,7 +53,6 @@ namespace AdventureLanguage.Output
                 tokenisedFile.Close();
                 long nl = outputFile.BaseStream.Length;
                 outputFile.Close();
-
 
                 try
                 {
@@ -71,7 +71,6 @@ namespace AdventureLanguage.Output
                     Console.Write(e.Message);
                 }
 
-
                 return true;
             }
             catch (Exception exp)
@@ -82,7 +81,7 @@ namespace AdventureLanguage.Output
             return false;
         }
 
-        private static byte[] StepThroughFile(byte[] buffer)
+        private static byte[] StepThroughFile(byte[] buffer, DataItems gameData)
         {
             byte[] returnBuffer = new byte[buffer.Length];
             int returnBufferCount = 0;
@@ -91,6 +90,11 @@ namespace AdventureLanguage.Output
             int lineCount = 1;
             int lineLenPos = 0;
             int lineLen = 0;
+            int lengthDiff = 0;
+
+            string nameOfItem = "";
+            int nameLoopCount = 1;
+            string renamedItem = "";
 
             //the program starts with a CR and ends with &FF
             returnBuffer[returnBufferCount] = 13; returnBufferCount++;
@@ -127,6 +131,32 @@ namespace AdventureLanguage.Output
                         lineLenPos = returnBufferCount + 2;
                         returnBufferCount += 3;
                         startOfLine = false;
+                    }
+
+                    b = buffer[x];
+
+                    //get the names of any functions or procedures
+                    if (b == 242 || b == 164)
+                    {
+                        //read chars until a (, or : is found, or return an error
+                        ProceduresAndFunctions.Type objType;
+
+                        if (b == 242) { objType = ProceduresAndFunctions.Type.Procedure; } else { objType = ProceduresAndFunctions.Type.Function; }
+                        nameOfItem = "";
+                        nameLoopCount = 1;
+                        b = buffer[x + nameLoopCount];
+
+                        //can either be a ( or : or =
+                        while (b != '(' && b != ':' && b != '=' && b > 32)
+                        {
+                            nameOfItem += Convert.ToChar(b);
+                            nameLoopCount += 1;
+                            b = buffer[x + nameLoopCount];
+                        }
+
+                        //check for fn name and add as appropriate
+                        DataHelpers.AddProc(gameData.procList, nameOfItem, objType, gameData);
+
                     }
 
                     b = buffer[x];
@@ -176,10 +206,182 @@ namespace AdventureLanguage.Output
                 Console.WriteLine(e.Message);
             }
 
-            byte[] tmpreturnBuffer = new byte[returnBufferCount];
-            Buffer.BlockCopy(returnBuffer, 0, tmpreturnBuffer, 0, returnBufferCount);
+            byte[] spacesRemovedBuffer = new byte[returnBufferCount];
+            Buffer.BlockCopy(returnBuffer, 0, spacesRemovedBuffer, 0, returnBufferCount);
 
-            return tmpreturnBuffer;
+            try
+            {
+                gameData.eventList.Add(new EventLog(""));
+
+                //sort list by highest usage first, for procedures
+                List<ProceduresAndFunctions> SortedList = (List<ProceduresAndFunctions>)gameData.procList
+                    .OrderByDescending(o => o.CountOfUsage)
+                    .Where(o => o.FunctionType() == ProceduresAndFunctions.Type.Procedure).ToList();//.ThenByDescending(o => o.CountOfUsage).ToList();
+
+                //rename all PROCs
+                bool success = DataHelpers.RenameObjectsInList(gameData, SortedList);
+
+                gameData.eventList.Add(new EventLog(""));
+
+                //sort list by highest usage first, for functions
+                SortedList = (List<ProceduresAndFunctions>)gameData.procList
+                   .OrderByDescending(o => o.CountOfUsage)
+                   .Where(o => o.FunctionType() == ProceduresAndFunctions.Type.Function).ToList();//.ThenByDescending(o => o.CountOfUsage).ToList();
+
+                //rename all FNs
+                success = DataHelpers.RenameObjectsInList(gameData, SortedList);
+
+                gameData.eventList.Add(new EventLog(""));
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            //==========================================================================================================================
+            //process procedure names etc.
+            returnBufferCount = 0;
+
+            //the program starts with a CR and ends with &FF
+            returnBuffer[returnBufferCount] = 13; returnBufferCount++;
+
+            gameData.eventList.Add(new EventLog("Renaming functions in code... "));
+
+            //copy data from tmpreturnBuffer (which has the spaces removed) into returnBuffer
+            try
+            {
+                for (int x = 1; x < spacesRemovedBuffer.Length; x++)
+                {
+
+                    byte b = spacesRemovedBuffer[x];
+
+                    if (b == 255)
+                    {
+                        startOfLine = false;
+                    }
+
+                    if (startOfLine)
+                    {
+                        for (int header = 0; header < 3; header++)
+                        {
+                            returnBuffer[returnBufferCount + header] = spacesRemovedBuffer[x];
+
+                            x++;
+                        }
+
+                        //store where the line length is for this line
+                        lineLen = returnBuffer[returnBufferCount + 2];
+                        lineLenPos = returnBufferCount + 2;
+                        returnBufferCount += 3;
+                        startOfLine = false;
+                    }
+
+                    b = spacesRemovedBuffer[x];
+
+                    if (b == 242 || b == 164)
+                    {
+                        //read chars until a (, or : is found, or return an error
+                        ProceduresAndFunctions.Type objType;
+
+                        if (b == 242) { objType = ProceduresAndFunctions.Type.Procedure; } else { objType = ProceduresAndFunctions.Type.Function; }
+                        nameOfItem = "";
+                        nameLoopCount = 1;
+                        b = spacesRemovedBuffer[x + nameLoopCount];
+
+                        //can either be a ( or : or =
+                        while (b != '(' && b != ':' && b != '=' && b > 32)
+                        {
+                            nameOfItem += Convert.ToChar(b);
+                            nameLoopCount += 1;
+                            b = spacesRemovedBuffer[x + nameLoopCount];
+                        }
+
+                        b = spacesRemovedBuffer[x];
+
+                        returnBuffer[returnBufferCount] = b;
+                        returnBufferCount++;
+
+                        //check for fn name and rename as appropriate
+                        renamedItem = DataHelpers.GetRenamedFunction(gameData.procList, nameOfItem, objType);
+
+                        lengthDiff = nameOfItem.Length - renamedItem.Length;
+
+                        if (lengthDiff > 0)
+                        {
+                            //need to remove some characters are reset the length of the line
+
+                            lineLen -= lengthDiff;
+
+                            for (int loopCount = 1; loopCount <= renamedItem.Length; loopCount++)
+                            {
+                                returnBuffer[returnBufferCount] = (byte)renamedItem.MidChar(loopCount, 1);
+                                returnBufferCount++;
+                            }
+
+                            x += nameOfItem.Length;
+                        }
+                    }
+                    else
+                    {
+                        //not a function etc. so just add the character
+                        b = spacesRemovedBuffer[x];
+
+                        returnBuffer[returnBufferCount] = b;
+                        returnBufferCount++;
+                    }
+
+                    if (b == 13)
+                    {
+                        //deal with end of line
+                        returnBuffer[lineLenPos] = (byte)lineLen;
+                        startOfLine = true;
+                        lineCount++;
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            //try
+            //{
+            //    gameData.eventList.Add(new EventLog(""));
+
+            //    //sort list by highest usage first, for procedures
+            //    List<ProceduresAndFunctions> SortedList = (List<ProceduresAndFunctions>)gameData.procList
+            //        .OrderByDescending(o => o.CountOfUsage)
+            //        .Where(o => o.FunctionType() == ProceduresAndFunctions.Type.Procedure).ToList();//.ThenByDescending(o => o.CountOfUsage).ToList();
+
+            //    //rename all PROCs
+            //    bool success = DataHelpers.RenameObjectsInList(gameData, SortedList);
+
+            //    gameData.eventList.Add(new EventLog(""));
+
+            //    //sort list by highest usage first, for functions
+            //    SortedList = (List<ProceduresAndFunctions>)gameData.procList
+            //       .OrderByDescending(o => o.CountOfUsage)
+            //       .Where(o => o.FunctionType() == ProceduresAndFunctions.Type.Function).ToList();//.ThenByDescending(o => o.CountOfUsage).ToList();
+
+            //    //rename all FNs
+            //    success = DataHelpers.RenameObjectsInList(gameData, SortedList);
+
+            //    gameData.eventList.Add(new EventLog(""));
+
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e.Message);
+            //}
+
+            byte[] finalBuffer = new byte[returnBufferCount];
+
+            Buffer.BlockCopy(returnBuffer, 0, finalBuffer, 0, returnBufferCount);
+
+            //return the crunched data
+            return finalBuffer;
 
         }
         public static bool CreateOutputProgram(DataItems gameData)

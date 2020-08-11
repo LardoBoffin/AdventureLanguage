@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AdventureLanguage.Data
 {
-    public  class Noun
+    public class Noun
     {
         private readonly string iDString;
 

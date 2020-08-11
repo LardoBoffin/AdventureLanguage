@@ -9,6 +9,38 @@ namespace AdventureLanguage.Helpers
     public static class DataHelpers
     {
 
+        public static bool RenameObjectsInList(DataItems gameData, List<ProceduresAndFunctions> SortedList)
+        {
+            //rename each item in the list 
+
+            int renameCount = 0;
+            int numberOfLetters = 1;
+            string newName = "";
+
+            foreach (ProceduresAndFunctions s in SortedList)
+            {
+                newName += newName.PadLeft(numberOfLetters, Convert.ToChar(65 + renameCount));
+                gameData.procList[s.IDNumber() - 1].ReplaceNameText = newName;
+
+                gameData.eventList.Add(new EventLog("Replacing " + gameData.procList[s.IDNumber() - 1].FunctionName() + "() with " + newName));
+
+                renameCount++;
+                if (renameCount == 26)
+                {
+                    renameCount = 32;
+                }
+                if (renameCount == 60)
+                {
+                    numberOfLetters++;
+                    renameCount = 0;
+                }
+
+                newName = "";
+
+            }
+            return true;
+        }
+
         public static int AddMessage(Collection<Message> messageList, string text, string IDString)
         {
 
@@ -20,13 +52,65 @@ namespace AdventureLanguage.Helpers
             return messageList.Count;
         }
 
+        public static int GetProcID(Collection<ProceduresAndFunctions> procList, string nameOfItem, ProceduresAndFunctions.Type type)
+        {
+
+            foreach (ProceduresAndFunctions p in procList)
+            {
+                if (p.FunctionName() == nameOfItem && p.FunctionType() == type)
+                {
+                    p.CountOfUsage += 1;
+                    return p.IDNumber();
+                }
+            }
+
+            return 0;
+        }
+
+        public static string GetRenamedFunction(Collection<ProceduresAndFunctions> procList, string nameOfItem, ProceduresAndFunctions.Type type)
+        {
+            int IDNumber;
+
+            IDNumber = GetProcID(procList, nameOfItem, type);
+
+            if (IDNumber == 0)
+            {
+                return "";
+            }
+
+            return procList[IDNumber-1].ReplaceNameText;
+        }
+
+        public static int AddProc(Collection<ProceduresAndFunctions> procList, string nameOfItem, ProceduresAndFunctions.Type type, DataItems gameData)
+        {
+            int IDNumber;
+
+            IDNumber = GetProcID(procList, nameOfItem, type);
+            if (IDNumber > 0)
+            { return IDNumber; }
+
+            //not found so add it
+            procList.Add(new ProceduresAndFunctions(nameOfItem, type, procList.Count + 1));
+
+            if (type == ProceduresAndFunctions.Type.Function)
+            {
+                gameData.eventList.Add(new EventLog("Added Function " + nameOfItem + "()"));
+            }
+            else
+            {
+                gameData.eventList.Add(new EventLog("Added Procedure " + nameOfItem + "()"));
+            }
+
+            return procList.Count;
+        }
+
         public static bool AddVariable(DataItems gameData, string IDString, string text, int value, bool isGlobal)
         {
 
             if (VariableFound(gameData.varList, IDString) == -1)
             {
                 //not found so add it
-                gameData.varList.Add(new Variable(IDString, gameData.varList.Count+1, text, value, isGlobal));
+                gameData.varList.Add(new Variable(IDString, gameData.varList.Count + 1, text, value, isGlobal));
             }
             else
             {
