@@ -55,6 +55,8 @@ This process also means that if the door east is locked and you type EAST the sy
 
 11) Implement a process to remove spaces from the tokenised BBC BASIC file (based on a switch). This currently removes about 900 bytes from the Banzai adventure.
 
+12) Implement a process to rename all PROC and FNs to a single character where possible.
+
 I have a number of immediate plans for the game engine and compiler (in no specific order):
 
 1) Include wandering monsters / NPCs.

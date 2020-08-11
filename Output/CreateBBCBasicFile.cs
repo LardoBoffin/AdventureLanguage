@@ -346,36 +346,6 @@ namespace AdventureLanguage.Output
                 Console.WriteLine(e.Message);
             }
 
-            //try
-            //{
-            //    gameData.eventList.Add(new EventLog(""));
-
-            //    //sort list by highest usage first, for procedures
-            //    List<ProceduresAndFunctions> SortedList = (List<ProceduresAndFunctions>)gameData.procList
-            //        .OrderByDescending(o => o.CountOfUsage)
-            //        .Where(o => o.FunctionType() == ProceduresAndFunctions.Type.Procedure).ToList();//.ThenByDescending(o => o.CountOfUsage).ToList();
-
-            //    //rename all PROCs
-            //    bool success = DataHelpers.RenameObjectsInList(gameData, SortedList);
-
-            //    gameData.eventList.Add(new EventLog(""));
-
-            //    //sort list by highest usage first, for functions
-            //    SortedList = (List<ProceduresAndFunctions>)gameData.procList
-            //       .OrderByDescending(o => o.CountOfUsage)
-            //       .Where(o => o.FunctionType() == ProceduresAndFunctions.Type.Function).ToList();//.ThenByDescending(o => o.CountOfUsage).ToList();
-
-            //    //rename all FNs
-            //    success = DataHelpers.RenameObjectsInList(gameData, SortedList);
-
-            //    gameData.eventList.Add(new EventLog(""));
-
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine(e.Message);
-            //}
-
             byte[] finalBuffer = new byte[returnBufferCount];
 
             Buffer.BlockCopy(returnBuffer, 0, finalBuffer, 0, returnBufferCount);
