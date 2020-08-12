@@ -81,23 +81,22 @@ namespace AdventureLanguage.Output
             return false;
         }
 
-        private static byte[] StepThroughFile(byte[] buffer, DataItems gameData)
+        private static int FirstPass(byte[] sourceBuffer, byte[] returnBuffer, DataItems gameData)
         {
-            byte[] returnBuffer = new byte[buffer.Length];
+
+            //remove spaces and make a note of all functions and procedures
+
             int returnBufferCount = 0;
             bool isString = false;
             bool startOfLine = true;
             int lineCount = 1;
             int lineLenPos = 0;
             int lineLen = 0;
-            int lengthDiff = 0;
-
-            string nameOfItem = "";
-            int nameLoopCount = 1;
-            string renamedItem = "";
+            string nameOfItem;
+            int nameLoopCount;
 
             //the program starts with a CR and ends with &FF
-            returnBuffer[returnBufferCount] = 13; returnBufferCount++;
+            //returnBuffer[returnBufferCount] = 13; returnBufferCount++;
 
             //MSB of line number
             //LSB of line number
@@ -105,12 +104,14 @@ namespace AdventureLanguage.Output
             //Text ......
             //CR
 
+            returnBuffer[returnBufferCount] = 13; returnBufferCount++;
+
             try
             {
-                for (int x = 1; x < buffer.Length; x++)
+                for (int x = 1; x < sourceBuffer.Length; x++)
                 {
 
-                    byte b = buffer[x];
+                    byte b = sourceBuffer[x];
 
                     if (b == 255)
                     {
@@ -121,8 +122,7 @@ namespace AdventureLanguage.Output
                     {
                         for (int header = 0; header < 3; header++)
                         {
-                            returnBuffer[returnBufferCount + header] = buffer[x];
-
+                            returnBuffer[returnBufferCount + header] = sourceBuffer[x];
                             x++;
                         }
 
@@ -133,7 +133,7 @@ namespace AdventureLanguage.Output
                         startOfLine = false;
                     }
 
-                    b = buffer[x];
+                    b = sourceBuffer[x];
 
                     //get the names of any functions or procedures
                     if (b == 242 || b == 164)
@@ -144,14 +144,14 @@ namespace AdventureLanguage.Output
                         if (b == 242) { objType = ProceduresAndFunctions.Type.Procedure; } else { objType = ProceduresAndFunctions.Type.Function; }
                         nameOfItem = "";
                         nameLoopCount = 1;
-                        b = buffer[x + nameLoopCount];
+                        b = sourceBuffer[x + nameLoopCount];
 
                         //can either be a ( or : or =
                         while (b != '(' && b != ':' && b != '=' && b > 32)
                         {
                             nameOfItem += Convert.ToChar(b);
                             nameLoopCount += 1;
-                            b = buffer[x + nameLoopCount];
+                            b = sourceBuffer[x + nameLoopCount];
                         }
 
                         //check for fn name and add as appropriate
@@ -159,7 +159,7 @@ namespace AdventureLanguage.Output
 
                     }
 
-                    b = buffer[x];
+                    b = sourceBuffer[x];
 
                     if (b == '"')
                     {
@@ -206,6 +206,136 @@ namespace AdventureLanguage.Output
                 Console.WriteLine(e.Message);
             }
 
+            return returnBufferCount;
+        }
+
+        private static int SecondPass(byte[] sourceBuffer, byte[] returnBuffer, DataItems gameData)
+        {
+
+            int returnBufferCount = 0;
+            bool startOfLine = true;
+            int lineCount = 1;
+            int lineLenPos = 0;
+            int lineLen = 0;
+            int lengthDiff = 0;
+
+            string nameOfItem = "";
+            int nameLoopCount = 1;
+            string renamedItem = "";
+
+            returnBufferCount = 0;
+
+            //the program starts with a CR and ends with &FF
+            returnBuffer[returnBufferCount] = 13; returnBufferCount++;
+
+            gameData.eventList.Add(new EventLog("Renaming functions in code... "));
+
+            //copy data from tmpreturnBuffer (which has the spaces removed) into returnBuffer
+            try
+            {
+                for (int x = 1; x < sourceBuffer.Length; x++)
+                {
+
+                    byte b = sourceBuffer[x];
+
+                    if (b == 255)
+                    {
+                        startOfLine = false;
+                    }
+
+                    if (startOfLine)
+                    {
+                        for (int header = 0; header < 3; header++)
+                        {
+                            returnBuffer[returnBufferCount + header] = sourceBuffer[x];
+                            x++;
+                        }
+
+                        //store where the line length is for this line
+                        lineLen = returnBuffer[returnBufferCount + 2];
+                        lineLenPos = returnBufferCount + 2;
+                        returnBufferCount += 3;
+                        startOfLine = false;
+                    }
+
+                    b = sourceBuffer[x];
+
+                    if (b == 242 || b == 164)
+                    {
+                        //read chars until a (, or : is found, or return an error
+                        ProceduresAndFunctions.Type objType;
+
+                        if (b == 242) { objType = ProceduresAndFunctions.Type.Procedure; } else { objType = ProceduresAndFunctions.Type.Function; }
+                        nameOfItem = "";
+                        nameLoopCount = 1;
+                        b = sourceBuffer[x + nameLoopCount];
+
+                        //can either be a ( or : or =
+                        while (b != '(' && b != ':' && b != '=' && b > 32)
+                        {
+                            nameOfItem += Convert.ToChar(b);
+                            nameLoopCount += 1;
+                            b = sourceBuffer[x + nameLoopCount];
+                        }
+
+                        b = sourceBuffer[x];
+
+                        returnBuffer[returnBufferCount] = b;
+                        returnBufferCount++;
+
+                        //check for fn name and rename as appropriate
+                        renamedItem = DataHelpers.GetRenamedFunction(gameData.procList, nameOfItem, objType);
+
+                        lengthDiff = nameOfItem.Length - renamedItem.Length;
+
+                        if (lengthDiff > 0)
+                        {
+                            //need to remove some characters are reset the length of the line
+
+                            lineLen -= lengthDiff;
+
+                            for (int loopCount = 1; loopCount <= renamedItem.Length; loopCount++)
+                            {
+                                returnBuffer[returnBufferCount] = (byte)renamedItem.MidChar(loopCount, 1);
+                                returnBufferCount++;
+                            }
+
+                            x += nameOfItem.Length;
+                        }
+                    }
+                    else
+                    {
+                        //not a function etc. so just add the character
+                        b = sourceBuffer[x];
+                        returnBuffer[returnBufferCount] = b;
+                        returnBufferCount++;
+                    }
+
+                    if (b == 13)
+                    {
+                        //deal with end of line
+                        returnBuffer[lineLenPos] = (byte)lineLen;
+                        startOfLine = true;
+                        lineCount++;
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            return returnBufferCount;
+        }
+
+        private static byte[] StepThroughFile(byte[] buffer, DataItems gameData)
+        {
+            byte[] returnBuffer = new byte[buffer.Length];
+            int returnBufferCount;
+
+            returnBufferCount = FirstPass(buffer, returnBuffer, gameData);
+
             byte[] spacesRemovedBuffer = new byte[returnBufferCount];
             Buffer.BlockCopy(returnBuffer, 0, spacesRemovedBuffer, 0, returnBufferCount);
 
@@ -241,111 +371,9 @@ namespace AdventureLanguage.Output
 
             //==========================================================================================================================
             //process procedure names etc.
-            returnBufferCount = 0;
+            returnBufferCount = SecondPass(spacesRemovedBuffer, returnBuffer, gameData);
 
-            //the program starts with a CR and ends with &FF
-            returnBuffer[returnBufferCount] = 13; returnBufferCount++;
-
-            gameData.eventList.Add(new EventLog("Renaming functions in code... "));
-
-            //copy data from tmpreturnBuffer (which has the spaces removed) into returnBuffer
-            try
-            {
-                for (int x = 1; x < spacesRemovedBuffer.Length; x++)
-                {
-
-                    byte b = spacesRemovedBuffer[x];
-
-                    if (b == 255)
-                    {
-                        startOfLine = false;
-                    }
-
-                    if (startOfLine)
-                    {
-                        for (int header = 0; header < 3; header++)
-                        {
-                            returnBuffer[returnBufferCount + header] = spacesRemovedBuffer[x];
-
-                            x++;
-                        }
-
-                        //store where the line length is for this line
-                        lineLen = returnBuffer[returnBufferCount + 2];
-                        lineLenPos = returnBufferCount + 2;
-                        returnBufferCount += 3;
-                        startOfLine = false;
-                    }
-
-                    b = spacesRemovedBuffer[x];
-
-                    if (b == 242 || b == 164)
-                    {
-                        //read chars until a (, or : is found, or return an error
-                        ProceduresAndFunctions.Type objType;
-
-                        if (b == 242) { objType = ProceduresAndFunctions.Type.Procedure; } else { objType = ProceduresAndFunctions.Type.Function; }
-                        nameOfItem = "";
-                        nameLoopCount = 1;
-                        b = spacesRemovedBuffer[x + nameLoopCount];
-
-                        //can either be a ( or : or =
-                        while (b != '(' && b != ':' && b != '=' && b > 32)
-                        {
-                            nameOfItem += Convert.ToChar(b);
-                            nameLoopCount += 1;
-                            b = spacesRemovedBuffer[x + nameLoopCount];
-                        }
-
-                        b = spacesRemovedBuffer[x];
-
-                        returnBuffer[returnBufferCount] = b;
-                        returnBufferCount++;
-
-                        //check for fn name and rename as appropriate
-                        renamedItem = DataHelpers.GetRenamedFunction(gameData.procList, nameOfItem, objType);
-
-                        lengthDiff = nameOfItem.Length - renamedItem.Length;
-
-                        if (lengthDiff > 0)
-                        {
-                            //need to remove some characters are reset the length of the line
-
-                            lineLen -= lengthDiff;
-
-                            for (int loopCount = 1; loopCount <= renamedItem.Length; loopCount++)
-                            {
-                                returnBuffer[returnBufferCount] = (byte)renamedItem.MidChar(loopCount, 1);
-                                returnBufferCount++;
-                            }
-
-                            x += nameOfItem.Length;
-                        }
-                    }
-                    else
-                    {
-                        //not a function etc. so just add the character
-                        b = spacesRemovedBuffer[x];
-
-                        returnBuffer[returnBufferCount] = b;
-                        returnBufferCount++;
-                    }
-
-                    if (b == 13)
-                    {
-                        //deal with end of line
-                        returnBuffer[lineLenPos] = (byte)lineLen;
-                        startOfLine = true;
-                        lineCount++;
-                    }
-
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
+            //get final data buffer
             byte[] finalBuffer = new byte[returnBufferCount];
 
             Buffer.BlockCopy(returnBuffer, 0, finalBuffer, 0, returnBufferCount);

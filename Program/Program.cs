@@ -10,12 +10,7 @@
 using System;
 using System.Xml.Linq;
 using System.IO;
-using System.Xml;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using AdventureLanguage.Data;
-using AdventureLanguage.BBCBasicInput;
 using AdventureLanguage.Output;
 
 namespace AdventureLanguage

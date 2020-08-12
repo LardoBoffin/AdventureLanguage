@@ -22,7 +22,7 @@
 				<Message id="WhatNow">What now</Message>
 				<Message id="CannotDoIt">You can't.</Message>
 				<Message id="What">Pardon?</Message>
-				<Message id="AnotherGame?">Press a key for another game...</Message>
+				<Message id="AnotherGame?">Another game? (Y/N)</Message>
 				<Message id="Sure">Are you sure? (Y/N)...</Message>
 				<Message id="GotThat">You've already got that.</Message>
 				<Message id="HaveNotGotThat">You haven't got that.</Message>
