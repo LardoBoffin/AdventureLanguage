@@ -8,7 +8,7 @@ MODE @ScreenMode@:VDU23;8202;0;0;0;:PRINT"Loading";:T%=0:Q%=0:DIM IX% @RMIndex@:
 -SC%=0
    
 'start of main loop
-PROCldSM:REPEAT:PROCmsg(0):PROCldOb("DATA-O"):PROCldRm:IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4)
+PROCldSM:REPEAT:PROCmsg(0):PROCldOb:PROCldRm:IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4)
 		   
 	'@ScreenMode@ is set in Adventure.xml   
 	CLS:PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@"  
@@ -20,7 +20,7 @@ PROCldSM:REPEAT:PROCmsg(0):PROCldOb("DATA-O"):PROCldRm:IF T%=0 THEN PROCgW(1):PR
 	IF C$="2" THEN PRINT:PRINT"Type the file name and press Enter":PRINT"Or press Enter for the default save":INPUT">" M$:IF LEFT$(M$,2)="S." THEN M$=RIGHT$(M$,LEN(M$)-2)
 	IF C$="2" THEN M$="LOAD "+M$:CLS:PROCload
 	
-	REPEAT:D%=RND(100):PROCpreRoom:IF R%<>OLR% THEN OLR%=R%:PROCcl:PROCgtRm(R%):PROCt
+	REPEAT:D%=RND(100):PROCpreRoom:IF R%<>OLR% THEN OLR%=R%:PROCcl:PROCgtRm:PROCt
 	D%=FNhighPty:IF EX%=0 AND NOT D% THEN PROCpsTxt
 -TM%=TIME
 		IF V%=0 AND EX%=0 AND NOT D% THEN PROCmsg(4):D%=TRUE
@@ -67,13 +67,11 @@ DEFPROCldRm:OSCLI("L. IDX-R "+STR$~IX%):OSCLI("L. DATA-R "+STR$~RM%):ENDPROC
 DEFPROCldSM:LOCAL R%,F%:F%=OPENIN("DATA-M"):DIM MS$(@NumMssages@):FOR X%=1 TO @NumMssages@:I%=(X%-1)*5:IND=OPENIN("IDX-M"):PTR#IND=I%:INPUT#IND,I%:CLOSE#IND:PTR#F%=I%:INPUT#F%,MS$(X%):PRINT".";:NEXT:CLOSE#F%:ENDPROC
 
 'load objects
-DEFPROCldOb(F$):LOCAL R%:F%=OPENIN(F$):IF FNturn=0 THEN OBJN%=@NumObjects@:DIM OB% @ObjectData@
-
-'OSCLI("LOAD "+F$+" "+STR$~OB%):ENDPROC
+DEFPROCldOb:LOCAL R%:F%=OPENIN("DATA-O"):IF FNturn=0 THEN OBJN%=@NumObjects@:DIM OB% @ObjectData@
 R%=1:REPEAT:?(OB%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
   
 'store object at location
-DEFPROCstOb(O%,R%):LOCAL P%:O%=O%-1:P%=(O%*8)+4:?(OB%+P%)=R% DIV 256:?(OB%+P%+1)=R% MOD 256:ENDPROC
+DEFPROCstOb(O%,R%):LOCAL P%:P%=((O%-1)*8)+4:?(OB%+P%)=R% DIV 256:?(OB%+P%+1)=R% MOD 256:ENDPROC
 
 'list objects at location
 DEFPROClsOb(R%,MS%):LOCAL X%,O%:O%=0:IF OBJN%=0 THEN ENDPROC
@@ -85,8 +83,9 @@ DEFPROClsOb(R%,MS%):LOCAL X%,O%:O%=0:IF OBJN%=0 THEN ENDPROC
 ENDPROC
   
 'is object here?
-DEFFNobHr(O%,R%):LOCAL L%:L%=FNobLn(O%):IF L%=R% THEN =FNobMn(O%) ELSE =0
-  
+'DEFFNobHr(O%,R%):LOCAL L%:L%=FNobLn(O%):IF L%=R% THEN =FNobMn(O%) ELSE =0
+ DEFFNobHr(O%,R%):IF FNobLn(O%)=R% THEN =FNobMn(O%) ELSE =0
+
 'return object location
 DEFFNobLn(O%):U%=((O%-1)*8)+4+OB%:=?(U%)*256+?(U%+1)
   
@@ -105,10 +104,10 @@ DEFFNckMv:LOCAL N%,Z%:D%=FALSE:N%=?(RM%+K%):IF N%=0 THEN =FALSE
 DEFFNrmPtr(R%):N%=(R%-1)*2:=(?(IX%+N%)*256)+?(IX%+N%+1)
   
 'get room details
-DEFPROCgtRm(R%):LOCAL F%,N%,M%,D%,C%,V%:D%=0
+DEFPROCgtRm:LOCAL F%,N%,M%,D%,C%,V%:D%=0:F%=FNrmPtr(R%):G%=?(RM%+F%):IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(13)
 
 	'get the position in the index data and get the value of the pointer
-	F%=FNrmPtr(R%):G%=?(RM%+F%):IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(13)
+	
 
 	'print all room messages if not dark
 	F%=F%+1:N%=?(RM%+F%):F%=F%+1:FOR C%=1TON%:M%=?(RM%+F%)*256:F%=F%+1:M%=M%+?(RM%+F%):IF D%=0 THEN PROCmsg(M%):NEXT ELSE NEXT
@@ -119,11 +118,8 @@ DEFPROCgtRm(R%):LOCAL F%,N%,M%,D%,C%,V%:D%=0
 	F%=F%+1:PRINT:PRINT "Exits are : ";:FOR M%=0 TO (N%-1)*3 STEP 3:V%=?(RM%+F%+M%):IF V%>127 THEN V%=V%-128
 	'print out the directions
 	
-	
 	C%=0:REPEAT:IF VN%?(C%)=V% THEN PRINT V$(C%)+" ";:D%=2
-	C%=C%+1:UNTIL D%=2 OR C%=VM%:D%=0:NEXT:PRINT
-
-PROCrmMsg:ENDPROC
+	C%=C%+1:UNTIL D%=2 OR C%=VM%:D%=0:NEXT:PRINT:PROCrmMsg:ENDPROC
 
 
 'enable or disable exit
@@ -183,17 +179,11 @@ DEFFNpN(T$,E%):LOCAL W%,F%,R%:W%=0:R%=1:REPEAT:F%=LEN(N$(R%)):IF E%=F% THEN IF T
 DEFFNpA(T$,E%):LOCAL W%,F%,R%:W%=0:R%=1:REPEAT:F%=LEN(A$(R%)):IF E%=F% THEN IF T$=A$(R%) THEN W%=R%
 		R%=R%+1:UNTIL R%=AM% OR W%>0:IF W%>0 THEN =AN%?W% ELSE=0
 
-'DEFFNpW(T$,T%,E%):LOCAL W%,F%,R%,W$,M%:W%=0:R%=1
-'	REPEAT:IF T%=1 THEN W$=V$(R%):M%=VM% ELSE IF T%=2 THEN W$=N$(R%):M%=NM% ELSE IF T%=3 THEN W$=A$(R%):M%=AM%
-'		F%=LEN(W$):IF E%=F% THEN IF T$=W$ AND F%>0 THEN W%=R%
-'		R%=R%+1:UNTIL R%=M% OR W%>0 OR F%=0:IF T%=1 AND W%>0 THEN =VN%?W% ELSE IF T%=2 AND W%>0 THEN =NN%?W% ELSE IF T%=3 AND W%>0 THEN =AN%?W% ELSE =0
-
 'to upper case
 DEFFNtU(T$):LOCAL P%,L%:M$="":L%=LEN(T$):FOR P%=1TOL%:C%=ASC(MID$(T$,P%,1)):M$=M$+CHR$(C%+((C%>90)*32)):NEXT:=M$
 
 'get a word (ending in a space)
-DEFFNgW(T$):LOCAL C%,C$,WRD$:C%=1
-	REPEAT:C$=MID$(T$,C%,1):WRD$=WRD$+C$:C%=C%+1:UNTIL C$=" "OR C%>LEN(T$):IF RIGHT$(WRD$,1)<>" "THEN WRD$=WRD$+" " 
+DEFFNgW(T$):LOCAL C%,C$,WRD$:C%=1:REPEAT:C$=MID$(T$,C%,1):WRD$=WRD$+C$:C%=C%+1:UNTIL C$=" "OR C%>LEN(T$):IF RIGHT$(WRD$,1)<>" "THEN WRD$=WRD$+" " 
 =LEFT$(WRD$,LEN(WRD$)-1)
   
 'set the variables
@@ -242,11 +232,12 @@ DEFFNflag(FL%):IF G% AND 2^FL% THEN =TRUE ELSE =FALSE
 DEFFNon(F%):IF ?(CTR%+F%)>0 THEN =TRUE ELSE =FALSE
 
 'increase counter (C%) by 1 unless 255
-DEFPROCinc(C%):LOCAL T%:T%=FNget(C%):IF T%<256 THEN T%=T%+1:PROCset(C%,T%)
+DEFPROCinc(C%):IF FNget(C%)<256 THEN PROCset(C%,FNget(C%)+1)
 ENDPROC
 
 'decrease counter (C%) by 1 unless 0
-DEFPROCdec(C%):LOCAL T%:T%=FNget(C%):IF T%>0 THEN T%=T%-1:PROCset(C%,T%)
+'DEFPROCdec(C%):LOCAL T%:T%=FNget(C%):IF T%>0 THEN T%=T%-1:PROCset(C%,T%)
+DEFPROCdec(C%):IF FNget(C%)>0 THEN PROCset(C%,FNget(C%)-1)
 ENDPROC
 
 'hold for the specified time
@@ -268,10 +259,10 @@ DEFFNget(C%):=?(CTR%+C%)
 DEFPROCcls(S%):Q%=S%:PROCend:PROCmsg(16):ENDPROC
 
 'return if object (O%) is in the current room
-DEFFNhere(O%):IF FNobHr(O%,R%)=0 THEN =FALSE ELSE =TRUE
+DEFFNhere(O%):=FNobHr(O%,R%)=0 
 
 'return if object (O%) is in inventory (PL%)
-DEFFNinInv(O%):IF FNobHr(O%,PL%)=0 THEN =FALSE ELSE =TRUE
+DEFFNinInv(O%):=FNobHr(O%,PL%)=0
 
 'return if object is either in the room or in inventory
 DEFFNavail(O%)=FNhere(O%) OR FNinInv(O%)

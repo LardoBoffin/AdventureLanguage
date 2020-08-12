@@ -413,12 +413,23 @@
 					</Exit>
 				</Location>
 			</Locations>
+			<NPCS>
+				<NPC>
+					<Noun>Mugger</Noun>
+					<Hostility>100</Hostility>
+					<Health>40</Health>
+					<ToHit>60</ToHit>
+					<Damage>4</Damage>
+					<Wandering>0</Wandering>
+					<Location>3</Location>
+				</NPC>
+			</NPCS>
 			<PreRoom>
 				'check for atomic explosion
 				IF R%=13 OR R%=14 THEN PROCinc(@TurnOnFreeway)
 			</PreRoom>
 			<Init>
-				PROCset(@TurnsInDark,2):PROCenc(111)
+				PROCset(@TurnsInDark,2):PROCenc(111):H%=60:AT%=90:DM%=8
 			</Init>
 			<HighPriority>
 				IF FNflag(0) AND NOT FNon(@HaveLight) THEN PROCdec(@TurnsInDark)
@@ -541,7 +552,7 @@
 				IF V%=@Examine THEN PROCmsg("You find nothing of interest."):=TRUE
 
 				'look at room
-				IF V%=@Look THEN PROCgtRm(R%):=TRUE
+				IF V%=@Look THEN PROCgtRm:=TRUE
 
 				'deal with dropping the torch and losing the light source
 				IF V%=@Drop THEN IF N%=@Torch THEN IF FNinInv(@_FLASHLIGHTON) THEN PROCdrop(@_FLASHLIGHTON):PROCon(@HaveLight):=TRUE

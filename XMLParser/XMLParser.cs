@@ -253,10 +253,105 @@ namespace AdventureLanguage
                         }
                         gameData.eventList.Add(new EventLog("</LowPriority>"));
                         break;
+
+                    case "NPCS":
+                        gameData.eventList.Add(new EventLog("<NPCs>"));
+                        if (!NPCS(xe, gameData, false))
+                        {
+                            return false;
+                        }
+                        gameData.eventList.Add(new EventLog("</NPCs>"));
+                        break;
                 }
             }
 
             return true;
+        }
+
+        private static bool NPCS(XElement xm, DataItems gameData, bool isGlobal)
+        {
+            //steps through all the system messages in the section and calls a create message for each node found
+            int len;
+            len = xm.Descendants().Count();
+
+            for (int i = 0; i < len; i++)
+            {
+                XElement xe = xm.Descendants().ElementAt(i);
+                gameData.eventList.Add(new EventLog(xe));
+                if (xe.Name.ToString().ToUpper() != "NPC") { gameData.eventList.Add(new EventLog("Invalid XML - element not AdventureData \\ Game \\ NPCS \\ NPC is : " + xe.Name)); return false; }
+                if (!GenerateNPC(xe, gameData)) { return false; }
+            }
+
+            return true;
+        }
+
+        private static bool GenerateNPC(XElement xe, DataItems gameData)
+        {
+
+            //add NPC
+            string noun = "";
+            int hostility = 0;
+            int health = 0;
+            int toHit = 0;
+            int damage = 0;
+            int wandering = 0;
+            int location = 0;
+            int len = xe.Descendants().Count();
+            int childLen;
+            int iCount=0;
+
+            for (int i = 0; i < len; i++)
+            {
+                XElement xc = xe.Descendants().ElementAt(i);
+                childLen = xc.Descendants().Count();
+
+                switch (xc.Name.ToString().ToUpper())
+                {
+                    case "NOUN":
+                        noun = xc.Value;
+                        break;
+                    case "HOSTILITY":
+                        hostility = Int32.Parse(xc.Value);
+                        break;
+                    case "HEALTH":
+                        health = Int32.Parse(xc.Value);
+                        break;
+                    case "TOHIT":
+                        toHit = Int32.Parse(xc.Value);
+                        break;
+                    case "DAMAGE":
+                        damage = Int32.Parse(xc.Value);
+                        break;
+                    case "WANDERING":
+                        wandering = Int32.Parse(xc.Value);
+                        break;
+                    case "LOCATION":
+                        location = Int32.Parse(xc.Value);
+                        break;
+                }
+            }
+
+            if (gameData.nounList.Count > 0)
+            {
+                iCount = gameData.nounList[gameData.nounList.Count - 1].IDNumber() + 1;
+            }
+
+            //check for noun already existing
+            if (!DataHelpers.ItemAlreadyExists(gameData, noun))
+            {
+                //not found so add it
+                gameData.nounList.Add(new Noun("", iCount, noun));
+            }
+            else
+            {
+                gameData.eventList.Add(new EventLog("The Noun for this NPC (" + noun + ") already exists."));
+                return false;
+            }
+
+            gameData.NPCList.Add(new NPC(noun,iCount, gameData.NPCList.Count, hostility, health, toHit, damage, wandering, location));
+
+            return true;
+
         }
 
         private static bool BBCBasicLines(XElement xm, DataItems gameData, BBCBasicLine.lineType lt)
