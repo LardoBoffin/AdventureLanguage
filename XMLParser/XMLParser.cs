@@ -272,14 +272,17 @@ namespace AdventureLanguage
         {
             //steps through all the system messages in the section and calls a create message for each node found
             int len;
+            int childLen;
             len = xm.Descendants().Count();
 
             for (int i = 0; i < len; i++)
             {
                 XElement xe = xm.Descendants().ElementAt(i);
+                childLen = xe.Descendants().Count();
                 gameData.eventList.Add(new EventLog(xe));
                 if (xe.Name.ToString().ToUpper() != "NPC") { gameData.eventList.Add(new EventLog("Invalid XML - element not AdventureData \\ Game \\ NPCS \\ NPC is : " + xe.Name)); return false; }
                 if (!GenerateNPC(xe, gameData)) { return false; }
+                i += childLen;
             }
 
             return true;
@@ -299,6 +302,8 @@ namespace AdventureLanguage
             int len = xe.Descendants().Count();
             int childLen;
             int iCount=0;
+            int flagID;
+            byte locationFlags=0;
 
             for (int i = 0; i < len; i++)
             {
@@ -328,6 +333,35 @@ namespace AdventureLanguage
                     case "LOCATION":
                         location = Int32.Parse(xc.Value);
                         break;
+                    case "FLAG":
+                        gameData.eventList.Add(new EventLog(xc));
+                        if (xc.HasAttributes)
+                        {
+                            //check for an ID value
+                            IEnumerable<XAttribute> attList = from at in xc.Attributes() select at;
+                            foreach (XAttribute att in attList)
+                            {
+                                if (att.Name.ToString().ToUpper() == "ID")
+                                {
+                                    flagID = Int32.Parse(att.Value);
+                                    //flagValue = Int32.Parse(xc.Value);
+                                    if (flagID > 7)
+                                    {
+                                        gameData.eventList.Add(new EventLog("Flag ID cannot exceed 7 in a byte field."));
+                                        return false;
+                                    }
+                                    locationFlags = GetFlagsByte(locationFlags, flagID, Int32.Parse(xc.Value));
+                                    //gameData.locationList[gameData.locationList.Count() - 1].SetFlags(locationFlags);
+                                }
+                                else
+                                {
+                                    gameData.eventList.Add(new EventLog("Incorrectly formed location information flag."));
+                                    return false;
+                                }
+                            }
+                        }
+
+                        break;
                 }
             }
 
@@ -349,6 +383,7 @@ namespace AdventureLanguage
             }
 
             gameData.NPCList.Add(new NPC(noun,iCount, gameData.NPCList.Count, hostility, health, toHit, damage, wandering, location));
+            gameData.NPCList[gameData.NPCList.Count() - 1].SetFlags(locationFlags);
 
             return true;
 
@@ -403,7 +438,7 @@ namespace AdventureLanguage
 
         private static bool GenerateLocation(XElement xe, DataItems gameData)
         {
-            //takes a message node and extracts the data (including the optional ID) and adds if not already present
+            //takes a location node and extracts the data (including the optional ID) and adds if not already present
             bool found = false;
             string IDString = "";
             int locationID;

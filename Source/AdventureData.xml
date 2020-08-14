@@ -422,6 +422,18 @@
 					<Damage>4</Damage>
 					<Wandering>0</Wandering>
 					<Location>3</Location>
+					<Flag id="0">1</Flag>
+					<Flag id="1">1</Flag>
+				</NPC>
+				<NPC>
+					<Noun>Shopkeeper</Noun>
+					<Hostility>0</Hostility>
+					<Health>10</Health>
+					<ToHit>0</ToHit>
+					<Damage>0</Damage>
+					<Wandering>0</Wandering>
+					<Location>17</Location>
+					<Flag id="0">0</Flag>
 				</NPC>
 			</NPCS>
 			<PreRoom>

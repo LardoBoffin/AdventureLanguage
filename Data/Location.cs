@@ -13,7 +13,7 @@ namespace AdventureLanguage.Data
 
         private readonly string messageText;
 
-        private byte _flags;
+        private byte _flags;                    //8 bit flags that determine environment. 0 is reserved for light or dark (1=dark)
 
         private readonly List<int> messages = new List<int>();
 
