@@ -254,6 +254,15 @@ namespace AdventureLanguage
                         gameData.eventList.Add(new EventLog("</LowPriority>"));
                         break;
 
+                    case "USERCODE":
+                        gameData.eventList.Add(new EventLog("<UserCode>"));
+                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.lineType.UserCode))
+                        {
+                            return false;
+                        }
+                        gameData.eventList.Add(new EventLog("</UserCode>"));
+
+                        break;
                     case "NPCS":
                         gameData.eventList.Add(new EventLog("<NPCs>"));
                         if (!NPCS(xe, gameData, false))
@@ -464,6 +473,12 @@ namespace AdventureLanguage
             locationFlags = 0;
 
             locationID = Int32.Parse(IDString);
+
+            if (locationID > 255)
+            {
+                gameData.eventList.Add(new EventLog("Too many locations in this section. Maximum 255"));
+                return false;
+            }
             gameData.locationList.Add(new Location(IDString, locationID, "", locationFlags));
             gameData.eventList.Add(new EventLog("<Location Id = " + IDString + ">"));
             //there can be message, object and action present in the location

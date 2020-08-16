@@ -212,16 +212,16 @@ namespace AdventureLanguage.Output
         private static int SecondPass(byte[] sourceBuffer, byte[] returnBuffer, DataItems gameData)
         {
 
-            int returnBufferCount = 0;
+            int returnBufferCount;
             bool startOfLine = true;
             int lineCount = 1;
             int lineLenPos = 0;
             int lineLen = 0;
-            int lengthDiff = 0;
+            int lengthDiff;
 
-            string nameOfItem = "";
-            int nameLoopCount = 1;
-            string renamedItem = "";
+            string nameOfItem;
+            int nameLoopCount;
+            string renamedItem;
 
             returnBufferCount = 0;
 
@@ -404,7 +404,7 @@ namespace AdventureLanguage.Output
                     {
                         //replace the room index size with the actual number used
                         string tmp = gameData.SourceBBCBasicProgram[i].LineText();
-                        gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@ObjectData@", (gameData.objectList.Count * 8).ToString()));
+                        gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@ObjectData@", (gameData.objectList.Count * 10).ToString()));
                     }
 
                     if (gameData.SourceBBCBasicProgram[i].LineText().IndexOf("@RMIndex@") > -1)
@@ -515,6 +515,14 @@ namespace AdventureLanguage.Output
                     }
                 }
 
+                //add in the user code section
+                for (int line = 0; line < iNumUserLines; line++)
+                {
+                    if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.lineType.UserCode)
+                    {
+                        gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.lineType.UserCode));
+                    }
+                }
                 //renumber the lines
                 BBCBasicFunctions.RenumberLines(gameData);
 
@@ -535,7 +543,7 @@ namespace AdventureLanguage.Output
                 int iNumLines = gameData.TargetBBCBasicProgram.Count;
 
                 {
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(gameData.folderLocation + gameData.folderDivider + gameData.outputFile, false, System.Text.Encoding.ASCII))
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(gameData.folderLocation + gameData.folderDivider + gameData.outputFile, false, Encoding.ASCII))
                     {
                         if (gameData.folderDivider == "/")
                         {

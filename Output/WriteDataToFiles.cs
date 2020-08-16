@@ -157,11 +157,14 @@ namespace AdventureLanguage.Output
         {
 
             //write out:
-            //object number
-            //message number
-            //location number
-            //weight
-            //value
+            //object number     (1 byte)
+            //message number    (2 bytes)
+            //location number   (1 byte)
+            //weight            (1 byte)
+            //value             (2 bytes)
+            //carried by        (1 byte)
+            //capacity          (1 byte)
+            //inside oject      (1 byte)
 
             try
             {
@@ -191,8 +194,9 @@ namespace AdventureLanguage.Output
 
                         //location number
                         number = gameData.objectList[i].LocationNumber();
-                        dataWriter.Write((byte)(number / 256));
-                        dataWriter.Write((byte)(number - ((number / 256) * 256)));
+                        dataWriter.Write((byte)(number));
+                        //dataWriter.Write((byte)(number / 256));
+                        //dataWriter.Write((byte)(number - ((number / 256) * 256)));
 
                         //weight
                         dataWriter.Write((byte)gameData.objectList[i].Weight());
@@ -201,6 +205,16 @@ namespace AdventureLanguage.Output
                         number = gameData.objectList[i].Value();
                         dataWriter.Write((byte)(number / 256));
                         dataWriter.Write((byte)(number - ((number / 256) * 256)));
+
+                        //carried by        (1 byte)
+                        dataWriter.Write((byte)(0));
+
+                        //capacity          (1 byte)
+                        dataWriter.Write((byte)(0));
+
+                        //inside oject      (1 byte)
+                        dataWriter.Write((byte)(0));
+
                     }
                 }
                 catch (Exception c)
@@ -237,8 +251,7 @@ namespace AdventureLanguage.Output
             //   number of links (single byte)
             //   repeat:
             //       verb number
-            //       MSB of location link
-            //       LSB of location link
+            //       location link (single byte for 1 to 255 locations)
 
             //index file contains:
             //second byte of number (256s)
@@ -302,8 +315,9 @@ namespace AdventureLanguage.Output
 
                                 locationWriter.Write((byte)(item.Verb()));
                                 LocationTo = item.LocationID();
-                                locationWriter.Write((byte)(LocationTo / 256));
-                                locationWriter.Write((byte)(LocationTo - ((LocationTo / 256) * 256)));
+                                locationWriter.Write((byte)(LocationTo));
+                                //locationWriter.Write((byte)(LocationTo / 256));
+                                //locationWriter.Write((byte)(LocationTo - ((LocationTo / 256) * 256)));
                                 gameData.eventList.Add(new EventLog("  Exit " + DataHelpers.VerbText(gameData.verbList, item.Verb()) + " to " + item.LocationID()));
                             }
                         }
