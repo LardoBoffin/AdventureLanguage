@@ -220,7 +220,7 @@ namespace AdventureLanguage
 
                     case "INIT":
                         gameData.eventList.Add(new EventLog("<Init>"));
-                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.lineType.Init))
+                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.LineType.Init))
                         {
                             return false;
                         }
@@ -229,7 +229,7 @@ namespace AdventureLanguage
 
                     case "PREROOM":
                         gameData.eventList.Add(new EventLog("<PreRoom>"));
-                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.lineType.PreRoom))
+                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.LineType.PreRoom))
                         {
                             return false;
                         }
@@ -238,7 +238,7 @@ namespace AdventureLanguage
 
                     case "HIGHPRIORITY":
                         gameData.eventList.Add(new EventLog("<HighPriority>"));
-                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.lineType.HighPriority))
+                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.LineType.HighPriority))
                         {
                             return false;
                         }
@@ -247,7 +247,7 @@ namespace AdventureLanguage
 
                     case "LOWPRIORITY":
                         gameData.eventList.Add(new EventLog("<LowPriority>"));
-                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.lineType.LowPriority))
+                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.LineType.LowPriority))
                         {
                             return false;
                         }
@@ -256,7 +256,7 @@ namespace AdventureLanguage
 
                     case "USERCODE":
                         gameData.eventList.Add(new EventLog("<UserCode>"));
-                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.lineType.UserCode))
+                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.LineType.UserCode))
                         {
                             return false;
                         }
@@ -398,7 +398,7 @@ namespace AdventureLanguage
 
         }
 
-        private static bool BBCBasicLines(XElement xm, DataItems gameData, BBCBasicLine.lineType lt)
+        private static bool BBCBasicLines(XElement xm, DataItems gameData, BBCBasicLine.LineType lt)
         {
             //remove < and > escape characters
             string text = xm.Value;

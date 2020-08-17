@@ -155,6 +155,13 @@ namespace AdventureLanguage.Helpers
             return -1;
         }
 
+        public static int MessageNumber(Collection<Message> messageList, string nounText)
+        {
+            foreach (Message n in messageList) { if (n.IDString() == nounText) { return n.IDNumber(); } }
+
+            return -1;
+        }
+
         public static int ObjectFound(Collection<ObjectItem> objectList, string IDString)
         {
             foreach (ObjectItem o in objectList) { if (o.IDString().ToUpper() == IDString.ToUpper()) { return o.IDNumber(); } }

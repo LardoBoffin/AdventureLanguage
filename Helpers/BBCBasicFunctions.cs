@@ -47,7 +47,7 @@ namespace AdventureLanguage.Helpers
 
             bool variableMode = false;
             string variableText = "";
-            int variableNumber = -1;
+            int variableNumber;
             string lineOutput = "";
 
             foreach (char c in lineCode.LineText())
@@ -105,6 +105,15 @@ namespace AdventureLanguage.Helpers
 
                             //try the noun list
                             variableNumber = DataHelpers.NounNumber(gameData.nounList, variableText);
+                            if (variableNumber > -1)
+                            {
+                                lineOutput += variableNumber.ToString();
+                                lineOutput += c.ToString();
+                                continue;
+                            }
+
+                            //try the message list
+                            variableNumber = DataHelpers.MessageNumber(gameData.messageList, variableText);
                             if (variableNumber > -1)
                             {
                                 lineOutput += variableNumber.ToString();

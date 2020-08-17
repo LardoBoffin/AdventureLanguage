@@ -9,9 +9,9 @@ namespace AdventureLanguage.Data
         private int _originalLineNumber;
         private int _newLineNumber;
         private string _lineText;
-        private int _lineType;
+        private readonly int _lineType;
 
-        public enum lineType
+        public enum LineType
         {
             SourceLine,
             PreRoom,
@@ -21,11 +21,11 @@ namespace AdventureLanguage.Data
             UserCode
         }
 
-        public BBCBasicLine(int originalLineNumber, string lineText, lineType type)
+        public BBCBasicLine(int OriginalLineNumber, string LineText, LineType Type)
         {
-            _originalLineNumber = originalLineNumber;
-            _lineText = lineText;
-            _lineType = (int)type;
+            _originalLineNumber = OriginalLineNumber;
+            _lineText = LineText;
+            _lineType = (int)Type;
         }
 
         public int GetLineType()

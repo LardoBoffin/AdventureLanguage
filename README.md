@@ -55,7 +55,9 @@ This process also means that if the door east is locked and you type EAST the sy
 
 11) Implement a process to remove spaces from the tokenised BBC BASIC file (based on a switch). This currently removes about 900 bytes from the Banzai adventure.
 
-12) Implement a process to rename all PROC and FNs to a single character where possible.
+12) Implement a process to rename all PROC and FNs to a single character where possible. This has saved a further 600 bytes in the example game.
+
+13) Added code to allow changing of object messages at run time. This means that objects with two or more states (e.g. lamp on and lamp off) don't have to be two separate objects with associated problems with nouns and code for swapping.
 
 I have a number of immediate plans for the game engine and compiler (in no specific order):
 

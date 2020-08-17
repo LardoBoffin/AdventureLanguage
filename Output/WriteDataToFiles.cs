@@ -165,6 +165,7 @@ namespace AdventureLanguage.Output
             //carried by        (1 byte)
             //capacity          (1 byte)
             //inside oject      (1 byte)
+            //condition         (1 byte)
 
             try
             {
@@ -213,6 +214,9 @@ namespace AdventureLanguage.Output
                         dataWriter.Write((byte)(0));
 
                         //inside oject      (1 byte)
+                        dataWriter.Write((byte)(0));
+
+                        //condition      (1 byte)
                         dataWriter.Write((byte)(0));
 
                     }

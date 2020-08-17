@@ -18,28 +18,30 @@
 			<SSDName>Banzai.SSD</SSDName>
 			<BeebEmPath>C:\Program Files (x86)\BeebEm\BeebEm.exe</BeebEmPath>
 			<SystemMessages>
-				<Message id="Carrying">You are carrying</Message>
-				<Message id="WhatNow">What now</Message>
-				<Message id="CannotDoIt">You can't.</Message>
-				<Message id="What">Pardon?</Message>
-				<Message id="AnotherGame?">Another game? (Y/N)</Message>
+				<Message id="_Carrying">You are carrying</Message>
+				<Message id="_WhatNow">What now</Message>
+				<Message id="_CannotDoIt">You can't.</Message>
+				<Message id="_What">Pardon?</Message>
+				<Message id="_AnotherGame">Another game? (Y/N)</Message>
 				<Message id="Sure">Are you sure? (Y/N)...</Message>
 				<Message id="GotThat">You've already got that.</Message>
-				<Message id="HaveNotGotThat">You haven't got that.</Message>
+				<Message id="_HaveNotGotThat">You haven't got that.</Message>
 				<Message id="CannotSeeIt">You can't see that.</Message>
-				<Message id="TooHeavy">You're carrying too much to pick that up.</Message>
+				<Message id="_TooHeavy">You're carrying too much to pick that up.</Message>
 				<Message id="Score">Your score was </Message>
 				<Message id="NoOfTurns">and you took </Message>
-				<Message id="ItsDark">It is dark. You cannot see.</Message>
-				<Message id="CannotFindIt">I can't find that anywhere.</Message>
+				<Message id="_ItsDark">It is dark. You cannot see.</Message>
+				<Message id="_CannotFindIt">I can't find that anywhere.</Message>
 				<Message id="AlsoSee">You can also see</Message>
-				<Message id="OK">Okay </Message>
+				<Message id="_OK">Okay </Message>
 				<Message id="Turns">turns.</Message>
-				<Message id="Nothing">nothing</Message>
-				<Message id="FlashlightOff">Flashlight (off)</Message>
-				<Message id="FlashlightOn">Flashlight (on)</Message>
-				<Message id="SmallToolBox">Small toolbox</Message>
-				<Message id="OpenToolBox">An open toolbox</Message>
+				<Message id="_Nothing">nothing</Message>
+				<Message id="_Wait">You wait.</Message>
+				<Message id="_Loading">Loading</Message>
+				<Message id="_FlashlightOff">Flashlight (off)</Message>
+				<Message id="_FlashlightOn">Flashlight (on)</Message>
+				<Message id="_SmallToolBox">Small toolbox</Message>
+				<Message id="_OpenToolBox">An open toolbox</Message>
 			</SystemMessages>
 			<GameVerbs>
 				<Verb>North;N</Verb>
@@ -520,32 +522,17 @@
 				IF R%=30 THEN IF V%=@Examine AND N%=@Console THEN PROCmsg("I see a switch to the gas pumps."):=TRUE
 				IF R%=30 THEN IF V%=@Press AND N%=@Switch THEN PROCmsg("Nothing happens."):=TRUE
 
-
 				'open and close the toolbox
-				IF V%=@Open THEN IF N%=@Toolbox AND FNavail(@_TOOLBOX) AND NOT FNon(@ToolBoxOpen) THEN PROCsetObjMsg(@_TOOLBOX,22):PROCon(@ToolBoxOpen):PROCmsg("I see something."):PROCmove(@_KEY,R%):PROCmove(@_TAPE,R%):PROCmove(@_FLASHLIGHT,R%):=TRUE
-				IF V%=@Open THEN IF N%=@Toolbox AND FNavail(@_TOOLBOX) THEN PROCsetObjMsg(@_TOOLBOX,22):PROCon(@ToolBoxOpen):PROCmsg("The toolbox is open."):=TRUE
-				IF V%=@Close THEN IF N%=@Toolbox AND FNavail(@_TOOLBOX) THEN PROCsetObjMsg(@_TOOLBOX,21):PROCoff(@ToolBoxOpen):PROCmsg(16):=TRUE
+				IF V%=@Open THEN IF N%=@Toolbox AND FNavail(@_TOOLBOX) AND NOT FNon(@ToolBoxOpen) THEN PROCsetObjMsg(@_TOOLBOX,@_OpenToolBox):PROCon(@ToolBoxOpen):PROCmsg("I see something."):PROCmove(@_KEY,R%):PROCmove(@_TAPE,R%):PROCmove(@_FLASHLIGHT,R%):=TRUE
+				IF V%=@Open THEN IF N%=@Toolbox AND FNavail(@_TOOLBOX) THEN PROCsetObjMsg(@_TOOLBOX,@_OpenToolBox):PROCon(@ToolBoxOpen):PROCmsg("The toolbox is open."):=TRUE
+				IF V%=@Close THEN IF N%=@Toolbox AND FNavail(@_TOOLBOX) THEN PROCsetObjMsg(@_TOOLBOX,@_SmallToolBox):PROCoff(@ToolBoxOpen):PROCmsg(16):=TRUE
 
 				'check the battery
 				IF V%=@Check AND N%=@Battery AND FNavail(@_BATTERY) AND FNavail(@_HYDROMETER) THEN PROCmsg("Battery tests: Dead"):=TRUE
 
-				'examine radio
-				IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN PROCmsg("I see a transmit switch.")
-				IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioBatteryStatus) THEN PROCmsg("There's no battery.") ELSE IF FNon(@RadioBatteryStatus) THEN PROCmsg("There is a battery.")
-				IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioAntennaStatus) THEN PROCmsg("There's no antenna.")
-				IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioWorkingStatus) THEN PROCmsg("It is not working.") ELSE IF FNon(@RadioWorkingStatus) THEN PROCmsg("It is working.")
-				IF V%=@Examine AND N%=@Radio AND FNavail(@Radio) THEN :=TRUE
-
 				'examine objects
-				IF V%=@Examine AND N%=@Pump AND FNavail(@_PUMP) THEN PROCmsg("The hose is 6 ft long."):=TRUE
-				IF V%=@Examine AND N%=@Toolbox AND FNavail(@_TOOLBOX) THEN PROCmsg("Sticker says: Sam's Service Station."):=TRUE
-
-				IF V%=@Examine AND N%=@Battery AND FNavail(@_BATTERY) AND NOT FNon(@BatteryWater) THEN PROCmsg("I see there is no water in the battery."):=TRUE
-				IF V%=@Examine AND N%=@Battery AND FNavail(@_BATTERY) AND FNon(@BatteryWater) THEN PROCmsg("I see water in the battery."):=TRUE
-
-				IF V%=@Examine AND N%=@Jar AND FNavail(@_FLUID) THEN PROCmsg("Jar of glowind fluid"):=TRUE
-				IF V%=@Examine AND N%=@Formula AND FNavail(@_FORMULA) THEN PROCmsg("Fuel is made from gasoline, sand, quartz and catalyst."):=TRUE
-
+				IF V%=@Examine THEN =FNexamine
+				
 				'basic code for object handling etc.
 				IF V%=@On THEN IF N%=@CLS THEN PROCcls(1):=TRUE
 				IF V%=@Off THEN IF N%=@CLS THEN PROCcls(0):=TRUE
@@ -557,7 +544,7 @@
 				IF V%=@Load THEN PROCload:=TRUE
 
 				'examine
-				IF V%=@Examine THEN PROCmsg("You find nothing of interest."):=TRUE
+				'IF V%=@Examine THEN PROCmsg("You find nothing of interest."):=TRUE
 
 				'look at room
 				IF V%=@Look THEN PROCgtRm:=TRUE
@@ -570,19 +557,41 @@
 			</LowPriority>
 			<UserCode>
 
-				DEFFNtorch
+				DEFFNexamine
+				'examine radio
+				IF N%=@Radio AND FNavail(@Radio) THEN PROCmsg("I see a transmit switch.")
+				IF N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioBatteryStatus) THEN PROCmsg("There's no battery.") ELSE IF FNon(@RadioBatteryStatus) THEN PROCmsg("There is a battery.")
+				IF N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioAntennaStatus) THEN PROCmsg("There's no antenna.")
+				IF N%=@Radio AND FNavail(@Radio) THEN IF NOT FNon(@RadioWorkingStatus) THEN PROCmsg("It is not working.") ELSE IF FNon(@RadioWorkingStatus) THEN PROCmsg("It is working.")
+				IF N%=@Radio AND FNavail(@Radio) THEN :=TRUE
 
+				'examine objects
+				IF N%=@Pump AND FNavail(@_PUMP) THEN PROCmsg("The hose is 6 ft long."):=TRUE
+				IF N%=@Toolbox AND FNavail(@_TOOLBOX) THEN PROCmsg("Sticker says: Sam's Service Station."):=TRUE
+
+				IF N%=@Battery AND FNavail(@_BATTERY) AND NOT FNon(@BatteryWater) THEN PROCmsg("I see there is no water in the battery."):=TRUE
+				IF N%=@Battery AND FNavail(@_BATTERY) AND FNon(@BatteryWater) THEN PROCmsg("I see water in the battery."):=TRUE
+
+				IF N%=@Jar AND FNavail(@_FLUID) THEN PROCmsg("Jar of glowind fluid"):=TRUE
+				IF N%=@Formula AND FNavail(@_FORMULA) THEN PROCmsg("Fuel is made from gasoline, sand, quartz and catalyst."):=TRUE
+
+				'examine
+				PROCmsg("You find nothing of interest."):=TRUE
+				=FALSE
+
+
+				DEFFNtorch
 				'light the Torch
-				'if torch is off (19)
-				IF V%=@On THEN IF FNinInv(@_FLASHLIGHT) THEN IF FNobMn(@_FLASHLIGHT)=19 THEN PROCsetObjMsg(@_FLASHLIGHT,20):PROCon(@HaveLight):PROCmsg("The flashlight is on."):=TRUE
-				'if the torch is on (20)
-				IF V%=@Off THEN IF FNinInv(@_FLASHLIGHT) THEN IF FNobMn(@_FLASHLIGHT)=20 THEN PROCsetObjMsg(@_FLASHLIGHT,19):PROCoff(@HaveLight):PROCmsg("The flashlight is off."):=TRUE
+				'if torch is off (@FlashlightOff@)
+				IF V%=@On THEN IF FNinInv(@_FLASHLIGHT) THEN IF FNobMn(@_FLASHLIGHT)=@_FlashlightOff THEN PROCsetObjMsg(@_FLASHLIGHT,@_FlashlightOn):PROCon(@HaveLight):PROCmsg("The flashlight is on."):=TRUE
+				'if the torch is on (@_FlashlightOn)
+				IF V%=@Off THEN IF FNinInv(@_FLASHLIGHT) THEN IF FNobMn(@_FLASHLIGHT)=@_FlashlightOn THEN PROCsetObjMsg(@_FLASHLIGHT,@_FlashlightOff):PROCoff(@HaveLight):PROCmsg("The flashlight is off."):=TRUE
 
 				'deal with dropping the torch and losing the light source
 				IF V%=@Drop THEN PROCdrop(@_FLASHLIGHT):PROCoff(@HaveLight):=TRUE
 
 				'not sure about this chunk...needs to be the last part of this FN
-				IF V%=@Get THEN PROCtake(@_FLASHLIGHT)
+				IF V%=@Get THEN PROCtake(@_FLASHLIGHT):=TRUE
 				IF FNinInv(@_FLASHLIGHT) THEN IF FNobMn(@_FLASHLIGHT)=20 THEN PROCon(@HaveLight):=TRUE
 				IF FNinInv(@_FLASHLIGHT) THEN IF FNobMn(@_FLASHLIGHT)=19 THEN PROCoff(@HaveLight):=TRUE
 				=FALSE

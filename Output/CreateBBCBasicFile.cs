@@ -421,6 +421,13 @@ namespace AdventureLanguage.Output
                         gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@Room@", gameData.roomDataLength.ToString()));
                     }
 
+                    if (gameData.SourceBBCBasicProgram[i].LineText().IndexOf("@SizeOfObject@") > -1)
+                    {
+                        //replace the room index size with the actual number used
+                        string tmp = gameData.SourceBBCBasicProgram[i].LineText();
+                        gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@SizeOfObject@", 11.ToString()));
+                    }
+
                     if (gameData.SourceBBCBasicProgram[i].LineText().IndexOf("@NumVar@") > -1)
                     {
                         //replace the 256 with the actual number used
@@ -456,7 +463,12 @@ namespace AdventureLanguage.Output
                         gameData.SourceBBCBasicProgram[i].SetLineText(tmp.Replace("@ScreenWidth@", gameData.screenWidth.ToString()));
                     }
 
-                    gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.SourceBBCBasicProgram[i].OriginalLineNumber(), gameData.SourceBBCBasicProgram[i].LineText(), BBCBasicLine.lineType.SourceLine));
+                    if (!BBCBasicFunctions.ParseLine(gameData.SourceBBCBasicProgram[i], gameData))
+                    {
+                        return false;
+                    }
+
+                    gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.SourceBBCBasicProgram[i].OriginalLineNumber(), gameData.SourceBBCBasicProgram[i].LineText(), BBCBasicLine.LineType.SourceLine));
 
 
                     //loop through each line of the following items:
@@ -471,9 +483,9 @@ namespace AdventureLanguage.Output
                         //merge in the preroom stuff, if any
                         for (int line = 0; line < iNumUserLines; line++)
                         {
-                            if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.lineType.PreRoom)
+                            if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.LineType.PreRoom)
                             {
-                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.lineType.PreRoom));
+                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.LineType.PreRoom));
                             }
                         }
                     }
@@ -483,9 +495,9 @@ namespace AdventureLanguage.Output
                         //merge in the preroom stuff, if any
                         for (int line = 0; line < iNumUserLines; line++)
                         {
-                            if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.lineType.Init)
+                            if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.LineType.Init)
                             {
-                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.lineType.Init));
+                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.LineType.Init));
                             }
                         }
                     }
@@ -495,9 +507,9 @@ namespace AdventureLanguage.Output
                         //merge in the preroom stuff, if any
                         for (int line = 0; line < iNumUserLines; line++)
                         {
-                            if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.lineType.HighPriority)
+                            if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.LineType.HighPriority)
                             {
-                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.lineType.PreRoom));
+                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.LineType.PreRoom));
                             }
                         }
                     }
@@ -507,9 +519,9 @@ namespace AdventureLanguage.Output
                         //merge in the preroom stuff, if any
                         for (int line = 0; line < iNumUserLines; line++)
                         {
-                            if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.lineType.LowPriority)
+                            if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.LineType.LowPriority)
                             {
-                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.lineType.PreRoom));
+                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.LineType.PreRoom));
                             }
                         }
                     }
@@ -518,9 +530,9 @@ namespace AdventureLanguage.Output
                 //add in the user code section
                 for (int line = 0; line < iNumUserLines; line++)
                 {
-                    if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.lineType.UserCode)
+                    if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.LineType.UserCode)
                     {
-                        gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.lineType.UserCode));
+                        gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.LineType.UserCode));
                     }
                 }
                 //renumber the lines

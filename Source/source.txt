@@ -24,8 +24,8 @@ PROCldSM:REPEAT:PROCmsg(0):PROCldOb:PROCldRm:IF T%=0 THEN PROCgW(1):PROCgW(2):PR
 	REPEAT:D%=RND(100):PROCpreRoom:IF R%<>OLR% THEN OLR%=R%:PROCcl:PROCgtRm:PROCt
 	D%=FNhighPty:IF EX%=0 AND NOT D% THEN PROCpsTxt
 -TM%=TIME
-		IF V%=0 AND EX%=0 AND NOT D% THEN PROCmsg(4):D%=TRUE
-		IF EX%=0 AND NOT D% THEN D%=FNckMv:IF NOT D% THEN D%=FNlowPty:IF V%>0 AND NOT D% THEN PROCmsg(3)
+		IF V%=0 AND EX%=0 AND NOT D% THEN PROCmsg(@_What):D%=TRUE
+		IF EX%=0 AND NOT D% THEN D%=FNckMv:IF NOT D% THEN D%=FNlowPty:IF V%>0 AND NOT D% THEN PROCmsg(@_CannotDoIt)
 -PRINT "Logic time "; (TIME-TM%)/100
 -IF SC%=1 PROCshowC
 CL%=0:D%=0:UNTIL EX%=1:UNTIL FNagain=FALSE:PRINT "Thanks for playing...":END
@@ -48,7 +48,7 @@ DEFPROCcl:IF Q%=1 THEN CLS
 ENDPROC
   
 'loading and saving functions
-DEFFNagain:PRINT:PROCmsg(5):INPUT M$:IF M$="Y" OR M$="y" THEN =TRUE ELSE =FALSE
+DEFFNagain:PRINT:PROCmsg(@_AnotherGame):INPUT M$:IF M$="Y" OR M$="y" THEN =TRUE ELSE =FALSE
 
 'save the game
 DEFPROCsave:LOCAL F%,X%,N$:N$=LEFT$(MID$(M$,6),7):IF N$="" THEN N$="SAVE-M"
@@ -57,7 +57,7 @@ CLOSE#F%:PROCend:PRINT"Done.":ENDPROC
 
 'load the game
 DEFPROCload:LOCAL F%,X%,N$:N$=LEFT$(MID$(M$,6),7):IF N$="" THEN N$="SAVE-M"
-	PROCmsg(19):F%=OPENIN(N$):INPUT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:?(CTR%+X%)=BGET#F%:NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:?(OB%+X%)=BGET#F%:NEXT:FOR X%=1 TO @Room@:?(RM%+X%)=BGET#F%:NEXT
+	PROCmsg(@_Loading):F%=OPENIN(N$):INPUT#F%,T%,R%,ENC%,CW%,Q%:FOR X%=1 TO @NumVar@:?(CTR%+X%)=BGET#F%:NEXT:IF OBJN%>0 THEN FOR X%=1 TO OBJN%*8:?(OB%+X%)=BGET#F%:NEXT:FOR X%=1 TO @Room@:?(RM%+X%)=BGET#F%:NEXT
 CLOSE#F%:PROCend:PRINT"Done.":ENDPROC
 
 'load rooms index and room
@@ -74,7 +74,7 @@ R%=1:REPEAT:?(OB%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
 'store object at location
 'DEFPROCstOb(O%,R%):LOCAL P%:P%=((O%-1)*8)+4:?(OB%+P%)=R% DIV 256:?(OB%+P%+1)=R% MOD 256:ENDPROC
 'DEFPROCstOb(O%,R%):LOCAL P%:P%=((O%-1)*7)+4:?(OB%+P%)=R%:ENDPROC
-DEFPROCstOb(O%,R%):?(OB%+((O%-1)*10)+4)=R%:ENDPROC
+DEFPROCstOb(O%,R%):?(OB%+((O%-1)*@SizeOfObject@)+4)=R%:ENDPROC
 
 
 
@@ -82,7 +82,7 @@ DEFPROCstOb(O%,R%):?(OB%+((O%-1)*10)+4)=R%:ENDPROC
 DEFPROClsOb(R%,MS%):LOCAL X%,O%:O%=0:IF OBJN%=0 THEN ENDPROC
 	FOR X%=1TOOBJN%:M%=FNobHr(X%,R%):IF M%>0 THEN O%=O%+1:NEXT ELSE NEXT
 	IF O%=0 AND MS%>1 THEN PRINT:ENDPROC
-	IF O%=0 AND MS%=1 THEN PROCmsg(1):PROCmsg(18):ENDPROC
+	IF O%=0 AND MS%=1 THEN PROCmsg(@_Carrying):PROCmsg(@_Nothing):ENDPROC
 	PRINT:IF MS%>0 THEN PROCmsg(MS%):PRINT
 	FOR X%=1TOOBJN%:M%=FNobHr(X%,R%):IF M%>0 THEN PRINTCHR$(131);:PROCmsg(M%):PRINT:NEXT ELSE NEXT
 ENDPROC
@@ -99,16 +99,16 @@ ENDPROC
 DEFFNobHr(O%,R%):IF FNobLn(O%)=R% THEN =FNobMn(O%) ELSE =0
 
 'return object location
-DEFFNobLn(O%):=?(((O%-1)*10)+4+OB%)
+DEFFNobLn(O%):=?(((O%-1)*@SizeOfObject@)+4+OB%)
   
 'return object message number
-DEFFNobMn(O%):U%=((O%-1)*10)+2+OB%:=?(U%)*256+?(U%+1)
+DEFFNobMn(O%):U%=((O%-1)*@SizeOfObject@)+2+OB%:=?(U%)*256+?(U%+1)
   
 'set object message number
-DEFPROCsetObjMsg(O%,M%):LOCAL L%:L%=OB%+((O%-1)*10)+2:?(L%)=M% DIV 256:?(L%+1)=M% MOD 256:ENDPROC
+DEFPROCsetObjMsg(O%,M%):LOCAL L%:L%=OB%+((O%-1)*@SizeOfObject@)+2:?(L%)=M% DIV 256:?(L%+1)=M% MOD 256:ENDPROC
 
 'return object weight
-DEFFNobWt(O%):=?(((O%-1)*10)+6+OB%)
+DEFFNobWt(O%):=?(((O%-1)*@SizeOfObject@)+6+OB%)
   
 'check to see if the move is valid
 DEFFNckMv:LOCAL N%,Z%:D%=FALSE:N%=?(RM%+K%):IF N%=0 THEN =FALSE 
@@ -120,7 +120,7 @@ DEFFNckMv:LOCAL N%,Z%:D%=FALSE:N%=?(RM%+K%):IF N%=0 THEN =FALSE
 DEFFNrmPtr(R%):N%=(R%-1)*2:=(?(IX%+N%)*256)+?(IX%+N%+1)
   
 'get room details
-DEFPROCgtRm:LOCAL F%,N%,M%,D%,C%,V%:D%=0:F%=FNrmPtr(R%):G%=?(RM%+F%):IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(13)
+DEFPROCgtRm:LOCAL F%,N%,M%,D%,C%,V%:D%=0:F%=FNrmPtr(R%):G%=?(RM%+F%):IF FNflag(0)=TRUE AND FNon(1)=FALSE THEN D%=1:PROCmsg(@_ItsDark)
 
 	'get the position in the index data and get the value of the pointer
 	
@@ -145,7 +145,7 @@ DEFPROCeE(N%):LOCAL U%,V%:U%=RM%+K%+1+((N%-1)*2):V%=?(U%):IF V%>127 THEN ?(U%)=V
 'LSB of location link
 'K% holds the start of the exit data, number of directions
 'U%=position of verb for exit
-PROCmsg(16):ENDPROC
+PROCmsg(@_OK):ENDPROC
 
 'load words (nouns, verbs and adverbs) from disc
 DEFPROCgW(T%):LOCAL N%,R%,D$,RN%:R%=1:IF T%=1 THEN N%=OPENIN("DATA-N") ELSE IF T%=2 THEN N%=OPENIN("DATA-V") ELSE IF T%=4 THEN N%=OPENIN("DATA-A")
@@ -163,7 +163,7 @@ DEFPROCmsg(M%):LOCAL S%,P%,H%:M$=MS$(M%)
 ENDPROC
    
 'parse the text
-DEFPROCpsTxt:LOCAL WL%,C%,S%,U%:PROCvars:REPEAT:PRINT:PROCmsg(2):U%=VPOS:INPUT TAB(LEN(MS$(2)),U%),M$:UNTIL M$>"":M$=FNtU(M$):S%=1:IF M$="*." THEN D%=TRUE:*.
+DEFPROCpsTxt:LOCAL WL%,C%,S%,U%:PROCvars:REPEAT:PRINT:PROCmsg(@_WhatNow):U%=VPOS:INPUT TAB(LEN(MS$(2)),U%),M$:UNTIL M$>"":M$=FNtU(M$):S%=1:IF M$="*." THEN D%=TRUE:*.
 
 'show counters etc.
 -LOCAL T%:T%=TIME
@@ -208,9 +208,9 @@ DEFFNgW(T$):LOCAL C%,C$,WRD$:C%=1:REPEAT:C$=MID$(T$,C%,1):WRD$=WRD$+C$:C%=C%+1:U
 DEFPROCvars:M$="":N%=0:NO2%=0:V%=0:AVRB%=0:OBJ%=0:WRD$="":N%=0:D%=0:ENDPROC
   
 'take an object
-DEFPROCtake(O%):IF FNobHr(O%,R%)=0 THEN PROCmsg(14):ENDPROC
-	IF CW%+FNobWt(O%)>ENC% THEN PROCmsg(10):ENDPROC
-PROCstOb(O%,PL%):PROCmsg(16):PROCt:CW%=CW%+FNobWt(O%):ENDPROC
+DEFPROCtake(O%):IF FNobHr(O%,R%)=0 THEN PROCmsg(@_CannotFindIt):ENDPROC
+	IF CW%+FNobWt(O%)>ENC% THEN PROCmsg(@_TooHeavy):ENDPROC
+PROCstOb(O%,PL%):PROCmsg(@_OK):PROCt:CW%=CW%+FNobWt(O%):ENDPROC
 
 'swap object 1 with 2. 1 goes to location 0, 2 goes to player inv  
 DEFPROCswap(O1%,O2%):PROCstOb(O1%,0):PROCstOb(O2%,PL%):ENDPROC
@@ -219,8 +219,8 @@ DEFPROCswap(O1%,O2%):PROCstOb(O1%,0):PROCstOb(O2%,PL%):ENDPROC
 DEFPROCmove(O%,R%):PROCstOb(O%,R%):ENDPROC
 
 'drop the object (if present) 
-DEFPROCdrop(O%):IF FNobHr(O%,PL%)=0:PROCmsg(8):ENDPROC
-	PROCstOb(O%,R%):PROCmsg(16):PROCt:CW%=CW%-FNobWt(O%):ENDPROC
+DEFPROCdrop(O%):IF FNobHr(O%,PL%)=0:PROCmsg(@_HaveNotGotThat):ENDPROC
+	PROCstOb(O%,R%):PROCmsg(@_OK):PROCt:CW%=CW%-FNobWt(O%):ENDPROC
 	
 'list player objects
 DEFPROCinv:PROClsOb(PL%,1):ENDPROC
@@ -274,7 +274,7 @@ DEFPROCoff(C%):?(CTR%+C%)=0:ENDPROC
 DEFFNget(C%):=?(CTR%+C%)
 
 'set value of Q% (cls setting) and say OK.
-DEFPROCcls(S%):Q%=S%:PROCend:PROCmsg(16):ENDPROC
+DEFPROCcls(S%):Q%=S%:PROCend:PROCmsg(@_OK):ENDPROC
 
 'return if object (O%) is in the current room
 DEFFNhere(O%):=FNobHr(O%,R%)>0 

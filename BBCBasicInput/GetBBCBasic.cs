@@ -29,13 +29,13 @@ namespace AdventureLanguage.BBCBasicInput
                             if (gameData.debugMode)
                             {
                                 line = line.Right(1, line.Length - 1);
-                                gameData.SourceBBCBasicProgram.Add(new BBCBasicLine(0, line, BBCBasicLine.lineType.SourceLine));
+                                gameData.SourceBBCBasicProgram.Add(new BBCBasicLine(0, line, BBCBasicLine.LineType.SourceLine));
                                 BBCBasicFunctions.GetLineNumber(gameData.SourceBBCBasicProgram[gameData.SourceBBCBasicProgram.Count - 1]);
                             }
                         }
                         else
                         {
-                            gameData.SourceBBCBasicProgram.Add(new BBCBasicLine(0, line, BBCBasicLine.lineType.SourceLine));
+                            gameData.SourceBBCBasicProgram.Add(new BBCBasicLine(0, line, BBCBasicLine.LineType.SourceLine));
                             BBCBasicFunctions.GetLineNumber(gameData.SourceBBCBasicProgram[gameData.SourceBBCBasicProgram.Count - 1]);
                         }
 
