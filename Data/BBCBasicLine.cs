@@ -18,7 +18,8 @@ namespace AdventureLanguage.Data
             Init,
             HighPriority,
             LowPriority,
-            UserCode
+            UserCode,
+            RoomMsg
         }
 
         public BBCBasicLine(int OriginalLineNumber, string LineText, LineType Type)

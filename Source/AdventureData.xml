@@ -10,7 +10,7 @@
 			<ScreenMode>7</ScreenMode>
 			<SourceFile>source.txt</SourceFile>
 			<OutputFile>Banzai.txt</OutputFile>
-			<BuildType>debug</BuildType>
+			<BuildType></BuildType>
 			<Tokeniser>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\tokenise.exe</Tokeniser>
 			<TokenisedFileName>Banzai</TokenisedFileName>
 			<CrunchTokenisedFile></CrunchTokenisedFile>
@@ -78,9 +78,14 @@
 				<Verb>Check</Verb>
 				<Verb>Dig</Verb>
 				<Verb>Cut;Slice</Verb>
+				<Verb>Throw</Verb>
+				<Verb>Tie</Verb>
+				<Verb>Climb</Verb>
+				<Verb>Pull</Verb>
 			</GameVerbs>
 			<Adverbs>
 				<Adverb>WITH;USING</Adverb>
+				<Adverb>TO</Adverb>
 			</Adverbs>
 			<Nouns>
 				<Noun>Toolbox</Noun>
@@ -96,6 +101,8 @@
 				<Noun>Hydrometer</Noun>
 				<Noun>Pump;Pumps</Noun>
 				<Noun>Jumper;Cables</Noun>
+				<Noun>Line</Noun>
+				<Noun>Quartz</Noun>
 				<Noun>Door</Noun>
 				<Noun>Tree</Noun>
 				<Noun>CLS</Noun>
@@ -118,7 +125,7 @@
 				<Noun>Shed</Noun>
 				<Noun>Hole</Noun>
 				<Noun>Antenna</Noun>
-				<Noun>Line</Noun>
+				<Noun>Mountain</Noun>
 			</Nouns>
 			<Variables>
 				<Var id="TurnsInDark" value="0">Number of turns in the dark so far. 2 = death.</Var>
@@ -140,6 +147,8 @@
 				<Var id="CutOne">0 = not cut</Var>
 				<Var id="CutTwo">0 = not cut</Var>
 				<Var id="TakenCable">0 = not taken</Var>
+				<Var id="LineThrown">0 = not tied</Var>
+				<Var id="PickTied">0 = not tied</Var>
 			</Variables>
 			<Objects>
 				<Object id="_TOOLBOX" number="1" weight="20" value="0" location="6" message="Small toolbox">
@@ -169,6 +178,8 @@
 				<Object id="_CABLES" number="13" weight="20" value="1" location="17" message="Jumper cables">
 				</Object>
 				<Object id="_LINE" number="14" weight="20" value="1" location="0" message="20 ft of phone line">
+				</Object>
+				<Object id="_QUARTZ" number="15" weight="20" value="1" location="21" message="Quartz">
 				</Object>
 			</Objects>
 			<Locations>
@@ -341,19 +352,16 @@
 					</Exit>
 				</Location>
 				<Location id="20">
-					<Message>Foot of mountain.</Message>
+					<Message>I'm at the foot of a mountain.</Message>
 					<Exit to="19">
 						<Verb>SOUTH</Verb>
 					</Exit>
 					<Exit to="22">
 						<Verb>WEST</Verb>
 					</Exit>
-					<Exit to="21">
-						<Verb>UP</Verb>
-					</Exit>
 				</Location>
 				<Location id="21">
-					<Message>Mountain ledge.</Message>
+					<Message>I'm on a small mountain ledge.</Message>
 					<Exit to="20">
 						<Verb>DOWN</Verb>
 					</Exit>
@@ -449,6 +457,18 @@
 				'check for atomic explosion
 				IF R%=13 OR R%=14 THEN PROCinc(@TurnOnFreeway)
 			</PreRoom>
+			<RoomMsg>
+
+				'floor safe
+				IF R%=1 AND FNon(@TableMoved) THEN PROCmsg("You can see a floor safe.")
+
+				'field, hole 1
+				IF R%=12 AND FNon(@HoleOne) THEN PROCmsg("You can see a large hole.")
+				IF R%=12 AND FNon(@HoleTwo) THEN PROCmsg("And another large hole.")
+				IF R%=12 AND FNon(@CutTwo) THEN PROCmsg("And a severed cable.")
+				IF R%=20 AND FNon(@LineThrown) THEN PROCmsg("You can see a phone line dangling from above.")
+
+			</RoomMsg>
 			<Init>
 				PROCset(@TurnsInDark,2):PROCenc(111):H%=60:AT%=90:DM%=8
 			</Init>
@@ -460,12 +480,7 @@
 				'check for moving around in the dark
 				IF FNflag(0) AND NOT FNon(@HaveLight) AND FNget(@TurnsInDark)=0 THEN PROCmsg("It's dangerous to move in the dark! I fell and broke my neck! I'm DEAD! I'm DEAD!!"):PROCexit:=TRUE
 
-				'floor safe
-				IF R%=1 AND FNon(@TableMoved) THEN PROCmsg("You can see a floor safe.")
 
-				'field, hole 1
-				IF R%=12 AND FNon(@HoleOne) THEN PROCmsg("You can see a large hole")
-				IF R%=12 AND FNon(@HoleTwo) THEN PROCmsg("and another large hole.")
 			</HighPriority>
 			<LowPriority>
 
@@ -501,6 +516,17 @@
 
 				'mountain view corner
 				IF R%=16 THEN IF V%=@Enter AND N%=@Store THEN PROCgoto(17):=TRUE
+
+				'foot of mountain
+				IF R%=20 AND V%=@Examine AND N%=@Mountain THEN PROCmsg("I see a ledge about 15' up with a small peak."):=TRUE
+				IF R%=20 AND V%=@Throw AND N%=@Line AND FNinInv(@_Line) THEN PROCon(@LineThrown):PROCdrop(@_LINE):PROCmove(@_LINE,0):=TRUE
+				IF R%=20 AND V%=@Tie AND N%=@Line AND NO2%=@Pick AND FNon(@LineThrown) AND FNavail(@_PICK) THEN PROCdrop(@_PICK):PROCmove(@_PICK,0):PROCon(@PickTied):=TRUE
+				IF R%=20 AND V%=@Climb AND N%=@Line AND CW%>0 AND FNon(@LineThrown) THEN PROCmsg("I can't while carrying anything."):=TRUE
+				IF R%=20 AND V%=@Climb AND N%=@Line AND CW%=0 AND FNon(@PickTied) THEN PROCmsg(@_OK):PROCgoto(21):=TRUE
+
+				'mountain ledge
+				IF R%=21 AND V%=@Pull AND N%=@Line AND FNon(@PickTied) THEN PROCmove(@_LINE,21):PROCmove(@_PICK,21):PROCtake(@_PICK):=TRUE
+				IF R%=21 AND V%=@Get AND N%=@Quartz AND NOT FNinInv(@_PICK) THEN PROCmsg("You cannot get it out of the ground."):=TRUE
 
 				'lake
 				IF R%=22 AND V%=@Fill AND N%=@Battery AND FNavail(@_BATTERY) AND NOT FNon(@BatteryWater) THEN PROCon(@BatteryWater):PROCmsg("OK"):=TRUE
@@ -574,10 +600,10 @@
 				IF V%=@Cut AND N%=@Line AND FNon(@CutOne) AND NOT FNon(@CutTwo) THEN PROCmsg("I see the line is severed."):PROCon(@CutTwo):=TRUE
 				IF V%=@Get AND N%=@Line AND FNon(@CutOne) AND NOT FNon(@CutTwo) THEN PROCmsg("I can't. It's still attached."):=TRUE
 				IF V%=@Dig AND FNavail(@_PICK) AND NOT FNon(@HoleTwo) THEN PROCon(@HoleTwo):PROCmsg("OK"):=TRUE
-				IF V%=@Get AND N%=@Line AND FNon(@CutOne) AND FNon(@CutTwo) AND NOT FNon(@TakenCable) THEN PROCmsg("OK"):PROCon(@TakenCable):PROCmove(@_LINE,R%):PROCtake(@_LINE):=TRUE
+				IF V%=@Get AND N%=@Line AND FNon(@CutOne) AND FNon(@CutTwo) AND NOT FNon(@TakenCable) THEN PROCon(@TakenCable):PROCmove(@_LINE,R%):PROCtake(@_LINE):=TRUE
 
 				=FALSE
-				
+
 				DEFFNexamine
 				'examine radio
 				IF N%=@Radio AND FNavail(@Radio) THEN PROCmsg("I see a transmit switch.")

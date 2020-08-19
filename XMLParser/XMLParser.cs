@@ -236,6 +236,16 @@ namespace AdventureLanguage
                         gameData.eventList.Add(new EventLog("</PreRoom>"));
                         break;
 
+
+                    case "ROOMMSG":
+                        gameData.eventList.Add(new EventLog("<RoomMsg>"));
+                        if (!BBCBasicLines(xe, gameData, BBCBasicLine.LineType.RoomMsg))
+                        {
+                            return false;
+                        }
+                        gameData.eventList.Add(new EventLog("</RoomMsg>"));
+                        break;
+
                     case "HIGHPRIORITY":
                         gameData.eventList.Add(new EventLog("<HighPriority>"));
                         if (!BBCBasicLines(xe, gameData, BBCBasicLine.LineType.HighPriority))

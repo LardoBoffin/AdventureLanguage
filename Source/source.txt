@@ -131,11 +131,12 @@ DEFPROCgtRm:LOCAL F%,N%,M%,D%,C%,V%:D%=0:F%=FNrmPtr(R%):G%=?(RM%+F%):IF FNflag(0
 	'load the directions, K% is the start point of the exits data
 	F%=F%+1:N%=?(RM%+F%):K%=F%:IF D%=0 THEN PROClsOb(R%,15)
 	IF N%=0 PROCrmMsg:ENDPROC
-	F%=F%+1:PRINT:PRINT "Exits are : ";:FOR M%=0 TO (N%-1)*2 STEP 2:V%=?(RM%+F%+M%):IF V%>127 THEN V%=V%-128
+
+	PROCrmMsg:F%=F%+1:PRINT:PRINT "Exits are : ";:FOR M%=0 TO (N%-1)*2 STEP 2:V%=?(RM%+F%+M%):IF V%>127 THEN V%=V%-128
 	'print out the directions
 	
 	C%=0:REPEAT:IF VN%?(C%)=V% THEN PRINT V$(C%)+" ";:D%=2
-	C%=C%+1:UNTIL D%=2 OR C%=VM%:D%=0:NEXT:PRINT:PROCrmMsg:ENDPROC
+	C%=C%+1:UNTIL D%=2 OR C%=VM%:D%=0:NEXT:PRINT:ENDPROC
 
 
 'enable or disable exit

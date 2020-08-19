@@ -503,6 +503,18 @@ namespace AdventureLanguage.Output
                         }
                     }
 
+                    if (gameData.SourceBBCBasicProgram[i].LineText().ToUpper() == "DEFPROCRMMSG")
+                    {
+                        //merge in the preroom stuff, if any
+                        for (int line = 0; line < iNumUserLines; line++)
+                        {
+                            if (gameData.UserBBCBasicProgram[line].GetLineType() == (int)BBCBasicLine.LineType.RoomMsg)
+                            {
+                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.UserBBCBasicProgram[line].OriginalLineNumber(), gameData.UserBBCBasicProgram[line].LineText(), BBCBasicLine.LineType.RoomMsg));
+                            }
+                        }
+                    }
+
                     if (gameData.SourceBBCBasicProgram[i].LineText().ToUpper() == "DEFFNHIGHPTY")
                     {
                         //merge in the preroom stuff, if any
