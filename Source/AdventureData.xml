@@ -103,6 +103,7 @@
 				<Noun>Jumper;Cables</Noun>
 				<Noun>Line</Noun>
 				<Noun>Quartz</Noun>
+				<Noun>Hose</Noun>
 				<Noun>Door</Noun>
 				<Noun>Tree</Noun>
 				<Noun>CLS</Noun>
@@ -126,6 +127,7 @@
 				<Noun>Hole</Noun>
 				<Noun>Antenna</Noun>
 				<Noun>Mountain</Noun>
+				<Noun>Stairs;Staircase</Noun>
 			</Nouns>
 			<Variables>
 				<Var id="TurnsInDark" value="0">Number of turns in the dark so far. 2 = death.</Var>
@@ -149,6 +151,10 @@
 				<Var id="TakenCable">0 = not taken</Var>
 				<Var id="LineThrown">0 = not tied</Var>
 				<Var id="PickTied">0 = not tied</Var>
+				<Var id="CarExamined">0 = not tied</Var>
+				<Var id="BatteryConnectToCables">0 = not connected</Var>
+				<Var id="HoseConnectedToPump">0 = not connected</Var>
+				<Var id="ExaminedStairs">0 = not examined</Var>
 			</Variables>
 			<Objects>
 				<Object id="_TOOLBOX" number="1" weight="20" value="0" location="6" message="Small toolbox">
@@ -181,6 +187,10 @@
 				</Object>
 				<Object id="_QUARTZ" number="15" weight="20" value="1" location="21" message="Quartz">
 				</Object>
+				<Object id="_HOSE" number="16" weight="20" value="1" location="0" message="Fuel hose">
+				</Object>
+				<Object id="_MIXINGJUG" number="16" weight="20" value="1" location="0" message="Empty chemical jug">
+				</Object>
 			</Objects>
 			<Locations>
 				<Location id="0">
@@ -190,12 +200,12 @@
 					<Exit to="3">
 						<Verb>WEST</Verb>
 					</Exit>
-					<Exit to="2" locked="1">
+					<Exit to="2" locked="0">
 						<Verb>DOWN</Verb>
 					</Exit>
 				</Location>
 				<Location id="2">
-					<Message>Basement laboratory. Stairs up.</Message>
+					<Message>I am in a basement laboratory. I can see a staircase and a mixing vat.</Message>
 					<Flag id="0">1</Flag>
 					<Exit to="1">
 						<Verb>UP</Verb>
@@ -465,7 +475,7 @@
 				'field, hole 1
 				IF R%=12 AND FNon(@HoleOne) THEN PROCmsg("You can see a large hole.")
 				IF R%=12 AND FNon(@HoleTwo) THEN PROCmsg("And another large hole.")
-				IF R%=12 AND FNon(@CutTwo) THEN PROCmsg("And a severed cable.")
+				IF R%=12 AND FNon(@CutTwo) THEN PROCmsg("And a severed phone line.")
 				IF R%=20 AND FNon(@LineThrown) THEN PROCmsg("You can see a phone line dangling from above.")
 
 			</RoomMsg>
@@ -495,6 +505,7 @@
 				IF R%=1 AND V%=@Open AND N%=@Safe AND NOT FNhere(@_KEY) THEN PROCmsg("I can't do that...yet!"):=TRUE
 				'to do - open the safe!
 
+				IF R%=2 AND V%=@Examine AND N%=@Stairs AND NOT FNon(@ExaminedStairs) AND FNon(@HaveLight) THEN PROCmsg("I find a jug"):PROCmove(@_MIXINGJUG,R%):=TRUE
 
 				'crossroads by yoyodyne and gas station, enter the yoyo building and gas station
 				IF R%=3 THEN IF V%=@Enter AND N%=@Yoyodyne THEN PROCgoto(1):=TRUE
@@ -517,6 +528,7 @@
 				'mountain view corner
 				IF R%=16 THEN IF V%=@Enter AND N%=@Store THEN PROCgoto(17):=TRUE
 
+
 				'foot of mountain
 				IF R%=20 AND V%=@Examine AND N%=@Mountain THEN PROCmsg("I see a ledge about 15' up with a small peak."):=TRUE
 				IF R%=20 AND V%=@Throw AND N%=@Line AND FNinInv(@_Line) THEN PROCon(@LineThrown):PROCdrop(@_LINE):PROCmove(@_LINE,0):=TRUE
@@ -537,6 +549,10 @@
 				'west end by car
 				IF R%=25 THEN IF V%=@Enter AND N%=@Car THEN PROCgoto(26):=TRUE
 
+				IF R%=25 AND V%=@Examine AND N%=@Car AND NOT FNon(@CarExamined) THEN PROCmove(@_HOSE,R%):PROCmsg("I see something."):PRINT:PROCon(@CarExamined)
+				IF R%=25 AND V%=@Examine AND N%=@Car THEN PROCmsg("The cockpit is open, I can also see power terminals, a fuel tank and a jet engine."):=TRUE
+				IF R%=25 AND V%=@Connect AND N%=@Cables AND NO2%=@Battery AND FNavail(@_BATTERY) AND FNavail(@_CABLES) AND NOT FNon(@BatteryConnectToCables) THEN PROCon(@BatteryConnectToCables):PROCmsg(@_OK):=TRUE
+
 				'in the car
 				IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN PROCmsg("I can see the starter button and glovebox."):PROCon(@DashboardStatus)
 				IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN IF NOT FNon(@CockpitStatus) THEN PROCmsg("The cockpit is open.") ELSE IF FNon(@CockpitStatus) THEN PROCmsg("The cockpit is closed.")
@@ -551,6 +567,9 @@
 				IF R%=29 THEN IF V%=@Examine AND N%=@Pumps THEN PROCmsg("They are turned off."):=TRUE
 				IF R%=29 THEN IF V%=@Examine AND N%=@Pipes AND NOT FNon(@PipesPadlocked) THEN PROCmsg("They are padlocked."):=TRUE
 				IF R%=29 THEN IF V%=@Examine AND N%=@Pipes THEN PROCmsg("They are unlocked."):=TRUE
+				IF R%=29 AND V%=@Unlock AND N%=@Pipes AND FNavail(@_KEY) AND NOT FNon(@PipesPadlocked) THEN PROCon(@PipesPadlocked):PROCmsg("OK"):=TRUE
+				IF V%=@Connect AND N%=@Hose AND FNavail(@_HOSE) AND FNavail(@_TAPE) AND FNavail(@_PUMP) AND NOT FNon(@HoseConnectedToPump) THEN PROCon(@HoseConnectedToPump):PROCmsg("Tape holds it attached to pump."):=TRUE
+
 
 				'room 30 cashier's booth
 				IF R%=30 THEN IF V%=@Examine AND N%=@Trash AND NOT FNon(@SearchTrash) THEN PROCon(@SearchTrash):PROCmsg("I see something."):PROCmove(@_BATTERY,R%):=TRUE
