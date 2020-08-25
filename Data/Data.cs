@@ -20,6 +20,7 @@ namespace AdventureLanguage.Data
         public Collection<EventLog> eventList = new Collection<EventLog>();
         public Collection<ProceduresAndFunctions> procList = new Collection<ProceduresAndFunctions>();
         public Collection<NPC> NPCList = new Collection<NPC>();
+        public Collection<Walkthrough> WalkthroughList = new Collection<Walkthrough>();
         public string folderLocation;
         public String sourceFile;
         public String outputFile;

@@ -281,10 +281,41 @@ namespace AdventureLanguage
                         }
                         gameData.eventList.Add(new EventLog("</NPCs>"));
                         break;
+
+                    case "WALKTHROUGH":
+                        gameData.eventList.Add(new EventLog("<Walkthrough>"));
+                        if (!Walkthrough(xe, gameData))
+                        {
+                            return false;
+                        }
+                        gameData.eventList.Add(new EventLog("</Walkthrough>"));
+                        break;
                 }
             }
 
             return true;
+        }
+
+        private static bool Walkthrough(XElement xm, DataItems gameData)
+        {
+            //steps through all the system messages in the section and calls a create message for each node found
+            string walkThrough;
+            string[] words = xm.Value.Split('\n');
+
+            foreach (string wrd in words)
+            {
+                walkThrough = wrd.TrimStart();
+
+                if (walkThrough.Length > 0)
+                {
+                    //save to class
+                    gameData.WalkthroughList.Add(new Walkthrough(gameData.WalkthroughList.Count + 1, walkThrough));
+                    gameData.eventList.Add(new EventLog(" " + (gameData.WalkthroughList.Count) + " " + walkThrough));
+                }
+            }
+
+            return true;
+
         }
 
         private static bool NPCS(XElement xm, DataItems gameData, bool isGlobal)
@@ -320,9 +351,9 @@ namespace AdventureLanguage
             int location = 0;
             int len = xe.Descendants().Count();
             int childLen;
-            int iCount=0;
+            int iCount = 0;
             int flagID;
-            byte locationFlags=0;
+            byte locationFlags = 0;
 
             for (int i = 0; i < len; i++)
             {
@@ -401,7 +432,7 @@ namespace AdventureLanguage
                 return false;
             }
 
-            gameData.NPCList.Add(new NPC(noun,iCount, gameData.NPCList.Count, hostility, health, toHit, damage, wandering, location));
+            gameData.NPCList.Add(new NPC(noun, iCount, gameData.NPCList.Count, hostility, health, toHit, damage, wandering, location));
             gameData.NPCList[gameData.NPCList.Count() - 1].SetFlags(locationFlags);
 
             return true;

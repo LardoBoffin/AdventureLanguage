@@ -177,6 +177,10 @@ namespace AdventureLanguage
             if (!WriteDataToFiles.WriteLocationsToFile(gameData))
             { return; }
 
+            //WriteWalkthrough
+            if (!WriteDataToFiles.WriteWalkthrough(gameData))
+            { return; }
+
             //merge the user code into the source file
             if (!CreateBBCBasicFile.CreateOutputProgram(gameData))
             { return; };

@@ -478,6 +478,49 @@ namespace AdventureLanguage.Output
             return true;   //change to true
         }
 
+        public static bool WriteWalkthrough(DataItems gameData)
+        {
+
+            try
+            {
+                string fd = gameData.folderDivider;
+                string fileOutput = gameData.folderLocation + fd + "fileOutput";
+
+                BinaryWriter messageWriter = new BinaryWriter(File.Open(fileOutput + fd + "WALKTH", FileMode.Create));
+
+                try
+                {
+                    
+                    gameData.eventList.Add(new EventLog());
+                    gameData.eventList.Add(new EventLog("Writing Walkthrough"));
+
+                    for (int i = 0; i < gameData.WalkthroughList.Count; i++)
+                    {
+                        messageWriter.Write((byte)0);   //start of record marker
+                        messageWriter.Write((byte)gameData.WalkthroughList[i].MessageText().Length);   //length of string
+                        messageWriter.Write(DataHelpers.ReverseString(gameData.WalkthroughList[i].MessageText()));
+                    }
+                }
+                catch (Exception c)
+                {
+                    gameData.eventList.Add(new EventLog("Processing Walkthrough"));
+                    gameData.eventList.Add(new EventLog(c.Message));
+                    return false;
+                }
+
+                messageWriter.Dispose();
+            }
+            catch (Exception c)
+            {
+                gameData.eventList.Add(new EventLog("Processing Walkthrough"));
+                gameData.eventList.Add(new EventLog(c.Message));
+                return false;
+            }
+
+            return true;
+
+        }
+
         public static bool WriteMessagesToFile(DataItems gameData)
         {
 

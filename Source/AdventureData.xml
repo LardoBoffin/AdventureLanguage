@@ -44,6 +44,7 @@
 				<Message id="_OpenToolBox">An open toolbox</Message>
 				<Message id="_EmptyJug">Empty chemical jug</Message>
 				<Message id="_FullJug">Jug of gasoline</Message>
+				<Message id="_JetFuelJug">Jug of jet fuel</Message>
 			</SystemMessages>
 			<GameVerbs>
 				<Verb>North;N</Verb>
@@ -146,6 +147,7 @@
 				<Noun>Cockpit</Noun>
 				<Noun>Bomb</Noun>
 				<Noun>Warfin</Noun>
+				<Noun>Terminals</Noun>
 			</Nouns>
 			<Variables>
 				<Var id="TurnsInDark" value="0">Number of turns in the dark so far. 2 = death.</Var>
@@ -176,6 +178,8 @@
 				<Var id="TorchOn">30 = light goes out</Var>
 				<Var id="PutHose">0 = not put in gas</Var>
 				<Var id="HoseDirty">0 = not dirty (used for pumping gas)</Var>
+				<Var id="BatteryConnectToTerminals">0 = not connected</Var>
+				<Var id="CarFuelled">0 = not fuelled</Var>
 			</Variables>
 			<Objects>
 				<Object id="_TOOLBOX" number="1" weight="20" value="0" location="6" message="Small toolbox">
@@ -514,11 +518,13 @@
 			</RoomMsg>
 			<Init>
 				PROCset(@TurnsInDark,2):PROCenc(111):H%=60:AT%=90:DM%=8
-				*KEY 1 W|ME|ME|MN|MTAKE TOOLBOX|MS|MW|MW|MGO STATION|MDROP TOOLBOX|MOPEN IT|MGO BOOTH|MEXAMINE TRASH|MGET BATTERY|MN|ME|MN|MN|MW|MGO CAR|MEXAMINE DASHBOARD|MEXAMINE COMPARTMENT|MTAKE FORMULA|MTAKE FLUID|ME|MDROP FORMULA|MN|MGET SAND|M
-				*KEY 2 GO SHACK|MGET RADIO|ME|MN|MFILL BATTERY|ME|MS|MW|MDROP BATTERY|ME|MS|MS|MW|MGO SHED|MDROP RADIO|MCONNECT ANTENNA|MN|ME|MGO YOYO|MDROP SAND|MDROP JAR|MW|MN|MGO STORE|MGET PICK|MGET PUMP|MGET HYDROMETER|MGET CABLES|ME|MN|MW|MDROP HYDROMETER|M
-				*KEY 3 E|MS|MS|MS|ME|MDIG|MDIG|MCUT LINE|MCUT LINE|MGET LINE|MW|MN|MN|MN|MN|MDROP PUMP|MDROP CABLES|MTHROW LINE|MTIE LINE TO PICK|MCLIMB LINE|MPULL LINE|MGET QUARTZ|MD|MDROP PICK|MGET PUMP|MGET CABLES|MS|MW|MGET BATTERY|MEXAMINE CAR|M
-				*KEY 4 CONNECT CABLES TO BATTERY|MGET HOSE|ME|MS|MS|MGO STATION|MTAKE TORCH|MTAKE TAPE|MUNLOCK PIPE|MCONNECT HOSE|MDROP TAPE|ME|MGO YOYO|MGET SAND|MGET JAR|MTORCH ON|MD|MDROP QUARTZ|MDROP SAND|MDROP JAR|MEXAMINE STAIRCASE|MTAKE JUG|MU|MTORCH OFF|M
-				*KEY 5 W|MGO STATION|MPUT HOSE|MUSE PUMP|MDISCONNECT HOSE|MDROP PUMP|ME|MN|MN|MW|MGET FORMULA|MDROP HOSE|ME|MS|MS|MGO YOYO|MTORCH ON|MD|MDROP JUG|M
+				'*KEY 1 W|ME|ME|MN|MTAKE TOOLBOX|MS|MW|MW|MGO STATION|MDROP TOOLBOX|MOPEN IT|MGO BOOTH|MEXAMINE TRASH|MGET BATTERY|MN|ME|MN|MN|MW|MGO CAR|MEXAMINE DASHBOARD|MEXAMINE COMPARTMENT|MTAKE FORMULA|MTAKE FLUID|ME|MDROP FORMULA|MN|MGET SAND|M
+				'*KEY 2 GO SHACK|MGET RADIO|ME|MN|MFILL BATTERY|ME|MS|MW|MDROP BATTERY|ME|MS|MS|MW|MGO SHED|MDROP RADIO|MCONNECT ANTENNA|MN|ME|MGO YOYO|MDROP SAND|MDROP JAR|MW|MN|MGO STORE|MGET PICK|MGET PUMP|MGET HYDROMETER|MGET CABLES|ME|MN|MW|MDROP HYDROMETER|M
+				'*KEY 3 E|MS|MS|MS|ME|MDIG|MDIG|MCUT LINE|MCUT LINE|MGET LINE|MW|MN|MN|MN|MN|MDROP PUMP|MDROP CABLES|MTHROW LINE|MTIE LINE TO PICK|MCLIMB LINE|MPULL LINE|MGET QUARTZ|MD|MDROP PICK|MGET PUMP|MGET CABLES|MS|MW|MGET BATTERY|MEXAMINE CAR|M
+				'*KEY 4 CONNECT CABLES TO BATTERY|MGET HOSE|ME|MS|MS|MGO STATION|MTAKE TORCH|MTAKE TAPE|MUNLOCK PIPE|MCONNECT HOSE|MDROP TAPE|ME|MGO YOYO|MGET SAND|MGET JAR|MTORCH ON|MD|MDROP QUARTZ|MDROP SAND|MDROP JAR|MEXAMINE STAIRCASE|MTAKE JUG|MU|MTORCH OFF|M
+				'*KEY 5 W|MGO STATION|MPUT HOSE|MUSE PUMP|MDISCONNECT HOSE|MDROP PUMP|ME|MN|MN|MW|MGET FORMULA|MDROP HOSE|ME|MS|MS|MGO YOYO|MTORCH ON|MD|MDROP JUG|MMAKE FUEL|MTAKE JUG|M
+				'U|MTORCH OFF|MDROP FORMULA|MW|MN|MN|MW|M
+				'*KEY 6 CONNECT CABLES TO TERMINALS|MREFUEL CAR|M
 			</Init>
 			<HighPriority>
 				IF FNflag(0) AND NOT FNon(@HaveLight) THEN PROCdec(@TurnsInDark)
@@ -546,6 +552,10 @@
 				'the basement, need the torch!!
 
 				IF R%=2 AND V%=@Examine AND N%=@Stairs AND NOT FNon(@ExaminedStairs) AND FNon(@HaveLight) THEN PROCmsg("I find a jug"):PROCmove(@_MIXINGJUG,R%):=TRUE
+				'mix the fuel, needs quartz, sand, jar, jug of gasoline and a carried formula
+				IF R%=2 AND V%=@Make AND V%=@Fuel AND NOT FNinInv(@_FORMULA) THEN PROCmsg("No forumal!"):=TRUE
+				IF R%=2 AND V%=@Make AND V%=@Fuel AND FNhere(@_MIXINGJUG) AND FNhere(@_QUARTZ) AND FNhere(@_SAND) AND FNhere(@_FLUID) AND FNinInv(@_FORMULA) AND FNobMn(@_MIXINGJUG)=@_FullJug THEN PROCmsg("OK"):PROCmove(@_QUARTZ,0):PROCmove(@_SAND,0):PROCmove(@_FLUID,0):PROCsetObjMsg(@_MIXINGJUG,@_JetFuelJug):=TRUE
+				IF R%=2 AND V%=@Make AND V%=@Fuel THEN PROCmsg("Something is missing."):=TRUE
 
 				'crossroads by yoyodyne and gas station, enter the yoyo building and gas station
 				IF R%=3 THEN IF V%=@Enter AND N%=@Yoyodyne THEN PROCgoto(1):=TRUE
@@ -592,6 +602,8 @@
 				IF R%=25 AND V%=@Examine AND N%=@Car AND NOT FNon(@CarExamined) THEN PROCmove(@_HOSE,R%):PROCmsg("I see something."):PRINT:PROCon(@CarExamined)
 				IF R%=25 AND V%=@Examine AND N%=@Car THEN PROCmsg("The cockpit is open, I can also see power terminals, a fuel tank and a jet engine."):=TRUE
 				IF R%=25 AND V%=@Connect AND N%=@Cables AND NO2%=@Battery AND FNavail(@_BATTERY) AND FNavail(@_CABLES) AND NOT FNon(@BatteryConnectToCables) THEN PROCon(@BatteryConnectToCables):PROCmsg(@_OK):=TRUE
+				IF R%=25 AND V%=@Connect AND N%=@Cables AND NO2%=@Terminals AND FNavail(@_BATTERY) AND FNavail(@_CABLES) AND FNon(@BatteryConnectToCables) THEN PROCon(@BatteryConnectToTerminals):PROCdrop(@_BATTERY):=TRUE
+				IF R%=25 AND V%=@Refuel AND N%=@Car AND FNavail(@_MIXINGJUG) AND FNobMn(@_MIXINGJUG)=@_JetFuelJug THEN PROCmsg("OK"):PROCon(@CarFuelled):=TRUE
 
 				'in the car
 				IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN PROCmsg("I can see the starter button and glovebox."):PROCon(@DashboardStatus)
@@ -711,6 +723,152 @@
 				IF FNinInv(@_FLASHLIGHT) THEN IF FNobMn(@_FLASHLIGHT)=19 THEN PROCoff(@HaveLight):=TRUE
 				=FALSE
 			</UserCode>
+			<Walkthrough>
+				W
+				E
+				E
+				N
+				TAKE TOOLBOX
+				S
+				W
+				W
+				GO STATION
+				DROP TOOLBOX
+				OPEN FRED
+				GO BOOTH
+				EXAMINE TRASH
+				GET BATTERY
+				N
+				E
+				N
+				N
+				W
+				GO CAR
+				EXAMINE DASHBOARD
+				EXAMINE COMPARTMENT
+				TAKE FORMULA
+				TAKE FLUID
+				E
+				DROP FORMULA
+				N
+				GET SAND
+				GO SHACK
+				GET RADIO
+				E
+				N
+				FILL BATTERY
+				E
+				S
+				W
+				DROP BATTERY
+				E
+				S
+				S
+				W
+				GO SHED
+				DROP RADIO
+				CONNECT ANTENNA
+				N
+				E
+				GO YOYO
+				DROP SAND
+				DROP JAR
+				W
+				N
+				GO STORE
+				GET PICK
+				GET PUMP
+				GET HYDROMETER
+				GET CABLES
+				E
+				N
+				W
+				DROP HYDROMETER
+				E
+				S
+				S
+				S
+				E
+				DIG
+				DIG
+				CUT LINE
+				CUT LINE
+				GET LINE
+				W
+				N
+				N
+				N
+				N
+				DROP PUMP
+				DROP CABLES
+				THROW LINE
+				TIE LINE TO PICK
+				CLIMB LINE
+				PULL LINE
+				GET QUARTZ
+				D
+				DROP PICK
+				GET PUMP
+				GET CABLES
+				S
+				W
+				GET BATTERY
+				EXAMINE CAR
+				CONNECT CABLES TO BATTERY
+				GET HOSE
+				E
+				S
+				S
+				GO STATION
+				TAKE TORCH
+				TAKE TAPE
+				UNLOCK PIPE
+				CONNECT HOSE
+				DROP TAPE
+				E
+				GO YOYO
+				GET SAND
+				GET JAR
+				TORCH ON
+				D
+				DROP QUARTZ
+				DROP SAND
+				DROP JAR
+				EXAMINE STAIRCASE
+				TAKE JUG
+				U
+				TORCH OFF
+				W
+				GO STATION
+				PUT HOSE
+				USE PUMP
+				DISCONNECT HOSE
+				DROP PUMP
+				E
+				N
+				N
+				W
+				GET FORMULA
+				DROP HOSE
+				E
+				S
+				S
+				GO YOYO
+				TORCH ON
+				D
+				DROP JUG
+				MAKE FUEL
+				TAKE JUG
+				U
+				TORCH OFF
+				DROP FORMULA
+				W
+				N
+				N
+				W
+				CONNECT CABLES TO TERMINALS
+				REFUEL CAR
+			</Walkthrough>
 		</Section>
 	</Sections>
 </AdventureData>

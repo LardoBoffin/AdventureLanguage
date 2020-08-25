@@ -7,6 +7,8 @@ MODE @ScreenMode@:VDU23;8202;0;0;0;:PRINT"Loading";:T%=0:Q%=0:DIM IX% @RMIndex@:
 -SW%=0   
 -SC%=0
 -SO%=0
+-WLK%=0
+-WLKC%=0
    
 'start of main loop
 PROCldSM:REPEAT:PROCmsg(0):PROCldOb:PROCldRm:IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4)
@@ -16,18 +18,21 @@ PROCldSM:REPEAT:PROCmsg(0):PROCldOb:PROCldRm:IF T%=0 THEN PROCgW(1):PROCgW(2):PR
 	   
 	'@NumVar@ is set in Adventure.xml
 	M$=STRING$(255," "):PROCvars:DIM CTR% @NumVar@:FOR X%=1 TO @NumVar@:PROCset(X%,0):NEXT:R%=1:OLR%=0:T%=0:PL%=255:EX%=0:ENC%=0:CW%=0:L%=0:PROCinit
-	PRINT TAB(0,5)"Press";CHR$(131);"1";CHR$(135);"to start a new game":PRINT TAB(0,7)"Press"CHR$(131);"2";CHR$(135);"to continue an existing game":PRINT:PRINT">";:REPEAT:C$=INKEY$(0):UNTIL C$="1" OR C$="2":CLS
+	PRINT TAB(0,5)"Press";CHR$(131);"1";CHR$(135);"to start a new game":PRINT TAB(0,7)"Press"CHR$(131);"2";CHR$(135);"to continue an existing game":PRINT:PRINT">";:REPEAT:C$=INKEY$(0):UNTIL C$="1" OR C$="2" OR C$="3":CLS
 	IF C$="2" THEN PRINTTAB(10,0)CHR$(131);"Getting catalogue...":PRINT:*CAT
 	IF C$="2" THEN PRINT:PRINT"Type the file name and press Enter":PRINT"Or press Enter for the default save":INPUT">" M$:IF LEFT$(M$,2)="S." THEN M$=RIGHT$(M$,LEN(M$)-2)
 	IF C$="2" THEN M$="LOAD "+M$:CLS:PROCload
+	-IF C$="3" THEN WLK%=1:LDWLK%=OPENIN("WALKTH")
 	
 	REPEAT:D%=RND(100):PROCpreRoom:IF R%<>OLR% THEN OLR%=R%:PROCcl:PROCgtRm:PROCt
 	D%=FNhighPty:IF EX%=0 AND NOT D% THEN PROCpsTxt
 -TM%=TIME
+-IF V%=0 AND EX%=0 AND NOT D% THEN LT%=0:WLK%=0
 		IF V%=0 AND EX%=0 AND NOT D% THEN PROCmsg(@_What):D%=TRUE
 		IF EX%=0 AND NOT D% THEN D%=FNckMv:IF NOT D% THEN D%=FNlowPty:IF V%>0 AND NOT D% THEN PROCmsg(@_CannotDoIt)
--PRINT "Logic time "; (TIME-TM%)/100
+'-PRINT "Logic time "; (TIME-TM%)/100
 -IF SC%=1 PROCshowC
+
 CL%=0:D%=0:UNTIL EX%=1:UNTIL FNagain=FALSE:PRINT "Thanks for playing...":END
 
 'debug stuff
@@ -72,11 +77,7 @@ DEFPROCldOb:LOCAL R%:F%=OPENIN("DATA-O"):IF FNturn=0 THEN OBJN%=@NumObjects@:DIM
 R%=1:REPEAT:?(OB%+R%)=BGET#F%:R%=R%+1:UNTIL EOF#F%:CLOSE#F%:ENDPROC
   
 'store object at location
-'DEFPROCstOb(O%,R%):LOCAL P%:P%=((O%-1)*8)+4:?(OB%+P%)=R% DIV 256:?(OB%+P%+1)=R% MOD 256:ENDPROC
-'DEFPROCstOb(O%,R%):LOCAL P%:P%=((O%-1)*7)+4:?(OB%+P%)=R%:ENDPROC
 DEFPROCstOb(O%,R%):?(OB%+((O%-1)*@SizeOfObject@)+4)=R%:ENDPROC
-
-
 
 'list objects at location
 DEFPROClsOb(R%,MS%):LOCAL X%,O%:O%=0:IF OBJN%=0 THEN ENDPROC
@@ -157,14 +158,29 @@ R%=R%+1:PRINT".";:UNTIL EOF#N%:CLOSE#N%:ENDPROC
 'print a message to the screen
 DEFPROCmsg(M%):LOCAL S%,P%,H%:M$=MS$(M%)
 	IF M%=0 THEN PRINT
+
+	-IF M%=@_CannotDoIt OR M%=@_What OR M%=@_CannotFindIt OR M%=@_TooHeavy OR M%=@_HaveNotGotThat THEN PRINT:PRINT "Unable to progess walkthrough at line ";WLKC%:WLK%=0:PRINT
+
 	S%=1:P%=1:H%=POS:REPEAT:P%=INSTR(M$," ",S%):IF P%=0 THEN H%=H%+(LEN(M$)-S%)+1 ELSE H%=H%+(P%-S%)+1
 	'@ScreenWidth@ is set in Adventure.xml
 	IF H%>@ScreenWidth@ THEN PRINT
 	PRINT MID$(M$,S%,P%-S%);" ";:H%=POS:S%=P%+1:UNTIL P%=0:IF POS=1 THEN VDU31,POS-1,VPOS:A%=135:C=USR(&FFF4):C=C AND &FFFF:C=C DIV &100:IF C>32 THEN VDU31,POS+1,VPOS
 ENDPROC
-   
+
+-DEFFNldWlk:LOCAL R%:R%=FALSE
+	-IF WLK%=1 THEN PRINT:PROCmsg(@_WhatNow):INPUT#LDWLK%,M$:PRINT M$:WLKC%=WLKC%+1:R%=TRUE:IF EOF#LDWLK% THEN WLK%=0:CLOSE#LDWLK%:R%=TRUE
+-=R%
+
+DEFPROCinputText
+	'load the next step of the walkthrough
+-	IF FNldWlk THEN ENDPROC
+	REPEAT:PRINT:PROCmsg(@_WhatNow):U%=VPOS:INPUT TAB(LEN(MS$(2)),U%),M$:UNTIL M$>"":M$=FNtU(M$):IF M$="*." THEN D%=TRUE:*.
+ENDPROC
+
 'parse the text
-DEFPROCpsTxt:LOCAL WL%,C%,S%,U%:PROCvars:REPEAT:PRINT:PROCmsg(@_WhatNow):U%=VPOS:INPUT TAB(LEN(MS$(2)),U%),M$:UNTIL M$>"":M$=FNtU(M$):S%=1:IF M$="*." THEN D%=TRUE:*.
+DEFPROCpsTxt:LOCAL WL%,C%,S%,U%:PROCvars:S%=1
+
+PROCinputText
 
 'show counters etc.
 -LOCAL T%:T%=TIME
@@ -185,7 +201,7 @@ DEFPROCpsTxt:LOCAL WL%,C%,S%,U%:PROCvars:REPEAT:PRINT:PROCmsg(@_WhatNow):U%=VPOS
 C%=0:UNTIL S%>=U%
 -IF SO%=1 PROClsAllOb
 -IF SW%=1 PROCshowParse
--PRINT "Parse time "; (TIME-T%)/100
+'-PRINT "Parse time "; (TIME-T%)/100
 ENDPROC
   
 'parse a verb
@@ -211,7 +227,7 @@ DEFPROCvars:M$="":N%=0:NO2%=0:V%=0:AVRB%=0:OBJ%=0:WRD$="":N%=0:D%=0:ENDPROC
 'take an object
 DEFPROCtake(O%):IF FNobHr(O%,R%)=0 THEN PROCmsg(@_CannotFindIt):ENDPROC
 	IF CW%+FNobWt(O%)>ENC% THEN PROCmsg(@_TooHeavy):ENDPROC
-PROCstOb(O%,PL%):PROCmsg(@_OK):PROCt:CW%=CW%+FNobWt(O%):ENDPROC
+PROCstOb(O%,PL%):PROCmsg(@_OK):CW%=CW%+FNobWt(O%):ENDPROC
 
 'swap object 1 with 2. 1 goes to location 0, 2 goes to player inv  
 DEFPROCswap(O1%,O2%):PROCstOb(O1%,0):PROCstOb(O2%,PL%):ENDPROC
@@ -221,7 +237,7 @@ DEFPROCmove(O%,R%):PROCstOb(O%,R%):ENDPROC
 
 'drop the object (if present) 
 DEFPROCdrop(O%):IF FNobHr(O%,PL%)=0:PROCmsg(@_HaveNotGotThat):ENDPROC
-	PROCstOb(O%,R%):PROCmsg(@_OK):PROCt:CW%=CW%-FNobWt(O%):ENDPROC
+	PROCstOb(O%,R%):PROCmsg(@_OK):CW%=CW%-FNobWt(O%):ENDPROC
 	
 'list player objects
 DEFPROCinv:PROClsOb(PL%,1):ENDPROC
