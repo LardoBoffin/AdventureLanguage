@@ -300,17 +300,28 @@ namespace AdventureLanguage
         {
             //steps through all the system messages in the section and calls a create message for each node found
             string walkThrough;
+            string wkText;
+            string comment;
             string[] words = xm.Value.Split('\n');
 
             foreach (string wrd in words)
             {
+                comment = "";
                 walkThrough = wrd.TrimStart();
+                string[] thisElement = walkThrough.Split('\'');
+
+                wkText = thisElement[0].PadRight(40, ' ');
+                walkThrough = thisElement[0].Trim();
+                if (thisElement.Count() > 1)
+                {
+                    comment = "\'" + thisElement[1].Trim();
+                }
 
                 if (walkThrough.Length > 0)
                 {
                     //save to class
-                    gameData.WalkthroughList.Add(new Walkthrough(gameData.WalkthroughList.Count + 1, walkThrough));
-                    gameData.eventList.Add(new EventLog(" " + (gameData.WalkthroughList.Count) + " " + walkThrough));
+                    gameData.WalkthroughList.Add(new Walkthrough(gameData.WalkthroughList.Count + 1, walkThrough, comment));
+                    gameData.eventList.Add(new EventLog(" " + (gameData.WalkthroughList.Count) + " " + wkText + comment));
                 }
             }
 

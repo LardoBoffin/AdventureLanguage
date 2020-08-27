@@ -497,8 +497,8 @@ namespace AdventureLanguage.Output
                     for (int i = 0; i < gameData.WalkthroughList.Count; i++)
                     {
                         messageWriter.Write((byte)0);   //start of record marker
-                        messageWriter.Write((byte)gameData.WalkthroughList[i].MessageText().Length);   //length of string
-                        messageWriter.Write(DataHelpers.ReverseString(gameData.WalkthroughList[i].MessageText()));
+                        messageWriter.Write((byte)gameData.WalkthroughList[i].WalkthroughText().Length);   //length of string
+                        messageWriter.Write(DataHelpers.ReverseString(gameData.WalkthroughList[i].WalkthroughText()));
                     }
                 }
                 catch (Exception c)

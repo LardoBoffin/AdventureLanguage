@@ -10,7 +10,7 @@
 			<ScreenMode>7</ScreenMode>
 			<SourceFile>source.txt</SourceFile>
 			<OutputFile>Banzai.txt</OutputFile>
-			<BuildType></BuildType>
+			<BuildType>Debug</BuildType>
 			<Tokeniser>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\tokenise.exe</Tokeniser>
 			<TokenisedFileName>Banzai</TokenisedFileName>
 			<CrunchTokenisedFile></CrunchTokenisedFile>
@@ -554,7 +554,7 @@
 				IF R%=2 AND V%=@Examine AND N%=@Stairs AND NOT FNon(@ExaminedStairs) AND FNon(@HaveLight) THEN PROCmsg("I find a jug"):PROCmove(@_MIXINGJUG,R%):=TRUE
 				'mix the fuel, needs quartz, sand, jar, jug of gasoline and a carried formula
 				IF R%=2 AND V%=@Make AND V%=@Fuel AND NOT FNinInv(@_FORMULA) THEN PROCmsg("No forumal!"):=TRUE
-				IF R%=2 AND V%=@Make AND V%=@Fuel AND FNhere(@_MIXINGJUG) AND FNhere(@_QUARTZ) AND FNhere(@_SAND) AND FNhere(@_FLUID) AND FNinInv(@_FORMULA) AND FNobMn(@_MIXINGJUG)=@_FullJug THEN PROCmsg("OK"):PROCmove(@_QUARTZ,0):PROCmove(@_SAND,0):PROCmove(@_FLUID,0):PROCsetObjMsg(@_MIXINGJUG,@_JetFuelJug):=TRUE
+				IF R%=2 AND V%=@Make AND V%=@Fuel AND FNhere(@_MIXINGJUG) AND FNhere(@_QUARTZ) AND FNhere(@_SAND) AND FNhere(@_FLUID) AND FNinInv(@_FORMULA) AND FNobMn(@_MIXINGJUG)=@_FullJug THEN PROCmsg(@_OK):PROCmove(@_QUARTZ,0):PROCmove(@_SAND,0):PROCmove(@_FLUID,0):PROCsetObjMsg(@_MIXINGJUG,@_JetFuelJug):=TRUE
 				IF R%=2 AND V%=@Make AND V%=@Fuel THEN PROCmsg("Something is missing."):=TRUE
 
 				'crossroads by yoyodyne and gas station, enter the yoyo building and gas station
@@ -573,7 +573,7 @@
 				IF R%=12 THEN IF FNr12:=TRUE
 
 				'shed
-				IF R%=15 AND V%=@Connect AND N%=@Antenna AND FNhere(@_RADIO) AND NOT FNon(@RadioAntennaStatus) THEN PROCon(@RadioAntennaStatus):PROCmsg("OK"):=TRUE
+				IF R%=15 AND V%=@Connect AND N%=@Antenna AND FNhere(@_RADIO) AND NOT FNon(@RadioAntennaStatus) THEN PROCon(@RadioAntennaStatus):PROCmsg(@_OK):=TRUE
 
 				'mountain view corner
 				IF R%=16 THEN IF V%=@Enter AND N%=@Store THEN PROCgoto(17):=TRUE
@@ -591,7 +591,7 @@
 				IF R%=21 AND V%=@Get AND N%=@Quartz AND NOT FNinInv(@_PICK) THEN PROCmsg("You cannot get it out of the ground."):=TRUE
 
 				'lake
-				IF R%=22 AND V%=@Fill AND N%=@Battery AND FNavail(@_BATTERY) AND NOT FNon(@BatteryWater) THEN PROCon(@BatteryWater):PROCmsg("OK"):=TRUE
+				IF R%=22 AND V%=@Fill AND N%=@Battery AND FNavail(@_BATTERY) AND NOT FNon(@BatteryWater) THEN PROCon(@BatteryWater):PROCmsg(@_OK):=TRUE
 
 				'beach
 				IF R%=23 AND V%=@Enter AND N%=@Shack THEN PROCgoto(24):=TRUE
@@ -603,7 +603,7 @@
 				IF R%=25 AND V%=@Examine AND N%=@Car THEN PROCmsg("The cockpit is open, I can also see power terminals, a fuel tank and a jet engine."):=TRUE
 				IF R%=25 AND V%=@Connect AND N%=@Cables AND NO2%=@Battery AND FNavail(@_BATTERY) AND FNavail(@_CABLES) AND NOT FNon(@BatteryConnectToCables) THEN PROCon(@BatteryConnectToCables):PROCmsg(@_OK):=TRUE
 				IF R%=25 AND V%=@Connect AND N%=@Cables AND NO2%=@Terminals AND FNavail(@_BATTERY) AND FNavail(@_CABLES) AND FNon(@BatteryConnectToCables) THEN PROCon(@BatteryConnectToTerminals):PROCdrop(@_BATTERY):=TRUE
-				IF R%=25 AND V%=@Refuel AND N%=@Car AND FNavail(@_MIXINGJUG) AND FNobMn(@_MIXINGJUG)=@_JetFuelJug THEN PROCmsg("OK"):PROCon(@CarFuelled):=TRUE
+				IF R%=25 AND V%=@Refuel AND N%=@Car AND FNavail(@_MIXINGJUG) AND FNobMn(@_MIXINGJUG)=@_JetFuelJug THEN PROCmsg(@_OK):PROCon(@CarFuelled):=TRUE
 
 				'in the car
 				IF R%=26 AND V%=@Examine AND N%=@Dashboard THEN PROCmsg("I can see the starter button and glovebox."):PROCon(@DashboardStatus)
@@ -619,11 +619,11 @@
 				IF R%=29 THEN IF V%=@Examine AND N%=@Pumps THEN PROCmsg("They are turned off."):=TRUE
 				IF R%=29 THEN IF V%=@Examine AND N%=@Pipes AND NOT FNon(@PipesPadlocked) THEN PROCmsg("They are padlocked."):=TRUE
 				IF R%=29 THEN IF V%=@Examine AND N%=@Pipes THEN PROCmsg("They are unlocked."):=TRUE
-				IF R%=29 AND V%=@Unlock AND N%=@Pipes AND FNavail(@_KEY) AND NOT FNon(@PipesPadlocked) THEN PROCon(@PipesPadlocked):PROCmsg("OK"):=TRUE
+				IF R%=29 AND V%=@Unlock AND N%=@Pipes AND FNavail(@_KEY) AND NOT FNon(@PipesPadlocked) THEN PROCon(@PipesPadlocked):PROCmsg(@_OK):=TRUE
 
 				'put the hose in the gas tank and remove it from inventory
 				IF R%=29 AND V%=@Put AND N%=@Hose AND FNinInv(@_PUMP) AND FNinInv(@_HOSE) AND FNon(@HoseConnectedToPump) AND FNon(@PipesPadlocked) THEN PROCmsg("It does reach the gasoline."):PROCon(@PutHose):CW%=CW%-FNobWt(@_HOSE):PROCmove(@_HOSE,0):=TRUE
-				IF R%=29 AND V%=@Use AND N%=@Pump AND FNon(@PutHose) AND FNobMn(@_MIXINGJUG)=@_EmptyJug AND FNinInv(@_PUMP) THEN PROCsetObjMsg(@_MIXINGJUG,@_FullJug):PROCmsg("OK"):=TRUE
+				IF R%=29 AND V%=@Use AND N%=@Pump AND FNon(@PutHose) AND FNobMn(@_MIXINGJUG)=@_EmptyJug AND FNinInv(@_PUMP) THEN PROCsetObjMsg(@_MIXINGJUG,@_FullJug):PROCmsg(@_OK):=TRUE
 
 				'get the hose back again (required later on)
 				IF V%=@Disconnect AND N%=@Hose AND FNon(@HoseConnectedToPump) AND FNinInv(@_PUMP) THEN PROCoff(@HoseConnectedToPump):PROCmove(@_HOSE,R%):PROCtake(@_HOSE):=TRUE
@@ -674,12 +674,12 @@
 			<UserCode>
 
 				DEFFNr12
-				IF V%=@Dig AND FNavail(@_PICK) AND NOT FNon(@HoleOne) THEN PROCon(@HoleOne):PROCmsg("OK"):=TRUE
+				IF V%=@Dig AND FNavail(@_PICK) AND NOT FNon(@HoleOne) THEN PROCon(@HoleOne):PROCmsg(@_OK):=TRUE
 				IF V%=@Examine AND N%=@Hole AND FNon(@HoleOne) THEN PROCmsg("I see an underground phone line."):=TRUE
 				IF V%=@Cut AND N%=@Line AND FNon(@HoleOne) AND NOT FNon(@CutOne) THEN PROCmsg("I see the line is severed."):PROCon(@CutOne):=TRUE
 				IF V%=@Cut AND N%=@Line AND FNon(@CutOne) AND NOT FNon(@CutTwo) THEN PROCmsg("I see the line is severed."):PROCon(@CutTwo):=TRUE
 				IF V%=@Get AND N%=@Line AND FNon(@CutOne) AND NOT FNon(@CutTwo) THEN PROCmsg("I can't. It's still attached."):=TRUE
-				IF V%=@Dig AND FNavail(@_PICK) AND NOT FNon(@HoleTwo) THEN PROCon(@HoleTwo):PROCmsg("OK"):=TRUE
+				IF V%=@Dig AND FNavail(@_PICK) AND NOT FNon(@HoleTwo) THEN PROCon(@HoleTwo):PROCmsg(@_OK):=TRUE
 				IF V%=@Get AND N%=@Line AND FNon(@CutOne) AND FNon(@CutTwo) AND NOT FNon(@TakenCable) THEN PROCon(@TakenCable):PROCmove(@_LINE,R%):PROCtake(@_LINE):=TRUE
 
 				=FALSE
@@ -734,9 +734,9 @@
 				W
 				GO STATION
 				DROP TOOLBOX
-				OPEN FRED
+				OPEN IT
 				GO BOOTH
-				EXAMINE TRASH
+				EXAMINE TRASH	'to find the battery
 				GET BATTERY
 				N
 				E
@@ -744,7 +744,7 @@
 				N
 				W
 				GO CAR
-				EXAMINE DASHBOARD
+				EXAMINE DASHBOARD	'to find the glovebox
 				EXAMINE COMPARTMENT
 				TAKE FORMULA
 				TAKE FLUID
@@ -791,8 +791,8 @@
 				E
 				DIG
 				DIG
-				CUT LINE
-				CUT LINE
+				CUT LINE	'cut one end of the line
+				CUT LINE	'cut the other end of the line
 				GET LINE
 				W
 				N

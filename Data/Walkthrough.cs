@@ -9,12 +9,15 @@ namespace AdventureLanguage.Data
 
         private readonly int iDNumber;
 
-        private readonly string messageText;
+        private readonly string walkthroughText;
 
-        public Walkthrough(int idNumber, string text)
+        private readonly string commentText;
+
+        public Walkthrough(int idNumber, string walkThroughText,string comment)
         {
             iDNumber = idNumber;
-            messageText = text;
+            walkthroughText = walkThroughText;
+            commentText = comment;
         }
 
         public int IDNumber()
@@ -22,9 +25,9 @@ namespace AdventureLanguage.Data
             return iDNumber;
         }
 
-        public string MessageText()
+        public string WalkthroughText()
         {
-            return messageText;
+            return walkthroughText;
         }
 
     }

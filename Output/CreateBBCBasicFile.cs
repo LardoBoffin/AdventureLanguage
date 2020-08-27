@@ -469,7 +469,40 @@ namespace AdventureLanguage.Output
                         return false;
                     }
 
-                    gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.SourceBBCBasicProgram[i].OriginalLineNumber(), gameData.SourceBBCBasicProgram[i].LineText(), BBCBasicLine.LineType.SourceLine));
+                    if (gameData.debugMode)
+                    {
+
+                        switch (gameData.SourceBBCBasicProgram[i].LineText().Left(2))
+                        {
+                            case "#R":
+                                break;
+                            case "#D":
+                                string txt = gameData.SourceBBCBasicProgram[i].LineText().Right(2, gameData.SourceBBCBasicProgram[i].LineText().Length - 2);
+                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.SourceBBCBasicProgram[i].OriginalLineNumber(), txt, BBCBasicLine.LineType.SourceLine));
+                                break;
+                            default:
+                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.SourceBBCBasicProgram[i].OriginalLineNumber(), gameData.SourceBBCBasicProgram[i].LineText(), BBCBasicLine.LineType.SourceLine));
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        //any lines starting with #R
+                        switch (gameData.SourceBBCBasicProgram[i].LineText().Left(2))
+                        {
+                            case "#D":
+                                break;
+                            case "#R":
+                                string txt = gameData.SourceBBCBasicProgram[i].LineText().Right(2, gameData.SourceBBCBasicProgram[i].LineText().Length - 2);
+                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.SourceBBCBasicProgram[i].OriginalLineNumber(), txt, BBCBasicLine.LineType.SourceLine));
+                                break;
+                            default:
+                                gameData.TargetBBCBasicProgram.Add(new BBCBasicLine(gameData.SourceBBCBasicProgram[i].OriginalLineNumber(), gameData.SourceBBCBasicProgram[i].LineText(), BBCBasicLine.LineType.SourceLine));
+                                break;
+                        }
+
+                    }
+
 
 
                     //loop through each line of the following items:
