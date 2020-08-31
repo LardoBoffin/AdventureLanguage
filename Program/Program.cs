@@ -189,6 +189,8 @@ namespace AdventureLanguage
             if (!CreateBBCBasicFile.WriteProgramToFile(gameData))
             { return; };
 
+            Tokeniser.PopulateTokens.populateTokens();
+
             gameData.eventList.Add(new EventLog());
             gameData.eventList.Add(new EventLog("Data compiled to: " + gameData.outputFile));
             gameData.eventList.Add(new EventLog());

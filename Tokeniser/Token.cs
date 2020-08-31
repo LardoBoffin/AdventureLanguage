@@ -13,19 +13,26 @@ namespace AdventureLanguage.Tokeniser
 
         private readonly string _keyword;
 
-        private readonly bool _conditional;
+        private readonly bool _conditional = false;
 
-        private readonly bool _middle;
+        private readonly bool _middle = false;
 
-        private readonly bool _start;
+        private readonly bool _start = false;
 
-        private readonly bool _FNPROC;
+        private readonly bool _FNPROC = false;
 
-        private readonly bool _line;
+        private readonly bool _line = false;
 
-        private readonly bool _REM;
+        private readonly bool _REM = false;
 
-        private readonly bool _pseudo;
+        private readonly bool _pseudo = false;
+
+
+        public Token(byte token, string keyword)
+        {
+            _token = token;
+            _keyword = keyword;
+        }
 
         public Token(byte token, string keyword, bool conditional, bool middle, bool start, bool FNPROC, bool line, bool REM, bool pseudo)
         {
