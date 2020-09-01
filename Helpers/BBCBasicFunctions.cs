@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using AdventureLanguage.Data;
 
 
@@ -183,6 +181,18 @@ namespace AdventureLanguage.Helpers
             }
 
             return returnMessage;
+        }
+
+        public static void TokeniseLines(DataItems gameData)
+        {
+            //loop through each line and call tokeniser
+            int iNumLines = gameData.TargetBBCBasicProgram.Count;
+
+            for (int i = 0; i < iNumLines; i++)
+            {
+                gameData.TargetBBCBasicProgram[i].SetTokenisedLine(Tokeniser.Tokeniser.Tokenise(gameData.TargetBBCBasicProgram[i].LineText(), gameData.TargetBBCBasicProgram[i].NewLineNumber(),gameData));
+            }
+
         }
 
         public static void RenumberLines(DataItems gameData)

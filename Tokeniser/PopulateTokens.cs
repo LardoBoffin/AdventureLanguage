@@ -7,7 +7,7 @@ namespace AdventureLanguage.Tokeniser
 {
     public static class PopulateTokens
     {
-        public static bool populateTokens()
+        public static void PopulateTokenList()
         {
             //create the list of tokens and associated flags
 
@@ -141,8 +141,6 @@ namespace AdventureLanguage.Tokeniser
             TokenList.tokenList.Add(new Token(tokenVal += 1, "UNTIL", false, true, false, false, false, false, false));
             TokenList.tokenList.Add(new Token(tokenVal += 1, "WIDTH", false, true, false, false, false, false, false));
             TokenList.tokenList.Add(new Token(tokenVal += 1, "OSCLI", false, true, false, false, false, false, false));
-
-            return false;
 
         }
     }

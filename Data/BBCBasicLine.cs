@@ -10,6 +10,7 @@ namespace AdventureLanguage.Data
         private int _newLineNumber;
         private string _lineText;
         private readonly int _lineType;
+        private byte[] _tokenisedLine = new byte[255];
 
         public enum LineType
         {
@@ -32,6 +33,16 @@ namespace AdventureLanguage.Data
         public int GetLineType()
         {
             return _lineType;
+        }
+
+        public void SetTokenisedLine(byte[] tokenisedLine)
+        {
+            _tokenisedLine = tokenisedLine;
+        }
+
+        public byte[] GetTokenisedLine()
+        {
+            return _tokenisedLine;
         }
 
         public void SetLineNumber(int number)

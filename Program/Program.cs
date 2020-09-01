@@ -143,6 +143,7 @@ namespace AdventureLanguage
             if (!XMLParser.ParseXML(adventureCode, gameData))
             { return; };
 
+            Tokeniser.PopulateTokens.PopulateTokenList();
 
 #if BuildFromVS
             gameData.folderLocation = oldLocation;
@@ -188,8 +189,6 @@ namespace AdventureLanguage
             //write out to text only file
             if (!CreateBBCBasicFile.WriteProgramToFile(gameData))
             { return; };
-
-            Tokeniser.PopulateTokens.populateTokens();
 
             gameData.eventList.Add(new EventLog());
             gameData.eventList.Add(new EventLog("Data compiled to: " + gameData.outputFile));

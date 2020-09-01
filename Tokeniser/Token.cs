@@ -58,6 +58,12 @@ namespace AdventureLanguage.Tokeniser
             return _keyword;
 
         }
+
+        public int KeywordLength()
+        {
+            return _keyword.Length;
+        }
+
         public bool Conditional()
         {
             return _conditional;

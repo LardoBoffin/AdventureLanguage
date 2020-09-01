@@ -584,6 +584,9 @@ namespace AdventureLanguage.Output
                 //renumber the lines
                 BBCBasicFunctions.RenumberLines(gameData);
 
+                //tokenise (has to be done after renumbering as line number is stored)
+                BBCBasicFunctions.TokeniseLines(gameData);
+
                 return true;
             }
             catch (Exception e)
@@ -601,22 +604,20 @@ namespace AdventureLanguage.Output
                 int iNumLines = gameData.TargetBBCBasicProgram.Count;
 
                 {
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(gameData.folderLocation + gameData.folderDivider + gameData.outputFile, false, Encoding.ASCII))
+                    using System.IO.StreamWriter file = new System.IO.StreamWriter(gameData.folderLocation + gameData.folderDivider + gameData.outputFile, false, Encoding.ASCII);
+                    if (gameData.folderDivider == "/")
                     {
-                        if (gameData.folderDivider == "/")
-                        {
-                            file.NewLine = "\r";
-                        }
-                        else
-                        {
-                            file.NewLine = "\r\n";
-                        }
+                        file.NewLine = "\r";
+                    }
+                    else
+                    {
+                        file.NewLine = "\r\n";
+                    }
 
-                        for (int i = 0; i < iNumLines; i++)
-                        {
-                            file.WriteLine(gameData.TargetBBCBasicProgram[i].NewLineNumber().ToString() + gameData.TargetBBCBasicProgram[i].LineText());
-                            gameData.eventList.Add(new EventLog((gameData.TargetBBCBasicProgram[i].NewLineNumber().ToString() + gameData.TargetBBCBasicProgram[i].LineText())));
-                        }
+                    for (int i = 0; i < iNumLines; i++)
+                    {
+                        file.WriteLine(gameData.TargetBBCBasicProgram[i].NewLineNumber().ToString() + gameData.TargetBBCBasicProgram[i].LineText());
+                        gameData.eventList.Add(new EventLog((gameData.TargetBBCBasicProgram[i].NewLineNumber().ToString() + gameData.TargetBBCBasicProgram[i].LineText())));
                     }
                 }
 
