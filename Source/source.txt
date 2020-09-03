@@ -1,7 +1,7 @@
 'in notepad++ set the language to Visual Basic
 'any lines starting with ' will be ignored
 'any line starting with - will only be included if adventureData has <BuildType>Debug</BuildType> set
-
+'PRINT A
 MODE @ScreenMode@:VDU23;8202;0;0;0;:PRINT"Loading";:T%=0:Q%=0:DIM IX% @RMIndex@:DIM RM% @Room@
 
 -SW%=0   

@@ -32,7 +32,7 @@ namespace AdventureLanguage.Tokeniser
 
 
             // string keyword;
-            bool isMatch = false;
+            //bool isMatch = false;
 
             string text = "";
             string character;
@@ -51,14 +51,13 @@ namespace AdventureLanguage.Tokeniser
 
                 tokenisedBASIC[0] = (byte)(lineNumber / 256);                        //MSB of line number
                 tokenisedBASIC[1] = (byte)(lineNumber - ((lineNumber / 256) * 256)); //LSB of line number
+                //tokenised position 2 is linelength
 
                 //read characters until reaching control or other characters or end of line
                 iLenLine = BBCBasicLine.Length;
-                iBytePOS = 2;
+                iBytePOS = 3;
 
-
-
-                while (iCurrentChar < iLenLine)
+                while (iCurrentChar <= iLenLine)
                 {
                     text = "";
 
@@ -74,16 +73,22 @@ namespace AdventureLanguage.Tokeniser
 
                         while (character != "\"")
                         {
-                            iBytePOS += 1;
+                            //iBytePOS += 1;
+                            iBytePOS = GetBytePos(tokenisedBASIC);
                             tokenisedBASIC[iBytePOS] = (byte)character.MidChar(1, 1);
+
+                            if (tokenisedBASIC[iBytePOS] == 0)
+                            {
+                                throw new System.ArgumentException("Token cannot be 0", "Token");
+                            }
+
                             iCurrentChar += 1;
                             character = BBCBasicLine.Mid(iCurrentChar, 1);
-
 
                             if (iCurrentChar == iLenLine)
                             {
                                 //error!
-                                return null;
+                                throw new System.ArgumentException("Unclosed quotation marks", "Syntax error");
                             }
                         }
 
@@ -94,7 +99,7 @@ namespace AdventureLanguage.Tokeniser
                         text += character;
                         iCurrentChar += 1;
                         //read text until not text or ( or $
-                        while (Regex.IsMatch(character, "^[a-zA-Z]"))
+                        while (Regex.IsMatch(character, "^[a-zA-Z]") && iCurrentChar <= iLenLine)
                         {
                             character = BBCBasicLine.Mid(iCurrentChar, 1);
                             text += character;
@@ -102,10 +107,15 @@ namespace AdventureLanguage.Tokeniser
 
                         }
 
-                        //dump the last character
-                        tmpChar = text.MidChar(text.Length, 1);
-                        text = text.Left(text.Length - 1);
-                        iCurrentChar -= 2;
+                        //dump the last character if more than one present
+                        if (text.Length > 1)
+                        {
+                            tmpChar = text.MidChar(text.Length, 1);
+                            text = text.Left(text.Length - 1);
+                            iCurrentChar -= 2;
+                        }
+
+                        iBytePOS = GetBytePos(tokenisedBASIC);
 
                         if (GetToken(text))
                         {
@@ -116,29 +126,46 @@ namespace AdventureLanguage.Tokeniser
                         else
                         {
                             //step through 'text' and put into byte
-                            for (int i = 1; i < text.Length+1; i++)
+                            for (int i = 1; i < text.Length + 1; i++)
                             {
                                 tokenisedBASIC[iBytePOS] = (byte)text.MidChar(i, 1);
+                                if (tokenisedBASIC[iBytePOS] == 0)
+                                {
+                                    throw new System.ArgumentException("Token cannot be 0", "Token");
+                                }
+
                                 iBytePOS += 1;
+
                             }
+                            //put in the dumped character
+                            //iBytePOS -= 1;
+                            iBytePOS = GetBytePos(tokenisedBASIC);
+
+                            //tokenisedBASIC[iBytePOS] = (byte)tmpChar;
+
                         }
 
                     }
                     else
                     {
-                        iBytePOS += 1;
+                        //iBytePOS += 1;
+                        iBytePOS = GetBytePos(tokenisedBASIC);
                         tokenisedBASIC[iBytePOS] = (byte)character.MidChar(1, 1);
+                        if (tokenisedBASIC[iBytePOS] == 0)
+                        {
+                            throw new System.ArgumentException("Token cannot be 0", "Token");
+                        }
                     }
 
                     iCurrentChar += 1;
 
-
                 }
 
-
-
-                tokenisedBASIC[2] = (byte)iBytePOS;                                   //Length of line (set last)
-                tokenisedBASIC[iBytePOS] = (byte)0x0D;                                //CR
+                //iBytePOS += 1;
+                iBytePOS = GetBytePos(tokenisedBASIC);
+                tokenisedBASIC[iBytePOS] = (byte)0x0D;
+                tokenisedBASIC[2] = (byte)(iBytePOS+1);             //Length of line (set last), taken from 0 bound array length
+                                                                    //CR
             }
             catch (Exception e)
             {
@@ -147,6 +174,19 @@ namespace AdventureLanguage.Tokeniser
             }
 
             return tokenisedBASIC;
+        }
+
+        private static int GetBytePos(byte[] tokenisedLine)
+        {
+            for (int i=3;i<tokenisedLine.Length;i++)
+            {
+                if (tokenisedLine[i]==0)
+                {
+                    return i;
+                }
+            }
+
+            return 0;
         }
 
         private static bool GetToken(string text)
