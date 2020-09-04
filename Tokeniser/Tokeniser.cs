@@ -19,7 +19,7 @@ namespace AdventureLanguage.Tokeniser
         static bool REM = false;
         static bool pseudo = false;
         static byte token = 0;
-
+        static int iBytePOS = 0;
         public static byte[] Tokenise(string BBCBasicLine, int lineNumber, Data.DataItems gameData)
         {
             //step through text and convert to tokens
@@ -41,7 +41,7 @@ namespace AdventureLanguage.Tokeniser
             char tmpChar;
 
             byte[] tokenisedBASIC = new byte[255];
-            int iBytePOS = 0;
+            //int iBytePOS = 0;
 
             try
             {
@@ -67,20 +67,15 @@ namespace AdventureLanguage.Tokeniser
                     if (character == "\"")
                     {
                         iBytePOS += 1;
-                        tokenisedBASIC[iBytePOS] = (byte)character.MidChar(1, 1);
+                        tokenisedBASIC = PushByte(tokenisedBASIC, (byte)character.MidChar(1, 1));
                         iCurrentChar += 1;
                         character = BBCBasicLine.Mid(iCurrentChar, 1);
 
                         while (character != "\"")
                         {
-                            //iBytePOS += 1;
                             iBytePOS = GetBytePos(tokenisedBASIC);
-                            tokenisedBASIC[iBytePOS] = (byte)character.MidChar(1, 1);
+                            tokenisedBASIC = PushByte(tokenisedBASIC, (byte)character.MidChar(1, 1));
 
-                            if (tokenisedBASIC[iBytePOS] == 0)
-                            {
-                                throw new System.ArgumentException("Token cannot be 0", "Token");
-                            }
 
                             iCurrentChar += 1;
                             character = BBCBasicLine.Mid(iCurrentChar, 1);
@@ -119,52 +114,30 @@ namespace AdventureLanguage.Tokeniser
 
                         if (GetToken(text))
                         {
-                            tokenisedBASIC[iBytePOS] = token;
-                            //iBytePOS += 1;
-                            //tokenisedBASIC[iBytePOS] = (byte)tmpChar;
+                            tokenisedBASIC = PushByte(tokenisedBASIC, token);
                         }
                         else
                         {
                             //step through 'text' and put into byte
                             for (int i = 1; i < text.Length + 1; i++)
                             {
-                                tokenisedBASIC[iBytePOS] = (byte)text.MidChar(i, 1);
-                                if (tokenisedBASIC[iBytePOS] == 0)
-                                {
-                                    throw new System.ArgumentException("Token cannot be 0", "Token");
-                                }
-
-                                iBytePOS += 1;
-
-                            }
-                            //put in the dumped character
-                            //iBytePOS -= 1;
-                            iBytePOS = GetBytePos(tokenisedBASIC);
-
-                            //tokenisedBASIC[iBytePOS] = (byte)tmpChar;
-
+                                tokenisedBASIC = PushByte(tokenisedBASIC, (byte)text.MidChar(1, 1));
+                            };
                         }
 
                     }
                     else
                     {
-                        //iBytePOS += 1;
                         iBytePOS = GetBytePos(tokenisedBASIC);
-                        tokenisedBASIC[iBytePOS] = (byte)character.MidChar(1, 1);
-                        if (tokenisedBASIC[iBytePOS] == 0)
-                        {
-                            throw new System.ArgumentException("Token cannot be 0", "Token");
-                        }
+                        tokenisedBASIC = PushByte(tokenisedBASIC, (byte)character.MidChar(1, 1));
                     }
 
                     iCurrentChar += 1;
 
                 }
 
-                //iBytePOS += 1;
-                iBytePOS = GetBytePos(tokenisedBASIC);
-                tokenisedBASIC[iBytePOS] = (byte)0x0D;
-                tokenisedBASIC[2] = (byte)(iBytePOS+1);             //Length of line (set last), taken from 0 bound array length
+                tokenisedBASIC = PushByte(tokenisedBASIC, (byte)0x0D);
+                tokenisedBASIC[2] = (byte)(iBytePOS);             //Length of line (set last), taken from 0 bound array length
                                                                     //CR
             }
             catch (Exception e)
@@ -174,6 +147,19 @@ namespace AdventureLanguage.Tokeniser
             }
 
             return tokenisedBASIC;
+        }
+
+        private static byte[] PushByte(byte[] tokenisedLine, byte token)
+        {
+            tokenisedLine[iBytePOS] = token;
+            if (token == 0)
+            {
+                throw new System.ArgumentException("Token cannot be 0", "Token");
+            }
+
+            //move byte pointer
+            iBytePOS += 1;
+            return tokenisedLine;
         }
 
         private static int GetBytePos(byte[] tokenisedLine)
