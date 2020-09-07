@@ -6,6 +6,7 @@ using System.IO;
 using AdventureLanguage.Helpers;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace AdventureLanguage.Output
 {
@@ -476,6 +477,47 @@ namespace AdventureLanguage.Output
             }
 
             return true;   //change to true
+        }
+
+        public static bool WriteTokenisedLine(byte[] tokenLine, DataItems gameData)
+        {
+
+            try
+            {
+                string fd = gameData.folderDivider;
+                string fileOutput = gameData.folderLocation + fd + "fileOutput";
+
+                BinaryWriter messageWriter = new BinaryWriter(File.Open(fileOutput + fd + "TOKEN", FileMode.Create));
+
+                try
+                {
+
+                    gameData.eventList.Add(new EventLog());
+                    gameData.eventList.Add(new EventLog("Writing tokenised BASIC file"));
+
+                    for (int i = 0; i < tokenLine.Count(); i++)
+                    {
+                        messageWriter.Write((byte)tokenLine[i]);   //length of string
+                    }
+                }
+                catch (Exception c)
+                {
+                    gameData.eventList.Add(new EventLog("Processing tokenised BASIC file"));
+                    gameData.eventList.Add(new EventLog(c.Message));
+                    return false;
+                }
+
+                messageWriter.Dispose();
+            }
+            catch (Exception c)
+            {
+                gameData.eventList.Add(new EventLog("Processing tokenised BASIC file"));
+                gameData.eventList.Add(new EventLog(c.Message));
+                return false;
+            }
+
+            return true;
+
         }
 
         public static bool WriteWalkthrough(DataItems gameData)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Dynamic;
 using AdventureLanguage.Data;
 using System.Text.RegularExpressions;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace AdventureLanguage.Tokeniser
 {
@@ -39,6 +40,7 @@ namespace AdventureLanguage.Tokeniser
             int iLenLine;
             int iCurrentChar = 1;
             char tmpChar;
+            bool tokenising = false;
 
             byte[] tokenisedBASIC = new byte[255];
             //int iBytePOS = 0;
@@ -59,24 +61,22 @@ namespace AdventureLanguage.Tokeniser
 
                 while (iCurrentChar <= iLenLine)
                 {
-                    text = "";
+                    //text = "";
 
                     character = BBCBasicLine.Mid(iCurrentChar, 1);
 
                     //deal with string
                     if (character == "\"")
                     {
-                        iBytePOS += 1;
+                        //iBytePOS += 1;
                         tokenisedBASIC = PushByte(tokenisedBASIC, (byte)character.MidChar(1, 1));
                         iCurrentChar += 1;
                         character = BBCBasicLine.Mid(iCurrentChar, 1);
 
                         while (character != "\"")
                         {
-                            iBytePOS = GetBytePos(tokenisedBASIC);
+                            //iBytePOS = GetBytePos(tokenisedBASIC);
                             tokenisedBASIC = PushByte(tokenisedBASIC, (byte)character.MidChar(1, 1));
-
-
                             iCurrentChar += 1;
                             character = BBCBasicLine.Mid(iCurrentChar, 1);
 
@@ -89,56 +89,85 @@ namespace AdventureLanguage.Tokeniser
 
                     }
 
-                    if (Regex.IsMatch(character, "^[a-zA-Z]"))
+                    if (character == ":")
+                    {
+                        FNPROC = false;
+                    }
+
+                    if (Regex.IsMatch(character, "^[a-zA-Z$(]") && !FNPROC)
                     {
                         text += character;
-                        iCurrentChar += 1;
-                        //read text until not text or ( or $
-                        while (Regex.IsMatch(character, "^[a-zA-Z]") && iCurrentChar <= iLenLine)
-                        {
-                            character = BBCBasicLine.Mid(iCurrentChar, 1);
-                            text += character;
-                            iCurrentChar += 1;
 
-                        }
 
-                        //dump the last character if more than one present
                         if (text.Length > 1)
                         {
-                            tmpChar = text.MidChar(text.Length, 1);
-                            text = text.Left(text.Length - 1);
-                            iCurrentChar -= 2;
-                        }
 
-                        iBytePOS = GetBytePos(tokenisedBASIC);
+                            //check to see if the next character is alphanumeric (if some text is left)
+                            if (iCurrentChar < iLenLine)
+                            {
 
-                        if (GetToken(text))
-                        {
-                            tokenisedBASIC = PushByte(tokenisedBASIC, token);
+                                if (GetToken(text))
+                                {
+                                    //PROC or similar
+                                    if (FNPROC)
+                                    {
+                                        tokenisedBASIC = PushByte(tokenisedBASIC, token);
+                                        text = "";
+                                    }
+                                }
+
+                                if (Regex.IsMatch(BBCBasicLine.Mid(iCurrentChar + 1, 1), "^[a-zA-Z$(]"))
+                                {
+                                    //next character is alpha so don't tokenise yet?
+
+                                }
+                                else
+                                {
+                                    //check for token
+
+                                    if (GetToken(text))
+                                    {
+                                        tokenisedBASIC = PushByte(tokenisedBASIC, token);
+                                        text = "";
+                                        //iCurrentChar -= 2;
+                                    }
+
+                                }
+
+                            }
                         }
                         else
                         {
-                            //step through 'text' and put into byte
-                            for (int i = 1; i < text.Length + 1; i++)
+                            if (iCurrentChar == iLenLine)
                             {
-                                tokenisedBASIC = PushByte(tokenisedBASIC, (byte)text.MidChar(1, 1));
-                            };
+                                //last character in line
+                                tokenisedBASIC = PushByte(tokenisedBASIC, (byte)character.MidChar(1, 1));
+                            }
                         }
-
                     }
                     else
                     {
-                        iBytePOS = GetBytePos(tokenisedBASIC);
+                        if (text.Length > 0 || iCurrentChar == iLenLine)
+                        {
+                            //write out the bytes so far
+
+                            for (int i = 1; i <= text.Length; i++)
+                            {
+                                tokenisedBASIC = PushByte(tokenisedBASIC, (byte)text.MidChar(i, 1));
+                            }
+                        }
                         tokenisedBASIC = PushByte(tokenisedBASIC, (byte)character.MidChar(1, 1));
+                        text = "";
                     }
+
 
                     iCurrentChar += 1;
 
                 }
 
-                tokenisedBASIC = PushByte(tokenisedBASIC, (byte)0x0D);
-                tokenisedBASIC[2] = (byte)(iBytePOS);             //Length of line (set last), taken from 0 bound array length
-                                                                    //CR
+                tokenisedBASIC = PushByte(tokenisedBASIC, (byte)0x0D);  //CR
+                tokenisedBASIC[2] = (byte)(iBytePOS);                   //Length of line (set last), taken from 0 bound array length
+
             }
             catch (Exception e)
             {
@@ -146,6 +175,7 @@ namespace AdventureLanguage.Tokeniser
 
             }
 
+            Output.WriteDataToFiles.WriteTokenisedLine(tokenisedBASIC, gameData);
             return tokenisedBASIC;
         }
 
@@ -164,9 +194,9 @@ namespace AdventureLanguage.Tokeniser
 
         private static int GetBytePos(byte[] tokenisedLine)
         {
-            for (int i=3;i<tokenisedLine.Length;i++)
+            for (int i = 3; i < tokenisedLine.Length; i++)
             {
-                if (tokenisedLine[i]==0)
+                if (tokenisedLine[i] == 0)
                 {
                     return i;
                 }

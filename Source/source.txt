@@ -2,6 +2,7 @@
 'any lines starting with ' will be ignored
 'any line starting with - will only be included if adventureData has <BuildType>Debug</BuildType> set
 'PRINT A
+'PROCldSM:REPEAT:PROCmsg(0):PROCldOb:PROCldRm:IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4)
 MODE @ScreenMode@:VDU23;8202;0;0;0;:PRINT"Loading";:T%=0:Q%=0:DIM IX% @RMIndex@:DIM RM% @Room@
 
 -SW%=0   
