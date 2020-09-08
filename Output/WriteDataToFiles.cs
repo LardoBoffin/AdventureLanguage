@@ -479,8 +479,9 @@ namespace AdventureLanguage.Output
             return true;   //change to true
         }
 
-        public static bool WriteTokenisedLine(byte[] tokenLine, DataItems gameData)
+        public static bool WriteTokenisedLines(DataItems gameData)
         {
+            byte[] tokenLine = new byte[255];
 
             try
             {
@@ -494,11 +495,13 @@ namespace AdventureLanguage.Output
 
                     gameData.eventList.Add(new EventLog());
                     gameData.eventList.Add(new EventLog("Writing tokenised BASIC file"));
+                    messageWriter.Write((byte)0x0D);
 
-                    for (int i = 0; i < tokenLine.Count(); i++)
+                    for (int i = 0; i < gameData.TargetBBCBasicProgram.Count(); i++)
                     {
-                        messageWriter.Write((byte)tokenLine[i]);   //length of string
+                        messageWriter.Write(gameData.TargetBBCBasicProgram[i].GetTokenisedLine());   //length of string
                     }
+                    messageWriter.Write((byte)0xFF);
                 }
                 catch (Exception c)
                 {
@@ -532,7 +535,7 @@ namespace AdventureLanguage.Output
 
                 try
                 {
-                    
+
                     gameData.eventList.Add(new EventLog());
                     gameData.eventList.Add(new EventLog("Writing Walkthrough"));
 

@@ -6,6 +6,7 @@ using System.Dynamic;
 using AdventureLanguage.Data;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.IO;
 
 namespace AdventureLanguage.Tokeniser
 {
@@ -21,6 +22,7 @@ namespace AdventureLanguage.Tokeniser
         static bool pseudo = false;
         static byte token = 0;
         static int iBytePOS = 0;
+
         public static byte[] Tokenise(string BBCBasicLine, int lineNumber, Data.DataItems gameData)
         {
             //step through text and convert to tokens
@@ -30,7 +32,7 @@ namespace AdventureLanguage.Tokeniser
             //Length of line (which needs to be adjusted when the line is shortened) 
             //Text ......
             //CR
-
+            
 
             // string keyword;
             //bool isMatch = false;
@@ -50,6 +52,7 @@ namespace AdventureLanguage.Tokeniser
 
                 //example line
                 //  MODE 7:VDU23;8202;0;0;0;:PRINT"Loading";:T%=0:Q%=0:DIM IX% 60:DIM RM% 252
+                //CLS:PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@" 
 
                 tokenisedBASIC[0] = (byte)(lineNumber / 256);                        //MSB of line number
                 tokenisedBASIC[1] = (byte)(lineNumber - ((lineNumber / 256) * 256)); //LSB of line number
@@ -175,8 +178,13 @@ namespace AdventureLanguage.Tokeniser
 
             }
 
-            Output.WriteDataToFiles.WriteTokenisedLine(tokenisedBASIC, gameData);
-            return tokenisedBASIC;
+            byte[] finalValue = new byte[iBytePOS];
+
+            Buffer.BlockCopy(tokenisedBASIC, 0, finalValue, 0, iBytePOS);
+
+
+            //Output.WriteDataToFiles.WriteTokenisedLine(tokenisedBASIC, gameData);
+            return finalValue;
         }
 
         private static byte[] PushByte(byte[] tokenisedLine, byte token)

@@ -37,6 +37,8 @@ namespace AdventureLanguage.Data
 
         public void SetTokenisedLine(byte[] tokenisedLine)
         {
+            Array.Resize(ref tokenisedLine, tokenisedLine.Length);
+
             _tokenisedLine = tokenisedLine;
         }
 
