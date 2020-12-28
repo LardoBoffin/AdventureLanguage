@@ -481,45 +481,47 @@ namespace AdventureLanguage.Output
 
         public static bool WriteTokenisedLines(DataItems gameData)
         {
-            byte[] tokenLine = new byte[255];
-
-            try
-            {
-                string fd = gameData.folderDivider;
-                string fileOutput = gameData.folderLocation + fd + "fileOutput";
-
-                BinaryWriter messageWriter = new BinaryWriter(File.Open(fileOutput + fd + "TOKEN", FileMode.Create));
-
-                try
-                {
-
-                    gameData.eventList.Add(new EventLog());
-                    gameData.eventList.Add(new EventLog("Writing tokenised BASIC file"));
-                    messageWriter.Write((byte)0x0D);
-
-                    for (int i = 0; i < gameData.TargetBBCBasicProgram.Count(); i++)
-                    {
-                        messageWriter.Write(gameData.TargetBBCBasicProgram[i].GetTokenisedLine());   //length of string
-                    }
-                    messageWriter.Write((byte)0xFF);
-                }
-                catch (Exception c)
-                {
-                    gameData.eventList.Add(new EventLog("Processing tokenised BASIC file"));
-                    gameData.eventList.Add(new EventLog(c.Message));
-                    return false;
-                }
-
-                messageWriter.Dispose();
-            }
-            catch (Exception c)
-            {
-                gameData.eventList.Add(new EventLog("Processing tokenised BASIC file"));
-                gameData.eventList.Add(new EventLog(c.Message));
-                return false;
-            }
+            //byte[] tokenLine = new byte[255];
 
             return true;
+
+            //try
+            //{
+            //    string fd = gameData.folderDivider;
+            //    string fileOutput = gameData.folderLocation + fd + "fileOutput";
+
+            //    BinaryWriter messageWriter = new BinaryWriter(File.Open(fileOutput + fd + "TOKEN", FileMode.Create));
+
+            //    try
+            //    {
+
+            //        gameData.eventList.Add(new EventLog());
+            //        gameData.eventList.Add(new EventLog("Writing tokenised BASIC file"));
+            //        messageWriter.Write((byte)0x0D);
+
+            //        for (int i = 0; i < gameData.TargetBBCBasicProgram.Count(); i++)
+            //        {
+            //            messageWriter.Write(gameData.TargetBBCBasicProgram[i].GetTokenisedLine());   //length of string
+            //        }
+            //        messageWriter.Write((byte)0xFF);
+            //    }
+            //    catch (Exception c)
+            //    {
+            //        gameData.eventList.Add(new EventLog("Processing tokenised BASIC file"));
+            //        gameData.eventList.Add(new EventLog(c.Message));
+            //        return false;
+            //    }
+
+            //    messageWriter.Dispose();
+            //}
+            //catch (Exception c)
+            //{
+            //    gameData.eventList.Add(new EventLog("Processing tokenised BASIC file"));
+            //    gameData.eventList.Add(new EventLog(c.Message));
+            //    return false;
+            //}
+
+            //return true;
 
         }
 

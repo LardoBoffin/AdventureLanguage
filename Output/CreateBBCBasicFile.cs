@@ -585,7 +585,7 @@ namespace AdventureLanguage.Output
                 BBCBasicFunctions.RenumberLines(gameData);
 
                 //tokenise (has to be done after renumbering as line number is stored)
-                BBCBasicFunctions.TokeniseLines(gameData);
+                //BBCBasicFunctions.TokeniseLines(gameData);
 
                 return true;
             }

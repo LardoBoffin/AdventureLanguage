@@ -32,17 +32,18 @@ namespace AdventureLanguage.Tokeniser
             //Length of line (which needs to be adjusted when the line is shortened) 
             //Text ......
             //CR
-            
+
 
             // string keyword;
             //bool isMatch = false;
+            BBCBasicLine = BBCBasicLine + Environment.NewLine;
 
             string text = "";
             string character;
             int iLenLine;
             int iCurrentChar = 1;
-            char tmpChar;
-            bool tokenising = false;
+            //char tmpChar;
+            //bool tokenising = false;
 
             byte[] tokenisedBASIC = new byte[255];
             //int iBytePOS = 0;
@@ -62,7 +63,7 @@ namespace AdventureLanguage.Tokeniser
                 iLenLine = BBCBasicLine.Length;
                 iBytePOS = 3;
 
-                while (iCurrentChar <= iLenLine)
+                while (iCurrentChar < iLenLine - 1)
                 {
                     //text = "";
 
@@ -116,26 +117,52 @@ namespace AdventureLanguage.Tokeniser
                                     {
                                         tokenisedBASIC = PushByte(tokenisedBASIC, token);
                                         text = "";
+                                        iCurrentChar += 1;
+                                        //get rest of word, up to ( : or space
+                                        while (!Regex.IsMatch(BBCBasicLine.Mid(iCurrentChar, 1), "^[(: ]"))
+                                        {
+                                            character = BBCBasicLine.Mid(iCurrentChar, 1);
+                                            tokenisedBASIC = PushByte(tokenisedBASIC, (byte)character.MidChar(1, 1));
+                                            iCurrentChar += 1;
+                                        }
+                                        FNPROC = false;
+                                        iCurrentChar -= 1;
                                     }
-                                }
-
-                                if (Regex.IsMatch(BBCBasicLine.Mid(iCurrentChar + 1, 1), "^[a-zA-Z$(]"))
-                                {
-                                    //next character is alpha so don't tokenise yet?
-
-                                }
-                                else
-                                {
-                                    //check for token
-
-                                    if (GetToken(text))
+                                    else
                                     {
-                                        tokenisedBASIC = PushByte(tokenisedBASIC, token);
-                                        text = "";
-                                        //iCurrentChar -= 2;
+                                        if (Regex.IsMatch(BBCBasicLine.Mid(iCurrentChar + 1, 1), "^[a-zA-Z$(]"))
+                                        {
+                                            //next character is alpha so continue to tokenise
+
+
+
+                                        }
+                                        else
+                                        {
+                                            //next character is non alpha so finish
+                                            tokenisedBASIC = PushByte(tokenisedBASIC, token);
+                                            text = "";
+                                        }
                                     }
 
                                 }
+
+                                //if (Regex.IsMatch(BBCBasicLine.Mid(iCurrentChar + 1, 1), "^[a-zA-Z$(]") && FNPROC)
+                                //{
+                                //    //next character is alpha so don't tokenise yet?
+
+                                //}
+                                //else
+                                //{
+                                //    //check for token
+
+                                //    if (GetToken(text))
+                                //    {
+
+                                //        //iCurrentChar -= 2;
+                                //    }
+
+                                //}
 
                             }
                         }
