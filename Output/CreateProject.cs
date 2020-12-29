@@ -111,7 +111,7 @@ namespace AdventureLanguage.Output
                 {
                     Console.WriteLine("Creating build.bat");
                     StreamWriter buildBatchFileWin = new StreamWriter(File.Open(path + folderDivider + "build.bat", FileMode.Create));
-                    buildBatchFileWin.WriteLine("\"" + Directory.GetCurrentDirectory() + folderDivider + @"AdventureLanguage.exe"" -b """ + path + "\"");
+                    buildBatchFileWin.WriteLine("\"" + Directory.GetCurrentDirectory() + folderDivider + @"AL.exe"" -b """ + path + "\"");
                     buildBatchFileWin.Flush();
                 }
                 else

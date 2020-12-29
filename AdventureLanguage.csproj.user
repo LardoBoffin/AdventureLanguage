@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <_LastSelectedProfileId>E:\Quarantine\Source\Repos\AL\AdventureLanguage\Properties\PublishProfiles\Windows.pubxml</_LastSelectedProfileId>
+    <_LastSelectedProfileId>C:\Users\jonesp\Source\Repos\AdventureLanguage\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
     <ActiveDebugProfile>BuildAdventure</ActiveDebugProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">

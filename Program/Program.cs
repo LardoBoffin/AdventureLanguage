@@ -4,7 +4,7 @@
 //#define MAC
 //comment out for Windows
 
-#define BuildFromVS
+//#define BuildFromVS
 
 
 using System;
@@ -84,9 +84,9 @@ namespace AdventureLanguage
         {
             Console.WriteLine("Usage options:");
             Console.WriteLine("To create a new project...");
-            Console.WriteLine(@"-new <path> <projectname>, e.g.adventurelanguage.exe -new ""C:\Beeb\Adventures"" Ransom ");
+            Console.WriteLine(@"-new <path> <projectname>, e.g.al.exe -new ""C:\Beeb\Adventures"" Ransom ");
             Console.WriteLine("To build a project...");
-            Console.WriteLine(@"-b <path> , e.g.adventurelanguage.exe -b ""C:\Beeb\Adventures\Ransom""");
+            Console.WriteLine(@"-b <path> , e.g.al.exe -b ""C:\Beeb\Adventures\Ransom""");
         }
 
         public static void CreateNewProject(string folderLocation, string projectName, string folderDivider)
