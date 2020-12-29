@@ -74,12 +74,33 @@ Mac OSX
 
 General Notes
 
-	Debug mode (<BuildType>Debug</BuildType> in the adventure.xml file), prefix stuff with '-' and only included in program if <BuildType>Debug</BuildType> is set.
+	Build Options
 
-	Type the following into the 'What now' prompt.
+	Windows install only options:
 
-	*C 	show counters once
-	*CON 	always show counters
-	*COFF	switch off counters
-	*WON	switch on parsed word numbers
-	*WOFF	switch off parsed word numbers
+	<Tokeniser> - this sets the location of the tokeniser file
+	<TokenisedFileName> - this sets the final filename (once tokenised)
+	<CrunchTokenisedFile> - set to Yes to crunch the outputted file. This will rename variables and procedures / functions to be as small as possible. Spaces will also be removed
+
+	These are Windows only as I have not located a Mac based tokeniser program.
+
+	Windows and Mac options:
+
+	<SSDBuilder> - the path and EXE name of the program that will take the output files and build into an SSD image
+	<SSDName> - the filename of the resultant SSD image.
+	<BeebEmPath> - the full path and exe name of the installed BeebEm
+
+	<BuildType> - 
+	Debug mode, anything in source.txt prefixed with '-' will only be included in the end program if <BuildType>Debug</BuildType> is set.
+
+	When starting in debug mode the option to run a walkthrough is present as number 3 in the menu when starting the game.
+
+	Type the following into the 'What now' prompt when in debug mode. 
+
+		*C 	show counters once
+		*CON 	always show counters
+		*COFF	switch off counters
+		*WON	switch on parsed word numbers
+		*WOFF	switch off parsed word numbers
+
+

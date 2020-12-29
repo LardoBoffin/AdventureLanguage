@@ -1,13 +1,9 @@
 'in notepad++ set the language to Visual Basic
 'any lines starting with ' will be ignored
 'any line starting with - will only be included if adventureData has <BuildType>Debug</BuildType> set
-'PRINT A
 
+'@ScreenMode@ is set in Adventure.xml 
 MODE @ScreenMode@:VDU23;8202;0;0;0;:PRINT"Loading";:T%=0:Q%=0:DIM IX% @RMIndex@:DIM RM% @Room@
-
-
-'CLS:PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@" 
-
 
 -SW%=0   
 -SC%=0
@@ -17,8 +13,7 @@ MODE @ScreenMode@:VDU23;8202;0;0;0;:PRINT"Loading";:T%=0:Q%=0:DIM IX% @RMIndex@:
    
 'start of main loop
 PROCldSM:REPEAT:PROCmsg(0):PROCldOb:PROCldRm:IF T%=0 THEN PROCgW(1):PROCgW(2):PROCgW(4)
-		   
-	'@ScreenMode@ is set in Adventure.xml   
+	  
 	CLS:PRINT:PRINTCHR$(131);CHR$(141);TAB(5)"@Title@":PRINTCHR$(131);CHR$(141);TAB(5)"@Title@"  
 	   
 	'@NumVar@ is set in Adventure.xml
