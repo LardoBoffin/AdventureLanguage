@@ -1,61 +1,85 @@
-to create a project
+Install instructions
 
-cd to application distribution folder, e.g. 
+Windows Install
 
-cd /Users/philjones/Documents/z 
+	This program requires .net core 3.1 (see below). I assume this limits it to Windows 7 upwards.
+
+	Please do not use a folder path with spaces in the name below.
+
+	1) Create a projects folder and program folder (e.g. C:\Users\lardo\Documents\AL\Projects and C:\Users\lardo\Documents\AL\Program) 
+	2) Download the zip and extract it to the folder above. Ensure you have full permissions on the folder
+	3) Install .Net Core 3.1 if not present (https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-3.1.2-windows-x64-installer)
+
+	Create a new adventure project:
+
+	1) Open up CMD
+	2) Type in (change lardo for your name!)
+		cd C:\Users\lardo\Documents\AL\Program to open the folder with the program
+		type al -new C:\Users\lardo\Documents\AL\Projects Ransom
+		and press enter (make sure the space is present between the folder path and project name).
+	3) This should build the Ransom folder in your projects folder
+	4) Open the AdventureData.xml in the Source folder and amend the following line:
+		<BeebEmPath>C:\Program Files (x86)\BeebEm\BeebEm.exe</BeebEmPath>
+		This needs to point to the folder where BeebEm is installed
+		The tokeniser and make SSD program paths should point to your adventuyre language program path. 
+
+	Building the adventure project:
+
+	1) Open up CMD
+	2) Type in (change lardo for your name!)
+		cd C:\Users\lardo\Documents\AL\Projects\Ransom to open the folder with the build batch file
+		type build and press enter
+
+	Or just double click on the Build.Bat file in explorer.
+
+Mac OSX
+
+	This program requires .net core 3.1 (see below).
+	This program also requires a tool to build the SSD file. I have used this one https://github.com/sweharris/MMB_Utils
+
+	1) Download the zip and extract it to Documents. It may work elsewhere but I have no idea.
+
+	Create a new adventure project:
+
+	1) Open up Terminal
+	2) Type in (change lardo for your log in name!)
+		cd /Users/lardo/Documents/AL to open the folder with the program
+		type dotnet al.dll -new /Users/lardo/Documents Ransom
+		and press enter (make sure the space is present between the folder path and project name).
+	3) This should build the Ransom folder in your Documents
+	4) Open the AdventureData.xml in the Source folder and amend the following line:
+		<SSDBuilder>/Users/lardo/Documents/Beeb</SSDBuilder>
+		This needs to point to the folder where sweh's MMB utils are installed
+		Still in this file amend the line:
+		<BeebEmPath>/Applications/BeebEmMac/BeebEm4.app</BeebEmPath>
+		This needs to point to BeebEm
+
+	Building the adventure project:
+
+	1) Type in the following changing your username from lardo
+		cd /Users/lardo/Documents/AL to open the folder with the program and then-
+		donet al.dll -b /Users/lardo/Documents/Ransom
+	2) This should compile the program, build the SSD and run BeebEm
+	3) Press cmd+W to unlock drive 0 (can't find a way to permanently change this setting) and then F0
+	4) This should *exec the program to BASIC, save and then run the game
+
+	There is also a Mac command batch file to run the build process - this is build.command in the root of the project folder. 
+	If you double click this initially you will get an error about permissions. 
+	In order to give yourself permissions to run this you need to do the following (with the caveat that I do not fully understand Mac security so have no clue what it is actually doing :D): -
+
+	Open Terminal
+	Type in chmod u+x /Users/lardo/Documents/######/build.command
+	where ###### is the path to your project
 
 
-dotnet al.dll -new /users/philjones/documents Ransom
+General Notes
 
+	Debug mode (<BuildType>Debug</BuildType> in the adventure.xml file), prefix stuff with '-' and only included in program if <BuildType>Debug</BuildType> is set.
 
-to build a project
+	Type the following into the 'What now' prompt.
 
-cd to application distribution folder, e.g. 
-
-cd /Users/philjones/Documents/z 
-
-dotnet al.dll -b /Users/philjones/Documents/Opus2 
-
-
-Implemented IT, TAKE LAMP, LIGHT IT
-Debug mode, prefix stuff with '-' and only included in program if <BuildType>Debug</BuildType>
-
-*C 		show counters once
-*CON 	always show counters
-*COFF	switch off counters
-*WON	switch on parsed word numbers
-*WOFF	switch off parsed word numbers
-
-chmod u+x  /Users/philjones/Documents/Opus2/build.command
-
-MAC build for Banzai:
-
-            <GameTitle>Banzai</GameTitle>
-            <ScreenWidth>40</ScreenWidth>
-            <ScreenMode>7</ScreenMode>
-            <SourceFile>source.txt</SourceFile>
-            <OutputFile>Banzai.txt</OutputFile>
-            <BuildType>Debug</BuildType>
-            <Tokeniser>
-            </Tokeniser>
-            <TokenisedFileName>Banzai</TokenisedFileName>
-            <SSDBuilder>/Users/philjones/Documents/Beeb SWEH</SSDBuilder>
-            <SSDName>Banzai.SSD</SSDName>
-            <BeebEmPath>/Applications/BeebEm Mac/BeebEm4.app</BeebEmPath>
-
-
-Windiows build for Banzai
-
-            <GameTitle>Banzai</GameTitle>
-            <ScreenWidth>40</ScreenWidth>
-            <ScreenMode>7</ScreenMode>
-            <SourceFile>source.txt</SourceFile>
-            <OutputFile>Banzai.txt</OutputFile>
-            <BuildType>Debug</BuildType>
-            <Tokeniser>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\tokenise.exe</Tokeniser>
-            <TokenisedFileName>Banzai</TokenisedFileName>
-            <SSDBuilder>C:\Users\jonesp\source\repos\AdventureLanguage\IncludedEXEs\MkImg.exe</SSDBuilder>
-            <SSDName>Banzai.SSD</SSDName>
-            <BeebEmPath>C:\Program Files (x86)\BeebEm\BeebEm.exe</BeebEmPath>
-
-#
+	*C 	show counters once
+	*CON 	always show counters
+	*COFF	switch off counters
+	*WON	switch on parsed word numbers
+	*WOFF	switch off parsed word numbers
