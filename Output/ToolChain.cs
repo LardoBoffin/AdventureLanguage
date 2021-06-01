@@ -27,13 +27,33 @@ namespace AdventureLanguage.Output
                 ///Users/philjones/Documents/BasicTool/basictool --help
                 //philjones$ / Users / philjones / Documents / BasicTool / basictool - t / Users / philjones / Documents / BasicTool / banzai.txt / Users / philjones / Documents / BasicTool / basic.tok
 
-                // /philjones$/Users/philjones/Documents/BasicTool/ basictool - t
+                // /Users/philjones/Documents/BasicTool/ basictool - t
                 // /Users/philjones/Documents/BasicTool/banzai.txt
-                // /Users/philjones/Documents/BasicTool/basic.tok
+                // /Users/philjones/Documents/BasicTool/basic
 
                 //path to basictool
                 //path to source document
                 //path to destination document
+
+                try
+                {
+                    //string targetFile = Path.Combine(gameData.tokeniser + " -t " + gameData.folderDivider + gameData.folderLocation, gameData.outputFile.Left(gameData.outputFile.Length - 4));
+                    string tokeniserCall = gameData.tokeniser + " -t ";
+                    tokeniserCall += gameData.folderLocation + gameData.folderDivider + gameData.outputFile;
+                    tokeniserCall += " " + gameData.folderLocation + gameData.folderDivider + "fileOutput" + gameData.folderDivider + gameData.tokenisedFileName;
+
+                    gameData.eventList.Add(new EventLog("BBC Basic tokeniser thanks to SteveF. See Stardot topic 'basictool - a command-line tool to tokenise, de-tokenise, pack and analyse BBC BASIC'"));
+                    gameData.eventList.Add(new EventLog());
+                    gameData.eventList.Add(new EventLog("Calling tokeniser at " + tokeniserCall));
+
+                    var test = tokeniserCall.Bash();
+                }
+                catch (Exception e)
+                {
+                    gameData.eventList.Add(new EventLog(e.Message));
+                    return false;
+                }
+
 
             }
             else
@@ -115,18 +135,19 @@ namespace AdventureLanguage.Output
 
             if (fd == "/")
             {
-                //mac so copy raw text file to fileoutput and remove .txt extension
-                try
-                {
-                    string targetFile = Path.Combine(gameData.folderLocation + gameData.folderDivider + "fileOutput", gameData.outputFile.Left(gameData.outputFile.Length - 4));
-                    File.Delete(targetFile);
-                    File.Copy(Path.Combine(gameData.folderLocation, gameData.outputFile), targetFile, true);
-                }
-                catch (Exception e)
-                {
-                    gameData.eventList.Add(new EventLog(e.Message));
-                    return false;
-                }
+                //mac so copy raw text file to fileoutput and remove .txt extension. No longer required thanks to tokeniser
+                //try
+               // {
+                    //string targetFile = Path.Combine(gameData.folderLocation + gameData.folderDivider + "fileOutput", gameData.outputFile.Left(gameData.outputFile.Length - 4));
+                    //string targetFile = Path.Combine(gameData.folderLocation + gameData.folderDivider + "fileOutput", gameData.outputFile.Left(gameData.outputFile.Length - 4));
+                    //File.Delete(targetFile);
+                    //File.Copy(Path.Combine(gameData.folderLocation, gameData.outputFile), targetFile, true);
+                //}
+                //catch (Exception e)
+               // {
+                 //   gameData.eventList.Add(new EventLog(e.Message));
+                   // return false;
+               // }
 
                 //create SSD    ./blank_ssd.pl  file path
                 string createSSD = "./blank_ssd.pl";
