@@ -1,7 +1,7 @@
 ﻿
 
 //define MAC for the OSX build
-//#define MAC
+#define MAC
 //comment out for Windows
 
 //#define BuildFromVS

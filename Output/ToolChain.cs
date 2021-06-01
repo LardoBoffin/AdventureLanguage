@@ -18,64 +18,88 @@ namespace AdventureLanguage.Output
 
             if (gameData.tokeniser == "" || gameData.tokeniser == null) { return true; }
 
-            string fileOutput = gameData.folderLocation + @"\fileOutput";
+            string fd = gameData.folderDivider;
 
-            string tokeniserCall = "\"" + gameData.tokeniser + "\"" + " " + "\"" + gameData.folderLocation + @"\" + gameData.outputFile + "\"" + " " + "\"" + fileOutput + @"\" + gameData.tokenisedFileName + "\"";
-
-            gameData.eventList.Add(new EventLog("BBC Basic tokeniser thanks to Richard Russel. See Stardot topic 'BASIC Tokenizer' in '8-bit acorn software: other'"));
-            gameData.eventList.Add(new EventLog());
-            gameData.eventList.Add(new EventLog("Calling tokeniser at " + tokeniserCall));
-
-            try
+            if (fd == "/")
             {
-                File.Delete(fileOutput + "\\" + gameData.tokenisedFileName + ".BBC"); // Delete the existing file if exists
 
-                //check for file exists
+
+                ///Users/philjones/Documents/BasicTool/basictool --help
+                //philjones$ / Users / philjones / Documents / BasicTool / basictool - t / Users / philjones / Documents / BasicTool / banzai.txt / Users / philjones / Documents / BasicTool / basic.tok
+
+                // /philjones$/Users/philjones/Documents/BasicTool/ basictool - t
+                // /Users/philjones/Documents/BasicTool/banzai.txt
+                // /Users/philjones/Documents/BasicTool/basic.tok
+
+                //path to basictool
+                //path to source document
+                //path to destination document
+
+            }
+            else
+            {
+                //string folderDivider = @"\";
+
+                string fileOutput = gameData.folderLocation + @"\fileOutput";
+
+                string tokeniserCall = "\"" + gameData.tokeniser + "\"" + " " + "\"" + gameData.folderLocation + @"\" + gameData.outputFile + "\"" + " " + "\"" + fileOutput + @"\" + gameData.tokenisedFileName + "\"";
+
+                gameData.eventList.Add(new EventLog("BBC Basic tokeniser thanks to Richard Russel. See Stardot topic 'BASIC Tokenizer' in '8-bit acorn software: other'"));
                 gameData.eventList.Add(new EventLog());
-                gameData.eventList.Add(new EventLog("Response from tokeniser:"));
+                gameData.eventList.Add(new EventLog("Calling tokeniser at " + tokeniserCall));
 
-                using (Process tokeniseFile = Process.Start(tokeniserCall))
+                try
                 {
+                    File.Delete(fileOutput + "\\" + gameData.tokenisedFileName + ".BBC"); // Delete the existing file if exists
 
-                    tokeniseFile.WaitForExit(100000);     //wait up to ten seconds
-                    int errorCode = tokeniseFile.ExitCode;
+                    //check for file exists
+                    gameData.eventList.Add(new EventLog());
+                    gameData.eventList.Add(new EventLog("Response from tokeniser:"));
 
-                    if (errorCode != 0)
+                    using (Process tokeniseFile = Process.Start(tokeniserCall))
                     {
-                        Console.Write("Failed to tokenise.");
-                        return false;
-                    }
 
-                    if (!File.Exists(fileOutput + @"\" + gameData.tokenisedFileName + ".BBC"))
-                    {
-                        return false;
-                    }
+                        tokeniseFile.WaitForExit(100000);     //wait up to ten seconds
+                        int errorCode = tokeniseFile.ExitCode;
 
-                    File.Delete(fileOutput + "\\" + gameData.tokenisedFileName); // Delete the existing file if exists
+                        if (errorCode != 0)
+                        {
+                            Console.Write("Failed to tokenise.");
+                            return false;
+                        }
 
-                    //remove the .BBC extension
-                    FileInfo file = new FileInfo(fileOutput + @"\" + gameData.tokenisedFileName + ".BBC");
-                    file.Rename(gameData.tokenisedFileName);
-
-                    if (gameData.crunchTokenisedFile)
-                    {
-                        if (!CreateBBCBasicFile.ProcessTokenisedFile(gameData))
+                        if (!File.Exists(fileOutput + @"\" + gameData.tokenisedFileName + ".BBC"))
                         {
                             return false;
                         }
+
+                        File.Delete(fileOutput + "\\" + gameData.tokenisedFileName); // Delete the existing file if exists
+
+                        //remove the .BBC extension
+                        FileInfo file = new FileInfo(fileOutput + @"\" + gameData.tokenisedFileName + ".BBC");
+                        file.Rename(gameData.tokenisedFileName);
+
+                        if (gameData.crunchTokenisedFile)
+                        {
+                            if (!CreateBBCBasicFile.ProcessTokenisedFile(gameData))
+                            {
+                                return false;
+                            }
+                        }
+
                     }
-
                 }
-            }
-            catch (Exception e)
-            {
-                gameData.eventList.Add(new EventLog(e.Message));
-                return false;
+                catch (Exception e)
+                {
+                    gameData.eventList.Add(new EventLog(e.Message));
+                    return false;
+                }
+
+                gameData.eventList.Add(new EventLog());
+                gameData.eventList.Add(new EventLog("File tokenised : " + gameData.folderLocation + "\\" + gameData.tokenisedFileName));
+                gameData.eventList.Add(new EventLog());
             }
 
-            gameData.eventList.Add(new EventLog());
-            gameData.eventList.Add(new EventLog("File tokenised : " + gameData.folderLocation + "\\" + gameData.tokenisedFileName));
-            gameData.eventList.Add(new EventLog());
 
             return true;
         }
