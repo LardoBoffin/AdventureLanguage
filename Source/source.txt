@@ -2,6 +2,7 @@
 'any lines starting with ' will be ignored
 'any line starting with - will only be included if adventureData has <BuildType>Debug</BuildType> set
 
+
 '@ScreenMode@ is set in Adventure.xml 
 MODE @ScreenMode@:VDU23;8202;0;0;0;:PRINT"Loading";:T%=0:Q%=0:DIM IX% @RMIndex@:DIM RM% @Room@
 
